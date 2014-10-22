@@ -1,0 +1,8 @@
+﻿
+SELECT
+	*
+FROM Objects
+WHERE
+	device_instance = @deviceInstance AND
+	object_type = @objectType AND
+	instance = @instance;

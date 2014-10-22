@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7537FEB5-E9B0-4292-964A-D4AACC0A72A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BACnet.Core</RootNamespace>
+    <AssemblyName>BACnet.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App\DeviceTable.cs" />
+    <Compile Include="App\DeviceTableEntry.cs" />
+    <Compile Include="App\Host.cs" />
+    <Compile Include="App\HostOptions.cs" />
+    <Compile Include="App\IDeviceSearchCallback.cs" />
+    <Compile Include="App\InboundUnconfirmedRequest.cs" />
+    <Compile Include="App\Messages\AbortMessage.cs" />
+    <Compile Include="App\Messages\ComplexAckMessage.cs" />
+    <Compile Include="App\Messages\ConfirmedRequestMessage.cs" />
+    <Compile Include="App\Messages\ErrorMessage.cs" />
+    <Compile Include="App\Messages\IAppMessage.cs" />
+    <Compile Include="App\Messages\MessageType.cs" />
+    <Compile Include="App\Messages\RejectMessage.cs" />
+    <Compile Include="App\Messages\SegmentAckMessage.cs" />
+    <Compile Include="App\Messages\SimpleAckMessage.cs" />
+    <Compile Include="App\Messages\UnconfirmedRequestMessage.cs" />
+    <Compile Include="App\TransactionManager.cs" />
+    <Compile Include="App\Transactions\ClientState.cs" />
+    <Compile Include="App\Transactions\ClientTransaction.cs" />
+    <Compile Include="App\Transactions\ClientTransactionHandle.cs" />
+    <Compile Include="App\Transactions\IClientTransactionHandle.cs" />
+    <Compile Include="App\Transactions\IClientTransactionResult.cs" />
+    <Compile Include="App\Transactions\ServerState.cs" />
+    <Compile Include="App\ConfirmedRequestRegistrar.cs" />
+    <Compile Include="App\UnconfirmedRequestRegistrar.cs" />
+    <Compile Include="BufferExtensions.cs" />
+    <Compile Include="BufferSegment.cs" />
+    <Compile Include="Datalink\InboundNetgram.cs" />
+    <Compile Include="Datalink\IPort.cs" />
+    <Compile Include="Datalink\Mac.cs" />
+    <Compile Include="Datalink\OutboundNetgram.cs" />
+    <Compile Include="Datalink\PortManager.cs" />
+    <Compile Include="Datalink\PortManagerOptions.cs" />
+    <Compile Include="DefaultProcessIds.cs" />
+    <Compile Include="Exceptions\AbortException.cs" />
+    <Compile Include="Exceptions\BACnetException.cs" />
+    <Compile Include="Exceptions\ErrorException.cs" />
+    <Compile Include="Exceptions\RejectException.cs" />
+    <Compile Include="IContent.cs" />
+    <Compile Include="IProcess.cs" />
+    <Compile Include="IProcessOptions.cs" />
+    <Compile Include="Network\Address.cs" />
+    <Compile Include="Network\OutboundAppgram.cs" />
+    <Compile Include="Network\InboundAppgram.cs" />
+    <Compile Include="Network\Messages\IAmRouterToNetworkMessage.cs" />
+    <Compile Include="Network\Messages\INetworkMessage.cs" />
+    <Compile Include="Network\Messages\MessageType.cs" />
+    <Compile Include="Network\Messages\WhoIsRouterToNetworkMessage.cs" />
+    <Compile Include="Network\NetgramHeader.cs" />
+    <Compile Include="Network\NetgramPriority.cs" />
+    <Compile Include="Network\Route.cs" />
+    <Compile Include="Network\RouterOptions.cs" />
+    <Compile Include="Network\RoutingTable.cs" />
+    <Compile Include="Network\Router.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubscriptionList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BACnet.Ashrae\BACnet.Ashrae.csproj">
+      <Project>{0f5ebc73-226f-4d02-b966-aeab68a3ee94}</Project>
+      <Name>BACnet.Ashrae</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BACnet.Tagging\BACnet.Tagging.csproj">
+      <Project>{5f831cc3-c5b5-492f-b4de-05c08e93d307}</Project>
+      <Name>BACnet.Tagging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BACnet.Types\BACnet.Types.csproj">
+      <Project>{e220a688-a98f-491d-80a9-0f34bce1216f}</Project>
+      <Name>BACnet.Types</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

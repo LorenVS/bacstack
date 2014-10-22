@@ -1,0 +1,4 @@
+﻿SELECT * FROM Objects
+WHERE
+	device_instance = COALESCE(@deviceInstance, device_instance) AND
+	object_type = COALESCE(@objectType, object_type);

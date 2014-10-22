@@ -1,0 +1,12 @@
+﻿
+INSERT OR IGNORE INTO Objects(
+	device_instance, 
+	object_type,
+	instance,
+	vendor_id
+) VALUES (
+	@deviceInstance,
+	@objectType,
+	@instance,
+	@vendorId
+);

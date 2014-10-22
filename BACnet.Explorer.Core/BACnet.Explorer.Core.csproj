@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{26A7E7BD-F969-4480-9453-1224AF0885A6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BACnet.Explorer.Core</RootNamespace>
+    <AssemblyName>BACnet.Explorer.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Eto, Version=1.99.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Eto.Forms.2.0.0.80\lib\net45\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.2014.1.474\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.cs" />
+    <Compile Include="BACnetSession.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Controls\BACnetPanel.cs" />
+    <Compile Include="Controls\BACnetPanel2.cs" />
+    <Compile Include="Controls\DevicesTree.cs" />
+    <Compile Include="Controls\Editor.cs" />
+    <Compile Include="Controls\IEditor.cs" />
+    <Compile Include="Controls\IEditorBinding.cs" />
+    <Compile Include="Controls\ObjectPanel.cs" />
+    <Compile Include="Controls\DevicePanel.cs" />
+    <Compile Include="Controls\HostSettings.cs" />
+    <Compile Include="Controls\ForeignDevicePortSettings.cs" />
+    <Compile Include="Controls\NetworkDatabaseSettings.cs" />
+    <Compile Include="Controls\PropertyEditorBinding.cs" />
+    <Compile Include="Controls\RouterSettings.cs" />
+    <Compile Include="Controls\PortManagerSettings.cs" />
+    <Compile Include="Controls\SessionPicker.cs" />
+    <Compile Include="Controls\SessionSettings.cs" />
+    <Compile Include="Controls\SplitterStack.cs" />
+    <Compile Include="Extensibility\ExtensionManager.cs" />
+    <Compile Include="Extensibility\EditorProvider.cs" />
+    <Compile Include="Extensibility\ICustomTool.cs" />
+    <Compile Include="Extensibility\IObjectTab.cs" />
+    <Compile Include="Extensibility\IDeviceTab.cs" />
+    <Compile Include="Extensibility\IEditorProvider.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="LambdaBinding.cs" />
+    <Compile Include="MainForm.cs" />
+    <Compile Include="Models\DeviceTreeNode.cs" />
+    <Compile Include="Models\DeviceTreeStore.cs" />
+    <Compile Include="Models\ForeignDevicePortProcess.cs" />
+    <Compile Include="Models\HostProcess.cs" />
+    <Compile Include="Models\MainFormModel.cs" />
+    <Compile Include="Models\NetworkDatabaseProcess.cs" />
+    <Compile Include="Models\ObjectRow.cs" />
+    <Compile Include="Models\DescriptorObserverCollection.cs" />
+    <Compile Include="Models\ObservableCollectionWithProperties.cs" />
+    <Compile Include="Models\PortMapping.cs" />
+    <Compile Include="Models\PortType.cs" />
+    <Compile Include="Models\Process.cs" />
+    <Compile Include="Models\PortManagerProcess.cs" />
+    <Compile Include="Models\PropertyChangedBase.cs" />
+    <Compile Include="Models\RouterProcess.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\SessionsStore.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controls\SessionChooser.cs" />
+    <Compile Include="Controls\SessionCreator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BACnet.Ashrae\BACnet.Ashrae.csproj">
+      <Project>{0f5ebc73-226f-4d02-b966-aeab68a3ee94}</Project>
+      <Name>BACnet.Ashrae</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BACnet.Client\BACnet.Client.csproj">
+      <Project>{4134f46b-94ae-4d4f-a1d9-1e4c381b4264}</Project>
+      <Name>BACnet.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BACnet.Core\BACnet.Core.csproj">
+      <Project>{7537feb5-e9b0-4292-964a-d4aacc0a72a1}</Project>
+      <Name>BACnet.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BACnet.IP\BACnet.IP.csproj">
+      <Project>{262a1b12-cbe8-4326-b43b-8864c47796ce}</Project>
+      <Name>BACnet.IP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BACnet.Types\BACnet.Types.csproj">
+      <Project>{e220a688-a98f-491d-80a9-0f34bce1216f}</Project>
+      <Name>BACnet.Types</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

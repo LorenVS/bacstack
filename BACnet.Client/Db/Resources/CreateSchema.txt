@@ -1,0 +1,24 @@
+
+-- contains a single record to indicate the current schema version
+
+CREATE TABLE Version (
+	version				VARCHAR(255) NOT NULL
+);
+
+INSERT INTO Version(version) VALUES('v0.3');
+
+-- contains a record for each object on the network
+
+CREATE TABLE Objects (
+	device_instance		UNSIGNED INTEGER NOT NULL,
+	object_type			UNSIGNED INTEGER NOT NULL,
+	instance			UNSIGNED INTEGER NOT NULL,
+	vendor_id			UNSIGNED INTEGER NOT NULL,
+	name				VARCHAR(255) NULL,
+	props				VARCHAR(4096) NULL,
+	last_refresh		DATETIME DEFAULT current_timestamp,
+	last_refreshed		DATETIME DEFAULT '1900-01-01',
+	PRIMARY KEY(device_instance, object_type, instance)
+);
+
+CREATE INDEX Objects_LastRefreshed_IDX ON Objects(last_refreshed);

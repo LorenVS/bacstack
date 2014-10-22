@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E220A688-A98F-491D-80A9-0F34BCE1216F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BACnet.Types</RootNamespace>
+    <AssemblyName>BACnet.Types</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <RegisterForComInterop>false</RegisterForComInterop>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BitString56.cs" />
+    <Compile Include="BitString24.cs" />
+    <Compile Include="BitString8.cs" />
+    <Compile Include="Enumerated.cs" />
+    <Compile Include="IValueSink.cs" />
+    <Compile Include="IValueStream.cs" />
+    <Compile Include="PropertyAttribute.cs" />
+    <Compile Include="StreamOp.cs" />
+    <Compile Include="Value.cs" />
+    <Compile Include="Values\GenericValue.cs" />
+    <Compile Include="IGenericValueProvider.cs" />
+    <Compile Include="ISchema.cs" />
+    <Compile Include="Null.cs" />
+    <Compile Include="ObjectId.cs" />
+    <Compile Include="Option.cs" />
+    <Compile Include="Schemas\ArraySchema.cs" />
+    <Compile Include="Schemas\ChoiceSchema.cs" />
+    <Compile Include="Schemas\FieldSchema.cs" />
+    <Compile Include="Schemas\OptionSchema.cs" />
+    <Compile Include="Schemas\PrimitiveSchema.cs" />
+    <Compile Include="Schemas\SequenceSchema.cs" />
+    <Compile Include="Time.cs" />
+    <Compile Include="Date.cs" />
+    <Compile Include="UnexpectedValueTypeException.cs" />
+    <Compile Include="Values\ArrayValue.cs" />
+    <Compile Include="Values\BitString56Value.cs" />
+    <Compile Include="Values\BitString24Value.cs" />
+    <Compile Include="Values\BitString8Value.cs" />
+    <Compile Include="Values\CharStringValue.cs" />
+    <Compile Include="Values\OctetStringValue.cs" />
+    <Compile Include="Values\ChoiceValue.cs" />
+    <Compile Include="Values\ListValue.cs" />
+    <Compile Include="Values\ObjectIdValue.cs" />
+    <Compile Include="Values\OptionValue.cs" />
+    <Compile Include="Values\SequenceValue.cs" />
+    <Compile Include="Values\TimeValue.cs" />
+    <Compile Include="Values\DateValue.cs" />
+    <Compile Include="Values\Float64Value.cs" />
+    <Compile Include="Values\Float32Value.cs" />
+    <Compile Include="IValue.cs" />
+    <Compile Include="Values\BooleanValue.cs" />
+    <Compile Include="Values\NullValue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyArray.cs" />
+    <Compile Include="Values\Signed16Value.cs" />
+    <Compile Include="Values\Signed32Value.cs" />
+    <Compile Include="Values\Signed64Value.cs" />
+    <Compile Include="Values\Signed8Value.cs" />
+    <Compile Include="Values\EnumeratedValue.cs" />
+    <Compile Include="Values\Unsigned64Value.cs" />
+    <Compile Include="Values\Unsigned32Value.cs" />
+    <Compile Include="Values\Unsigned16Value.cs" />
+    <Compile Include="Values\Unsigned8Value.cs" />
+    <Compile Include="ValueType.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,26 @@
+
+CREATE TEMP TABLE queued_refreshes AS
+SELECT
+	device_instance,
+	object_type,
+	instance
+FROM Objects
+WHERE
+	last_refresh < @lastRefreshThreshold AND
+	last_refreshed < @lastRefreshedThreshold
+ORDER BY device_instance, object_type, instance
+LIMIT @limit;
+
+UPDATE Objects
+SET
+	last_refresh = DATETIME('now')
+WHERE EXISTS (
+	SELECT * FROM temp.queued_refreshes
+	WHERE Objects.device_instance = temp.queued_refreshes.device_instance
+	AND Objects.object_type = temp.queued_refreshes.object_type
+	AND Objects.instance = temp.queued_refreshes.instance
+);
+
+SELECT * FROM temp.queued_refreshes;
+
+DROP TABLE temp.queued_refreshes;

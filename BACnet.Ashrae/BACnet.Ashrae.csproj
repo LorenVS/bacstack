@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0F5EBC73-226F-4D02-B966-AEAB68A3EE94}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BACnet.Ashrae</RootNamespace>
+    <AssemblyName>BACnet.Ashrae</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfirmedRequests\AcknowledgeAlarm.cs" />
+    <Compile Include="ConfirmedRequests\AddListElement.cs" />
+    <Compile Include="ConfirmedRequests\AtomicReadFile.cs" />
+    <Compile Include="ConfirmedRequests\AtomicWriteFile.cs" />
+    <Compile Include="ConfirmedRequests\ConfirmedCOVNotification.cs" />
+    <Compile Include="ConfirmedRequests\ConfirmedEventNotification.cs" />
+    <Compile Include="ConfirmedRequests\ConfirmedPrivateTransfer.cs" />
+    <Compile Include="ConfirmedRequests\ConfirmedTextMessage.cs" />
+    <Compile Include="ConfirmedRequests\CreateObject.cs" />
+    <Compile Include="ConfirmedRequests\DeleteObject.cs" />
+    <Compile Include="ConfirmedRequests\DeviceCommunicationControl.cs" />
+    <Compile Include="ConfirmedRequests\GetAlarmSummary.cs" />
+    <Compile Include="ConfirmedRequests\GetEnrollmentSummary.cs" />
+    <Compile Include="ConfirmedRequests\GetEventInformation.cs" />
+    <Compile Include="ConfirmedRequests\IComplexAck.cs" />
+    <Compile Include="ConfirmedRequests\IConfirmedRequest.cs" />
+    <Compile Include="ConfirmedRequests\LifeSafetyOperation.cs" />
+    <Compile Include="ConfirmedRequests\ReadPropertyConditional.cs" />
+    <Compile Include="ConfirmedRequests\ReadPropertyMultiple.cs" />
+    <Compile Include="ConfirmedRequests\ReadProperty.cs" />
+    <Compile Include="ConfirmedRequests\ReadRange.cs" />
+    <Compile Include="ConfirmedRequests\ReinitializeDevice.cs" />
+    <Compile Include="ConfirmedRequests\RemoveListElement.cs" />
+    <Compile Include="ConfirmedRequests\SubscribeCOV.cs" />
+    <Compile Include="ConfirmedRequests\SubscribeCOVProperty.cs" />
+    <Compile Include="ConfirmedRequests\VtClose.cs" />
+    <Compile Include="ConfirmedRequests\VtData.cs" />
+    <Compile Include="ConfirmedRequests\VtOpen.cs" />
+    <Compile Include="ConfirmedRequests\WriteProperty.cs" />
+    <Compile Include="ConfirmedRequests\WritePropertyMultiple.cs" />
+    <Compile Include="Generated\AbortReason.cs" />
+    <Compile Include="Generated\AccumulatorRecord.cs" />
+    <Compile Include="Generated\AcknowledgeAlarmRequest.cs" />
+    <Compile Include="Generated\Action.cs" />
+    <Compile Include="Generated\ActionCommand.cs" />
+    <Compile Include="Generated\ActionList.cs" />
+    <Compile Include="Generated\AddListElementRequest.cs" />
+    <Compile Include="Generated\AddressBinding.cs" />
+    <Compile Include="Generated\AtomicReadFileAck.cs" />
+    <Compile Include="Generated\AtomicReadFileRequest.cs" />
+    <Compile Include="Generated\AtomicWriteFileAck.cs" />
+    <Compile Include="Generated\AtomicWriteFileRequest.cs" />
+    <Compile Include="Generated\AuthenticateAck.cs" />
+    <Compile Include="Generated\AuthenticateRequest.cs" />
+    <Compile Include="Generated\BinaryPV.cs" />
+    <Compile Include="Generated\CalendarEntry.cs" />
+    <Compile Include="Generated\ChangeListError.cs" />
+    <Compile Include="Generated\ClientCOV.cs" />
+    <Compile Include="Generated\ConfirmedCOVNotificationRequest.cs" />
+    <Compile Include="Generated\ConfirmedEventNotificationRequest.cs" />
+    <Compile Include="Generated\ConfirmedPrivateTransferAck.cs" />
+    <Compile Include="Generated\ConfirmedPrivateTransferError.cs" />
+    <Compile Include="Generated\ConfirmedPrivateTransferRequest.cs" />
+    <Compile Include="Generated\ConfirmedServiceAck.cs" />
+    <Compile Include="Generated\ConfirmedServiceChoice.cs" />
+    <Compile Include="Generated\ConfirmedServiceRequest.cs" />
+    <Compile Include="Generated\ConfirmedTextMessageRequest.cs" />
+    <Compile Include="Generated\COVCriteria.cs" />
+    <Compile Include="Generated\COVSubscription.cs" />
+    <Compile Include="Generated\CreateObjectAck.cs" />
+    <Compile Include="Generated\CreateObjectError.cs" />
+    <Compile Include="Generated\CreateObjectRequest.cs" />
+    <Compile Include="Generated\DailySchedule.cs" />
+    <Compile Include="Generated\DateAndTime.cs" />
+    <Compile Include="Generated\DateRange.cs" />
+    <Compile Include="Generated\DaysOfWeek.cs" />
+    <Compile Include="Generated\DeleteObjectRequest.cs" />
+    <Compile Include="Generated\Destination.cs" />
+    <Compile Include="Generated\DeviceCommunicationControlRequest.cs" />
+    <Compile Include="Generated\DeviceObjectPropertyReference.cs" />
+    <Compile Include="Generated\DeviceObjectPropertyValue.cs" />
+    <Compile Include="Generated\DeviceObjectReference.cs" />
+    <Compile Include="Generated\DeviceStatus.cs" />
+    <Compile Include="Generated\EngineeringUnits.cs" />
+    <Compile Include="Generated\Error.cs" />
+    <Compile Include="Generated\EventParameter.cs" />
+    <Compile Include="Generated\EventState.cs" />
+    <Compile Include="Generated\EventTransitionBits.cs" />
+    <Compile Include="Generated\EventType.cs" />
+    <Compile Include="Generated\ExtendedParameter.cs" />
+    <Compile Include="Generated\FileAccessMethod.cs" />
+    <Compile Include="Generated\GetAlarmSummaryAck.cs" />
+    <Compile Include="Generated\GetEnrollmentSummaryAck.cs" />
+    <Compile Include="Generated\GetEnrollmentSummaryRequest.cs" />
+    <Compile Include="Generated\GetEventInformationAck.cs" />
+    <Compile Include="Generated\GetEventInformationRequest.cs" />
+    <Compile Include="Generated\IAmRequest.cs" />
+    <Compile Include="Generated\IHaveRequest.cs" />
+    <Compile Include="Generated\LifeSafetyMode.cs" />
+    <Compile Include="Generated\LifeSafetyOperation.cs" />
+    <Compile Include="Generated\LifeSafetyOperationRequest.cs" />
+    <Compile Include="Generated\LifeSafetyState.cs" />
+    <Compile Include="Generated\LimitEnable.cs" />
+    <Compile Include="Generated\LogRecord.cs" />
+    <Compile Include="Generated\LogStatus.cs" />
+    <Compile Include="Generated\Maintenance.cs" />
+    <Compile Include="Generated\NetworkAddress.cs" />
+    <Compile Include="Generated\NewValue.cs" />
+    <Compile Include="Generated\NotificationParameters.cs" />
+    <Compile Include="Generated\NotifyType.cs" />
+    <Compile Include="Generated\ObjectPropertyReference.cs" />
+    <Compile Include="Generated\ObjectPropertyValue.cs" />
+    <Compile Include="Generated\ObjectType.cs" />
+    <Compile Include="Generated\ObjectTypesSupported.cs" />
+    <Compile Include="Generated\Polarity.cs" />
+    <Compile Include="Generated\Prescale.cs" />
+    <Compile Include="Generated\PriorityArray.cs" />
+    <Compile Include="Generated\PriorityValue.cs" />
+    <Compile Include="Generated\ProgramError.cs" />
+    <Compile Include="Generated\ProgramRequest.cs" />
+    <Compile Include="Generated\ProgramState.cs" />
+    <Compile Include="Generated\PropertyIdentifier.cs" />
+    <Compile Include="Generated\PropertyReference.cs" />
+    <Compile Include="Generated\PropertyStates.cs" />
+    <Compile Include="Generated\PropertyValue.cs" />
+    <Compile Include="Generated\ReadAccessResult.cs" />
+    <Compile Include="Generated\ReadAccessSpecification.cs" />
+    <Compile Include="Generated\ReadPropertyAck.cs" />
+    <Compile Include="Generated\ReadPropertyConditionalAck.cs" />
+    <Compile Include="Generated\ReadPropertyConditionalRequest.cs" />
+    <Compile Include="Generated\ReadPropertyMultipleAck.cs" />
+    <Compile Include="Generated\ReadPropertyMultipleRequest.cs" />
+    <Compile Include="Generated\ReadPropertyRequest.cs" />
+    <Compile Include="Generated\ReadRangeAck.cs" />
+    <Compile Include="Generated\ReadRangeRequest.cs" />
+    <Compile Include="Generated\Recipient.cs" />
+    <Compile Include="Generated\RecipientProcess.cs" />
+    <Compile Include="Generated\ReinitializeDeviceRequest.cs" />
+    <Compile Include="Generated\RejectReason.cs" />
+    <Compile Include="Generated\Reliability.cs" />
+    <Compile Include="Generated\RemoveListElementRequest.cs" />
+    <Compile Include="Generated\RequestKeyRequest.cs" />
+    <Compile Include="Generated\ResultFlags.cs" />
+    <Compile Include="Generated\Scale.cs" />
+    <Compile Include="Generated\Segmentation.cs" />
+    <Compile Include="Generated\ServiceError.cs" />
+    <Compile Include="Generated\ServicesSupported.cs" />
+    <Compile Include="Generated\SessionKey.cs" />
+    <Compile Include="Generated\SetpointReference.cs" />
+    <Compile Include="Generated\SilencedState.cs" />
+    <Compile Include="Generated\SpecialEvent.cs" />
+    <Compile Include="Generated\StatusFlags.cs" />
+    <Compile Include="Generated\SubscribeCOVPropertyRequest.cs" />
+    <Compile Include="Generated\SubscribeCOVRequest.cs" />
+    <Compile Include="Generated\TimeStamp.cs" />
+    <Compile Include="Generated\TimeSynchronizationRequest.cs" />
+    <Compile Include="Generated\TimeValue.cs" />
+    <Compile Include="Generated\UnconfirmedCOVNotificationRequest.cs" />
+    <Compile Include="Generated\UnconfirmedEventNotificationRequest.cs" />
+    <Compile Include="Generated\UnconfirmedPrivateTransferRequest.cs" />
+    <Compile Include="Generated\UnconfirmedServiceChoice.cs" />
+    <Compile Include="Generated\UnconfirmedServiceRequest.cs" />
+    <Compile Include="Generated\UnconfirmedTextMessageRequest.cs" />
+    <Compile Include="Generated\UTCTimeSynchronizationRequest.cs" />
+    <Compile Include="Generated\VTClass.cs" />
+    <Compile Include="Generated\VTCloseError.cs" />
+    <Compile Include="Generated\VTCloseRequest.cs" />
+    <Compile Include="Generated\VTDataAck.cs" />
+    <Compile Include="Generated\VTDataRequest.cs" />
+    <Compile Include="Generated\VTOpenAck.cs" />
+    <Compile Include="Generated\VTOpenRequest.cs" />
+    <Compile Include="Generated\VTSession.cs" />
+    <Compile Include="Generated\WeekNDay.cs" />
+    <Compile Include="Generated\WhoHasRequest.cs" />
+    <Compile Include="Generated\WhoIsRequest.cs" />
+    <Compile Include="Generated\WriteAccessSpecification.cs" />
+    <Compile Include="Generated\WritePropertyMultipleError.cs" />
+    <Compile Include="Generated\WritePropertyMultipleRequest.cs" />
+    <Compile Include="Generated\WritePropertyRequest.cs" />
+    <Compile Include="GenericRequests\ReadPropertyAck.cs" />
+    <Compile Include="GenericRequests\ReadRangeAck.cs" />
+    <Compile Include="Objects\INamedObject.cs" />
+    <Compile Include="Objects\IAccumulator.cs" />
+    <Compile Include="Objects\IAnalogInput.cs" />
+    <Compile Include="Objects\IAnalogOutput.cs" />
+    <Compile Include="Objects\IAnalogValue.cs" />
+    <Compile Include="Objects\IAveraging.cs" />
+    <Compile Include="Objects\IBinaryInput.cs" />
+    <Compile Include="Objects\IBinaryOutput.cs" />
+    <Compile Include="Objects\IBinaryValue.cs" />
+    <Compile Include="Objects\ICalendar.cs" />
+    <Compile Include="Objects\IEventEnrollment.cs" />
+    <Compile Include="Objects\IFile.cs" />
+    <Compile Include="Objects\IGroup.cs" />
+    <Compile Include="Objects\ILoop.cs" />
+    <Compile Include="Objects\IMultiStateInput.cs" />
+    <Compile Include="Objects\IMultiStateOutput.cs" />
+    <Compile Include="Objects\IMultiStateValue.cs" />
+    <Compile Include="Objects\INotificationClass.cs" />
+    <Compile Include="Objects\IProgram.cs" />
+    <Compile Include="Objects\IPulseConverter.cs" />
+    <Compile Include="Objects\ISchedule.cs" />
+    <Compile Include="Objects\ITrendLog.cs" />
+    <Compile Include="Objects\IDevice.cs" />
+    <Compile Include="Partials\DateAndTime.cs" />
+    <Compile Include="Partials\DeviceObjectPropertyReference.cs" />
+    <Compile Include="Partials\PropertyReference.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Attributes\PropertyIdentifierAttribute.cs" />
+    <Compile Include="UnconfirmedRequests\IUnconfirmedRequest.cs" />
+    <Compile Include="UnconfirmedRequests\IAm.cs" />
+    <Compile Include="UnconfirmedRequests\TimeSynchronization.cs" />
+    <Compile Include="UnconfirmedRequests\UnconfirmedCOVNotification.cs" />
+    <Compile Include="UnconfirmedRequests\UnconfirmedEventNotification.cs" />
+    <Compile Include="UnconfirmedRequests\UnconfirmedPrivateTransfer.cs" />
+    <Compile Include="UnconfirmedRequests\UnconfirmedTextMessage.cs" />
+    <Compile Include="UnconfirmedRequests\UtcTimeSynchronization.cs" />
+    <Compile Include="UnconfirmedRequests\WhoHas.cs" />
+    <Compile Include="UnconfirmedRequests\WhoIs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BACnet.Types\BACnet.Types.csproj">
+      <Project>{e220a688-a98f-491d-80a9-0f34bce1216f}</Project>
+      <Name>BACnet.Types</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

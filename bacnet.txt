@@ -1,0 +1,2185 @@
+
+
+BACnetConfirmedServiceChoice ::= ENUMERATED {
+
+         acknowledgeAlarm           (0),
+         confirmedCOVNotification   (1),
+         confirmedEventNotification (2),
+         getAlarmSummary            (3),
+         getEnrollmentSummary       (4),
+         getEventInformation        (29),
+         subscribeCOV               (5),
+         subscribeCOVProperty       (28),
+         lifeSafetyOperation        (27),
+
+
+          atomicReadFile                      (6),
+          atomicWriteFile                     (7),
+
+
+         addListElement                       (8),
+         removeListElement                    (9),
+         createObject                         (10),
+         deleteObject                         (11),
+         readProperty                         (12),
+         readPropertyConditional              (13),
+         readPropertyMultiple                 (14),
+         readRange                            (26),
+         writeProperty                        (15),
+         writePropertyMultiple                (16),
+
+
+        deviceCommunicationControl            (17),
+        confirmedPrivateTransfer              (18),
+        confirmedTextMessage                  (19),
+        reinitializeDevice                    (20),
+
+
+          vtOpen                              (21),
+          vtClose                             (22),
+          vtData                              (23),
+
+
+          authenticate                        (24),
+          requestKey                          (25)
+
+
+          
+          
+          
+          
+          }
+
+
+
+BACnet-Confirmed-Service-Request ::= CHOICE {
+
+         acknowledgeAlarm                [0] AcknowledgeAlarm-Request,
+         confirmedCOVNotification        [1] ConfirmedCOVNotification-Request,
+         confirmedEventNotification      [2] ConfirmedEventNotification-Request,
+         
+         getEnrollmentSummary            [4] GetEnrollmentSummary-Request,
+         getEventInformation             [29] GetEventInformation-Request,
+         subscribeCOV                    [5] SubscribeCOV-Request,
+         subscribeCOVProperty            [28] SubscribeCOVProperty-Request,
+         lifeSafetyOperation             [27] LifeSafetyOperation-Request,
+
+
+         atomicReadFile                      [6] AtomicReadFile-Request,
+         atomicWriteFile                     [7] AtomicWriteFile-Request,
+
+
+         addListElement                      [8] AddListElement-Request,
+         removeListElement                   [9] RemoveListElement-Request,
+         createObject                        [10] CreateObject-Request,
+         deleteObject                        [11] DeleteObject-Request,
+         readProperty                        [12] ReadProperty-Request,
+         readPropertyConditional             [13] ReadPropertyConditional-Request,
+         readPropertyMultiple                [14] ReadPropertyMultiple-Request,
+         readRange                           [26] ReadRange-Request,
+         writeProperty                       [15] WriteProperty-Request,
+         writePropertyMultiple               [16] WritePropertyMultiple-Request,
+
+
+        deviceCommunicationControl           [17] DeviceCommunicationControl-Request,
+        confirmedPrivateTransfer             [18] ConfirmedPrivateTransfer-Request,
+        confirmedTextMessage                 [19] ConfirmedTextMessage-Request,
+        reinitializeDevice                   [20] ReinitializeDevice-Request,
+
+
+          vtOpen                             [21] VT-Open-Request,
+          vtClose                            [22] VT-Close-Request,
+          vtData                             [23] VT-Data-Request,
+
+
+          authenticate                       [24] Authenticate-Request,
+          requestKey                         [25] RequestKey-Request
+
+
+          
+          
+          
+          
+          }
+
+
+
+
+
+BACnet-Confirmed-Service-ACK ::= CHOICE {
+
+
+
+
+         getAlarmSummary                      [3] GetAlarmSummary-ACK,
+         getEnrollmentSummary                 [4] GetEnrollmentSummary-ACK,
+         getEventInformation                  [29] GetEventInformation-ACK,
+
+
+         atomicReadFile                       [6]    AtomicReadFile-ACK,
+         atomicWriteFile                      [7]    AtomicWriteFile-ACK,
+
+
+         createObject                         [10]   CreateObject-ACK,
+         readProperty                         [12]   ReadProperty-ACK,
+         readPropertyConditional              [13]   ReadPropertyConditional-ACK,
+         readPropertyMultiple                 [14]   ReadPropertyMultiple-ACK,
+         readRange                            [26]   ReadRange-ACK,
+
+
+        confirmedPrivateTransfer              [18] ConfirmedPrivateTransfer-ACK,
+
+
+         vtOpen                               [21] VT-Open-ACK,
+         vtData                               [23] VT-Data-ACK,
+
+
+         authenticate                         [24] Authenticate-ACK
+
+
+
+
+
+
+
+         }
+
+
+
+AcknowledgeAlarm-Request ::= SEQUENCE {
+       acknowledgingProcessIdentifier [0] Unsigned32,
+       eventObjectIdentifier          [1] BACnetObjectIdentifier,
+       eventStateAcknowledged         [2] BACnetEventState,
+       timeStamp                      [3] BACnetTimeStamp,
+       acknowledgmentSource           [4] CharacterString,
+       timeOfAcknowledgment           [5] BACnetTimeStamp
+       }
+
+ConfirmedCOVNotification-Request ::= SEQUENCE {
+       subscriberProcessIdentifier    [0] Unsigned32,
+       initiatingDeviceIdentifier     [1] BACnetObjectIdentifier,
+       monitoredObjectIdentifier      [2] BACnetObjectIdentifier,
+       timeRemaining                  [3] Unsigned,
+       listOfValues                   [4] SEQUENCE OF BACnetPropertyValue
+       }
+ConfirmedEventNotification-Request ::= SEQUENCE {
+       processIdentifier                [0] Unsigned32,
+       initiatingDeviceIdentifier       [1] BACnetObjectIdentifier,
+       eventObjectIdentifier            [2] BACnetObjectIdentifier,
+       timeStamp                        [3] BACnetTimeStamp,
+       notificationClass                [4] Unsigned,
+       priority                         [5] Unsigned8,
+       eventType                        [6] BACnetEventType,
+       messageText                      [7] CharacterString OPTIONAL,
+       notifyType                       [8] BACnetNotifyType,
+       ackRequired                      [9] BOOLEAN OPTIONAL,
+       fromState                        [10] BACnetEventState OPTIONAL,
+       toState                          [11] BACnetEventState,
+       eventValues                      [12] BACnetNotificationParameters OPTIONAL
+       }
+
+GetAlarmSummary-Request ::= SEQUENCE {
+}
+
+GetAlarmSummary-ACK ::= SEQUENCE OF SEQUENCE {
+       objectIdentifier        BACnetObjectIdentifier,
+       alarmState              BACnetEventState,
+       acknowledgedTransitions BACnetEventTransitionBits
+       }
+
+GetEnrollmentSummary-Request ::= SEQUENCE {
+       acknowledgmentFilter         [0] ENUMERATED {
+                                             all            (0),
+                                             acked          (1),
+                                             not-acked      (2)
+                                             },
+       enrollmentFilter             [1] BACnetRecipientProcess OPTIONAL,
+       eventStateFilter             [2] ENUMERATED {
+                                             offnormal      (0),
+                                             fault          (1),
+                                             normal         (2),
+                                             all            (3),
+                                             active         (4)
+                                             } OPTIONAL,
+       eventTypeFilter              [3] BACnetEventType OPTIONAL,
+       priorityFilter               [4] SEQUENCE {
+                                             minPriority    [0] Unsigned8,
+                                             maxPriority    [1] Unsigned8
+                                             } OPTIONAL,
+       notificationClassFilter      [5] Unsigned OPTIONAL
+       }
+
+GetEnrollmentSummary-ACK ::= SEQUENCE OF SEQUENCE {
+       objectIdentifier     BACnetObjectIdentifier,
+       eventType            BACnetEventType,
+       eventState           BACnetEventState,
+       priority             Unsigned8,
+       notificationClass    Unsigned OPTIONAL
+       }
+
+GetEventInformation-Request ::= SEQUENCE {
+       lastReceivedObjectIdentifier  [0] BACnetObjectIdentifier OPTIONAL
+       }
+GetEventInformation-ACK ::= SEQUENCE {
+       listOfEventSummaries     [0] SEQUENCE OF SEQUENCE {
+               objectIdentifier        [0] BACnetObjectIdentifier,
+               eventState              [1] BACnetEventState,
+               acknowledgedTransitions [2] BACnetEventTransitionBits,
+               eventTimeStamps         [3] SEQUENCE SIZE (3) OF BACnetTimeStamp,
+               notifyType              [4] BACnetNotifyType,
+               eventEnable             [5] BACnetEventTransitionBits,
+               eventPriorities         [6] SEQUENCE SIZE (3) OF Unsigned
+               },
+       moreEvents               [1] BOOLEAN
+       }
+
+LifeSafetyOperation-Request ::= SEQUENCE {
+        requestingProcessIdentifier   [0] Unsigned32,
+        requestingSource              [1] CharacterString,
+        request                       [2] BACnetLifeSafetyOperation,
+        objectIdentifier              [3] BACnetObjectIdentifier OPTIONAL
+        }
+
+SubscribeCOV-Request ::= SEQUENCE {
+        subscriberProcessIdentifier [0]   Unsigned32,
+        monitoredObjectIdentifier   [1]   BACnetObjectIdentifier,
+        issueConfirmedNotifications [2]   BOOLEAN OPTIONAL,
+        lifetime                    [3]   Unsigned OPTIONAL
+        }
+
+SubscribeCOVProperty-Request ::= SEQUENCE {
+        subscriberProcessIdentifier  [0] Unsigned32,
+        monitoredObjectIdentifier    [1] BACnetObjectIdentifier,
+        issueConfirmedNotifications  [2] BOOLEAN OPTIONAL,
+        lifetime                     [3] Unsigned OPTIONAL,
+        monitoredPropertyIdentifier  [4] BACnetPropertyReference,
+        covIncrement                 [5] REAL OPTIONAL
+        }
+
+
+
+AtomicReadFile-Request ::= SEQUENCE {
+       fileIdentifier BACnetObjectIdentifier,
+       accessMethod   CHOICE {
+                              streamAccess    [0] SEQUENCE {
+                                                     fileStartPosition      INTEGER,
+                                                     requestedOctetCount    Unsigned
+                                                     },
+                              recordAccess    [1] SEQUENCE {
+                                                     fileStartRecord        INTEGER,
+                                                     requestedRecordCount   Unsigned
+                                                     }
+                              }
+       }
+AtomicReadFile-ACK ::= SEQUENCE {
+       endOfFile      BOOLEAN,
+       accessMethod   CHOICE {
+                            streamAccess        [0] SEQUENCE {
+                                                       fileStartPosition        INTEGER,
+                                                       fileData                 OCTET STRING
+                                                       },
+                                recordAccess    [1] SEQUENCE {
+                                                       fileStartRecord          INTEGER,
+                                                       returnedRecordCount      Unsigned,
+                                                       fileRecordData           SEQUENCE OF OCTET STRING
+                                                       }
+                                }
+        }
+
+AtomicWriteFile-Request ::= SEQUENCE {
+      fileIdentifier  BACnetObjectIdentifier,
+      accessMethod    CHOICE {
+                               streamAccess   [0] SEQUENCE {
+                                                     fileStartPosition   INTEGER,
+                                                     fileData            OCTET STRING
+                                                     },
+                               recordAccess   [1] SEQUENCE {
+                                                     fileStartRecord     INTEGER,
+                                                     recordCount         Unsigned,
+                                                     fileRecordData      SEQUENCE OF OCTET STRING
+                                                     }
+                               }
+      }
+
+AtomicWriteFile-ACK ::= CHOICE {
+      fileStartPosition [0] INTEGER,
+      fileStartRecord [1] INTEGER
+      }
+
+
+
+AddListElement-Request ::= SEQUENCE {
+       objectIdentifier       [0] BACnetObjectIdentifier,
+       propertyIdentifier     [1] BACnetPropertyIdentifier,
+       propertyArrayIndex     [2] Unsigned OPTIONAL, 
+       listOfElements         [3] ABSTRACT-SYNTAX.&Type
+       }
+
+CreateObject-Request ::= SEQUENCE {
+       objectSpecifier        [0] CHOICE {
+                                     objectType       [0] BACnetObjectType,
+                                     objectIdentifier [1] BACnetObjectIdentifier
+                                     },
+       listOfInitialValues    [1] SEQUENCE OF BACnetPropertyValue OPTIONAL
+       }
+
+CreateObject-ACK ::= BACnetObjectIdentifier
+DeleteObject-Request ::= SEQUENCE {
+       objectIdentifier       BACnetObjectIdentifier
+       }
+
+ReadProperty-Request ::= SEQUENCE {
+       objectIdentifier       [0] BACnetObjectIdentifier,
+       propertyIdentifier     [1] BACnetPropertyIdentifier,
+       propertyArrayIndex     [2] Unsigned OPTIONAL 
+                                                       
+       }
+
+ReadProperty-ACK ::= SEQUENCE {
+       objectIdentifier    [0] BACnetObjectIdentifier,
+       propertyIdentifier  [1] BACnetPropertyIdentifier,
+       propertyArrayIndex  [2] Unsigned OPTIONAL, 
+                                                    
+       propertyValue       [3] ABSTRACT-SYNTAX.&Type
+       }
+
+ReadPropertyConditional-Request ::= SEQUENCE {
+       objectSelectionCriteria                  [0] SEQUENCE {
+                        selectionLogic          [0] ENUMERATED {
+                                                       and (0),
+                                                       or (1),
+                                                       all (2)
+                                                       },
+                        listOfSelectionCriteria [1] SEQUENCE OF SEQUENCE{
+                                                       propertyIdentifier [0] BACnetPropertyIdentifier,
+                                                       propertyArrayIndex         [1] Unsigned OPTIONAL,
+                                                       relationSpecifier          [2] ENUMERATED {
+                                                                equal                      (0),
+                                                                not-equal                  (1),
+                                                                less-than                  (2),
+                                                                greater-than               (3),
+                                                                less-than-or-equal         (4),
+                                                                greater-than-or-equal      (5)
+                                                                },
+                                                       comparisonValue [3] ABSTRACT-SYNTAX.&Type
+                                                       } OPTIONAL
+                        },
+       listOfPropertyReferences [1] SEQUENCE OF BACnetPropertyReference OPTIONAL
+       }
+
+ReadPropertyConditional-ACK ::= SEQUENCE {
+       listOfReadAccessResults SEQUENCE OF ReadAccessResult OPTIONAL
+       }
+
+ReadPropertyMultiple-Request ::= SEQUENCE {
+       listOfReadAccessSpecs SEQUENCE OF ReadAccessSpecification
+       }
+
+ReadPropertyMultiple-ACK ::= SEQUENCE {
+       listOfReadAccessResults SEQUENCE OF ReadAccessResult
+       }
+ReadRange-Request ::= SEQUENCE {
+      objectIdentifier      [0] BACnetObjectIdentifier,
+      propertyIdentifier    [1] BACnetPropertyIdentifier,
+      propertyArrayIndex    [2] Unsigned OPTIONAL               
+      range                  CHOICE {
+                                    byPosition              [3] SEQUENCE {
+                                                                    referenceIndex Unsigned,
+                                                                    count            INTEGER
+                                                                    },
+                                    
+                                    
+                                    bySequenceNumber [6] SEQUENCE {
+                                                                    referenceIndex Unsigned,
+                                                                    count            INTEGER
+                                                                    },
+                                    byTime                  [7] SEQUENCE {
+                                                                    referenceTime BACnetDateAndTime,
+                                                                    count            INTEGER
+                                                                    }
+                                    } OPTIONAL
+      }
+
+ReadRange-ACK ::= SEQUENCE {
+      objectIdentifier    [0] BACnetObjectIdentifier,
+      propertyIdentifier  [1] BACnetPropertyIdentifier,
+      propertyArrayIndex  [2] Unsigned OPTIONAL , 
+      resultFlags         [3] BACnetResultFlags,
+      itemCount           [4] Unsigned,
+      itemData            [5] SEQUENCE OF ABSTRACT-SYNTAX.&TYPE,
+      firstSequenceNumber [6] Unsigned32 OPTIONAL 
+                                                     
+      }
+
+RemoveListElement-Request ::= SEQUENCE {
+      objectIdentifier         [0] BACnetObjectIdentifier,
+      propertyIdentifier       [1] BACnetPropertyIdentifier,
+      propertyArrayIndex       [2] Unsigned OPTIONAL, 
+      listOfElements           [3] ABSTRACT-SYNTAX.&Type
+      }
+
+WriteProperty-Request ::= SEQUENCE {
+               objectIdentifier      [0] BACnetObjectIdentifier,
+               propertyIdentifier    [1] BACnetPropertyIdentifier,
+               propertyArrayIndex    [2] Unsigned OPTIONAL, 
+                                                                      
+                                                                      
+               propertyValue         [3] ABSTRACT-SYNTAX.&Type,
+               priority              [4] Unsigned8 (1..16) OPTIONAL 
+       }
+
+WritePropertyMultiple-Request ::= SEQUENCE {
+       listOfwriteAccessSpecifications SEQUENCE OF WriteAccessSpecification
+       }
+
+
+DeviceCommunicationControl-Request ::= SEQUENCE {
+       timeDuration   [0] Unsigned16 OPTIONAL,
+       enable-disable [1] ENUMERATED {
+                               enable             (0),
+                               disable            (1),
+                               disable-initiation (2)
+                               },
+       password       [2] CharacterString (SIZE(1..20)) OPTIONAL
+       }
+
+ConfirmedPrivateTransfer-Request ::= SEQUENCE {
+       vendorID               [0] Unsigned,
+       serviceNumber          [1] Unsigned,
+       serviceParameters      [2] ABSTRACT-SYNTAX.&Type OPTIONAL
+       }
+
+ConfirmedPrivateTransfer-ACK ::= SEQUENCE {
+       vendorID               [0] Unsigned,
+       serviceNumber          [1] Unsigned,
+       resultBlock            [2] ABSTRACT-SYNTAX.&Type OPTIONAL
+       }
+
+ConfirmedTextMessage-Request ::= SEQUENCE {
+       textMessageSourceDevice     [0] BACnetObjectIdentifier,
+       messageClass                [1] CHOICE {
+                                           numeric [0] Unsigned,
+                                           character [1] CharacterString
+                                           } OPTIONAL,
+       messagePriority             [2] ENUMERATED {
+                                           normal      (0),
+                                           urgent      (1)
+                                           },
+       message                     [3] CharacterString
+       }
+
+ReinitializeDevice-Request ::= SEQUENCE {
+         reinitializedStateOfDevice    [0] ENUMERATED {
+                                             coldstart       (0),
+                                             warmstart       (1),
+                                             startbackup     (2),
+                                             endbackup       (3),
+                                             startrestore    (4),
+                                             endrestore      (5),
+                                             abortrestore    (6)
+                                             },
+         password                      [1] CharacterString (SIZE (1..20)) OPTIONAL
+         }
+
+
+
+VT-Open-Request ::= SEQUENCE {
+      vtClass                  BACnetVTClass,
+      localVTSessionIdentifier Unsigned8
+      }
+VT-Open-ACK ::= SEQUENCE {
+      remoteVTSessionIdentifier               Unsigned8
+      }
+
+VT-Close-Request ::= SEQUENCE {
+       listOfRemoteVTSessionIdentifiers SEQUENCE OF Unsigned8
+       }
+
+VT-Data-Request ::= SEQUENCE {
+       vtSessionIdentifier  Unsigned8,
+       vtNewData            OCTET STRING,
+       vtDataFlag           Unsigned (0..1)
+       }
+
+VT-Data-ACK ::= SEQUENCE {
+       allNewDataAccepted  [0] BOOLEAN,
+       acceptedOctetCount  [1] Unsigned OPTIONAL 
+       }
+
+
+
+Authenticate-Request ::= SEQUENCE {
+        pseudoRandomNumber [0] Unsigned32,
+        expectedInvokeID       [1] Unsigned8 OPTIONAL,
+        operatorName           [2] CharacterString OPTIONAL,
+        operatorPassword       [3] CharacterString (SIZE (1..20)) OPTIONAL,
+        startEncipheredSession [4] BOOLEAN OPTIONAL
+        }
+
+Authenticate-ACK ::= SEQUENCE {
+        modifiedRandomNumber Unsigned32
+        }
+
+RequestKey-Request ::= SEQUENCE {
+       requestingDeviceIdentifier             BACnetObjectIdentifier,
+       requestingDeviceAddress                BACnetNetworkAddress,
+       remoteDeviceIdentifier                 BACnetObjectIdentifier,
+       remoteDeviceAddress                    BACnetNetworkAddress
+       }
+
+
+
+BACnetUnconfirmedServiceChoice ::= ENUMERATED {
+         i-Am                                 (0),
+         i-Have                               (1),
+         unconfirmedCOVNotification           (2),
+         unconfirmedEventNotification         (3),
+         unconfirmedPrivateTransfer           (4),
+         unconfirmedTextMessage               (5),
+         timeSynchronization                  (6),
+         who-Has                              (7),
+         who-Is                               (8),
+         utcTimeSynchronization               (9)
+         }
+
+
+BACnet-Unconfirmed-Service-Request ::= CHOICE {
+          i-Am                                [0] I-Am-Request,
+          i-Have                              [1] I-Have-Request,
+          unconfirmedCOVNotification          [2] UnconfirmedCOVNotification-Request,
+          unconfirmedEventNotification        [3] UnconfirmedEventNotification-Request,
+          unconfirmedPrivateTransfer          [4] UnconfirmedPrivateTransfer-Request,
+          unconfirmedTextMessage              [5] UnconfirmedTextMessage-Request,
+          timeSynchronization                 [6] TimeSynchronization-Request,
+          who-Has                             [7] Who-Has-Request,
+          who-Is                              [8] Who-Is-Request,
+          utcTimeSynchronization              [9] UTCTimeSynchronization-Request
+          }
+
+
+
+
+
+
+
+
+
+UnconfirmedCOVNotification-Request ::= SEQUENCE {
+        subscriberProcessIdentifier    [0] Unsigned32,
+        initiatingDeviceIdentifier     [1] BACnetObjectIdentifier,
+        monitoredObjectIdentifier      [2] BACnetObjectIdentifier,
+        timeRemaining                  [3] Unsigned,
+        listOfValues                   [4] SEQUENCE OF BACnetPropertyValue
+        }
+
+UnconfirmedEventNotification-Request ::= SEQUENCE {
+        processIdentifier               [0] Unsigned32,
+        initiatingDeviceIdentifier      [1] BACnetObjectIdentifier,
+        eventObjectIdentifier           [2] BACnetObjectIdentifier,
+        timeStamp                       [3] BACnetTimeStamp,
+        notificationClass               [4] Unsigned,
+        priority                        [5] Unsigned8,
+        eventType                       [6] BACnetEventType,
+        messageText                     [7] CharacterString OPTIONAL,
+        notifyType                      [8] BACnetNotifyType,
+        ackRequired                     [9] BOOLEAN OPTIONAL,
+        fromState                       [10] BACnetEventState OPTIONAL,
+        toState                         [11] BACnetEventState,
+        eventValues                     [12] BACnetNotificationParameters OPTIONAL
+        }
+
+
+
+I-Am-Request ::= SEQUENCE {
+       iAmDeviceIdentifier                  BACnetObjectIdentifier,
+       maxAPDULengthAccepted                Unsigned,
+       segmentationSupported                BACnetSegmentation,
+       vendorID                             Unsigned
+       }
+I-Have-Request ::= SEQUENCE {
+        deviceIdentifier BACnetObjectIdentifier,
+        objectIdentifier BACnetObjectIdentifier,
+        objectName       CharacterString
+        }
+
+UnconfirmedPrivateTransfer-Request ::= SEQUENCE {
+        vendorID              [0] Unsigned,
+        serviceNumber         [1] Unsigned,
+        serviceParameters     [2] ABSTRACT-SYNTAX.&Type OPTIONAL
+        }
+
+UnconfirmedTextMessage-Request ::= SEQUENCE {
+        textMessageSourceDevice    [0] BACnetObjectIdentifier,
+        messageClass               [1] CHOICE {
+                                           numeric [0] Unsigned,
+                                           character [1] CharacterString
+                                           } OPTIONAL,
+        messagePriority            [2] ENUMERATED {
+                                           normal      (0),
+                                           urgent      (1)
+                                           },
+        message                    [3] CharacterString
+        }
+
+TimeSynchronization-Request ::= SEQUENCE {
+       time    BACnetDateAndTime
+       }
+
+UTCTimeSynchronization-Request ::= SEQUENCE {
+      time   BACnetDateAndTime
+      }
+
+Who-Has-Request ::= SEQUENCE {
+      limits SEQUENCE {
+                       deviceInstanceRangeLowLimit         [0] Unsigned (0..4194303),
+                       deviceInstanceRangeHighLimit        [1] Unsigned (0..4194303)
+                       } OPTIONAL,
+      object CHOICE {
+                       objectIdentifier                    [2] BACnetObjectIdentifier,
+                       objectName                          [3] CharacterString
+                       }
+      }
+
+
+Who-Is-Request ::= SEQUENCE {
+       deviceInstanceRangeLowLimit        [0] Unsigned (0..4194303) OPTIONAL, 
+       deviceInstanceRangeHighLimit       [1] Unsigned (0..4194303) OPTIONAL 
+       }
+
+
+BACnetAbortReason ::= ENUMERATED {
+      other                                 (0),
+      buffer-overflow                       (1),
+      invalid-apdu-in-this-state            (2),
+      preempted-by-higher-priority-task (3),
+      segmentation-not-supported            (4),
+      ...
+      }
+      
+      
+
+BACnet-Error ::= CHOICE {
+          other                               [127] Error,
+
+
+
+
+         acknowledgeAlarm                     [0] Error,
+         confirmedCOVNotification             [1] Error,
+         confirmedEventNotification           [2] Error,
+         getAlarmSummary                      [3] Error,
+         getEnrollmentSummary                 [4] Error,
+         getEventInformation                  [29] Error,
+         subscribeCOV                         [5] Error,
+         subscribeCOVProperty                 [28] Error,
+         lifeSafetyOperation                  [27] Error,
+
+
+          atomicReadFile                      [6] Error,
+          atomicWriteFile                     [7] Error,
+
+
+         addListElement                       [8] ChangeList-Error,
+         removeListElement                    [9] ChangeList-Error,
+         createObject                         [10] CreateObject-Error,
+         deleteObject                         [11] Error,
+         readProperty                         [12] Error,
+         readPropertyConditional              [13] Error,
+         readPropertyMultiple                 [14] Error,
+         readRange                            [26] Error,
+         writeProperty                        [15] Error,
+         writePropertyMultiple                [16] WritePropertyMultiple-Error,
+
+
+        deviceCommunicationControl            [17] Error,
+        confirmedPrivateTransfer              [18] ConfirmedPrivateTransfer-Error,
+        confirmedTextMessage                  [19] Error,
+        reinitializeDevice                    [20] Error,
+
+
+          vtOpen                              [21] Error,
+          vtClose                             [22] VTClose-Error,
+          vtData                              [23] Error,
+
+          authenticate                       [24] Error,
+          requestKey                         [25] Error
+
+
+          
+          
+          
+          
+          }
+
+
+
+
+
+
+BACnetRejectReason ::= ENUMERATED {
+         other                                (0),
+         buffer-overflow                      (1),
+         inconsistent-parameters              (2),
+         invalid-parameter-data-type          (3),
+         invalid-tag                          (4),
+         missing-required-parameter           (5),
+         parameter-out-of-range               (6),
+         too-many-arguments                   (7),
+         undefined-enumeration                (8),
+         unrecognized-service                 (9),
+         ...
+         }
+
+
+
+ChangeList-Error ::= SEQUENCE {
+       errorType                             [0] Error,
+       firstFailedElementNumber              [1] Unsigned
+       }
+
+CreateObject-Error ::= SEQUENCE {
+       errorType                             [0] Error,
+       firstFailedElementNumber              [1] Unsigned
+       }
+
+ConfirmedPrivateTransfer-Error ::= SEQUENCE {
+       errorType       [0] Error,
+       vendorID        [1] Unsigned,
+       serviceNumber [2] Unsigned,
+       errorParameters [3] ABSTRACT-SYNTAX.&Type OPTIONAL
+       }
+Error ::= SEQUENCE {
+
+         error-class      ENUMERATED {
+                          device            (0),
+                          object            (1),
+                          property          (2),
+                          resources         (3),
+                          security          (4),
+                          services          (5),
+                          vt                (6),
+                          ...
+                          },
+         
+         
+         
+
+        error-code        ENUMERATED {
+                          other                                   (0),
+                          authentication-failed                   (1),
+                          character-set-not-supported             (41),
+                          configuration-in-progress               (2),
+                          datatype-not-supported                  (47),
+                          device-busy                             (3),
+                          duplicate-name                          (48),
+                          dplicate-object-id                      (49),
+                          dynamic-creation-not-supported          (4),
+                          file-access-denied                      (5),
+                          incompatible-security-levels            (6),
+                          inconsistent-parameters                 (7),
+                          inconsistent-selection-criterion        (8),
+                          invalid-array-index                     (42),
+                          invalid-configuration-data              (46),
+                          invalid-data-type                       (9),
+                          invalid-file-access-method              (10),
+                          invalid-file-start-position             (11),
+                          invalid-operator-name                   (12),
+                          invalid-parameter-data-type             (13),
+                          invalid-time-stamp                      (14),
+                          key-generation-error                    (15),
+                          missing-required-parameter              (16),
+                          no-objects-of-specified-type            (17),
+                          no-space-for-object                     (18),
+                          no-space-to-add-list-element            (19),
+                          no-space-to-write-property              (20),
+                          no-vt-sessions-available                (21),
+                          object-deletion-not-permitted           (23),
+                          object-identifier-already-exists        (24),
+                          operational-problem                     (25),
+                          optional-functionality-not-supported    (45),
+                          password-failure                        (26),
+                          property-is-not-a-list                  (22),
+                          property-is-not-an-array                (50),
+                          read-access-denied                      (27),
+                          security-not-supported                  (28),
+                          service-request-denied                  (29),
+                          timeout                                 (30),
+                             unknown-object                         (31),
+                             unknown-property                       (32),
+                     
+                             unknown-vt-class                       (34),
+                             unknown-vt-session                     (35),
+                             unsupported-object-type                (36),
+                             value-out-of-range                     (37),
+                             vt-session-already-closed              (38),
+                             vt-session-termination-failure         (39),
+                             write-access-denied                    (40),
+                     
+                     
+                             cov-subscription-failed                (43),
+                             not-cov-property                       (44),
+                     
+                     
+                     
+                     
+                     
+                     
+                             ...
+                  }
+                  
+                  
+                  
+   }
+
+WritePropertyMultiple-Error ::= SEQUENCE {
+       errorType                      [0] Error,
+       firstFailedWriteAttempt        [1] BACnetObjectPropertyReference
+       }
+
+VTClose-Error ::= SEQUENCE {
+       errorType                                [0] Error,
+       listOfVTSessionIdentifiers               [1] SEQUENCE OF Unsigned8 OPTIONAL
+}
+
+
+
+
+
+
+
+BACnetAccumulatorRecord ::= SEQUENCE {
+      timestamp              [0] BACnetDateAndTime,
+      presentValue           [1] Unsigned,
+      accumulatedValue       [2] Unsigned,
+      accumulatorStatus      [3] ENUMERATED {
+                                      normal                      (0),
+                                      starting                    (1),
+                                      recovered                   (2),
+                                      abnormal                    (3),
+                                      failed                      (4)
+                                      }
+      }
+
+BACnetAction ::= ENUMERATED {
+      direct         (0),
+      reverse        (1)
+      }
+
+BACnetActionCommand ::= SEQUENCE {
+      deviceIdentifier      [0] BACnetObjectIdentifier OPTIONAL,
+      objectIdentifier      [1] BACnetObjectIdentifier,
+        propertyIdentifier       [2] BACnetPropertyIdentifier,
+        propertyArrayIndex       [3] Unsigned OPTIONAL, 
+        propertyValue            [4] ABSTRACT-SYNTAX.&Type,
+        priority                 [5] Unsigned (1..16) OPTIONAL, 
+        postDelay                [6] Unsigned OPTIONAL,
+        quitOnFailure            [7] BOOLEAN,
+        writeSuccessful          [8] BOOLEAN
+        }
+
+BACnetActionList ::= SEQUENCE{
+      action [0] SEQUENCE OF BACnetActionCommand
+      }
+
+BACnetNetworkAddress ::= SEQUENCE {
+      network-number Unsigned16, 
+      mac-address     OCTET STRING 
+      }
+
+BACnetAddressBinding ::= SEQUENCE {
+      deviceObjectIdentifier BACnetObjectIdentifier,
+      deviceAddress          BACnetNetworkAddress
+      }
+
+BACnetBinaryPV ::= ENUMERATED {
+      inactive       (0),
+      active         (1)
+      }
+
+BACnetCalendarEntry ::= CHOICE {
+      date            [0] Date,
+      dateRange       [1] BACnetDateRange,
+      weekNDay        [2] BACnetWeekNDay
+      }
+
+BACnetClientCOV ::= CHOICE {
+      real-increment REAL,
+      default-increment NULL
+      }
+
+BACnetCOVSubscription ::= SEQUENCE {
+      Recipient                   [0] BACnetRecipientProcess,
+      MonitoredPropertyReference  [1] BACnetObjectPropertyReference,
+      IssueConfirmedNotifications [2] BOOLEAN,
+      TimeRemaining               [3] Unsigned,
+      COVIncrement                [4] REAL OPTIONAL         
+                                                            
+      }
+
+BACnetDailySchedule ::= SEQUENCE {
+      day-schedule     [0] SEQUENCE OF BACnetTimeValue
+      }
+
+BACnetDateRange ::= SEQUENCE {
+      StartDate       Date,
+      endDate         Date
+      }
+BACnetDateAndTime ::= SEQUENCE {
+      date            Date,
+      time            Time
+      }
+
+BACnetDaysOfWeek ::= BIT STRING {
+      monday         (0),
+      tuesday        (1),
+      wednesday      (2),
+      thursday       (3),
+      friday         (4),
+      saturday       (5),
+      sunday         (6)
+      }
+
+BACnetDestination ::= SEQUENCE {
+      validDays                           BACnetDaysOfWeek,
+      fromTime                            Time,
+      toTime                              Time,
+      recipient                           BACnetRecipient,
+      processIdentifier                   Unsigned32,
+      issueConfirmedNotifications         BOOLEAN,
+      transitions                         BACnetEventTransitionBits
+      }
+
+BACnetDeviceObjectPropertyReference ::= SEQUENCE {
+      objectIdentifier       [0]      BACnetObjectIdentifier,
+      propertyIdentifier     [1]      BACnetPropertyIdentifier,
+      propertyArrayIndex     [2]      Unsigned OPTIONAL, 
+                                                                
+                                                                
+      deviceIdentifier       [3]      BACnetObjectIdentifier OPTIONAL
+      }
+
+BACnetDeviceObjectPropertyValue ::= SEQUENCE {
+      deviceIdentifier       [0]      BACnetObjectIdentifier,
+      objectIdentifier       [1]      BACnetObjectIdentifier,
+      propertyIdentifier     [2]      BACnetPropertyIdentifier,
+      arrayIndex             [3]      Unsigned – OPTIONAL,
+      value                  [4]      ABSTRACT-SYNTAX.&Type
+      }
+
+BACnetDeviceObjectReference ::= SEQUENCE {
+      deviceIdentifier        [0]    BACnetObjectIdentifier OPTIONAL,
+      objectIdentifier        [1]    BACnetObjectIdentifier
+      }
+BACnetDeviceStatus ::= ENUMERATED {
+          operational              (0),
+          operational-read-only    (1),
+          download-required        (2),
+          download-in-progress     (3),
+          non-operational          (4),
+          backup-in-progress       (5),
+          ...
+          }
+
+
+
+
+BACnetEngineeringUnits ::= ENUMERATED {
+
+         meters-per-second-per-second               (166),
+
+         square-meters                              (0),
+         square-centimeters                         (116),
+         square-feet                                (1),
+         square-inches                              (115),
+
+
+         currency1                                  (105),
+         currency2                                  (106),
+         currency3                                  (107),
+         currency4                                  (108),
+         currency5                                  (109),
+         currency6                                  (110),
+         currency7                                  (111),
+         currency8                                  (112),
+         currency9                                  (113),
+         currency10                                 (114),
+
+
+          milliamperes                              (2),
+          amperes                                   (3),
+          amperes-per-meter                         (167),
+          amperes-per-square-meter                  (168),
+          ampere-square-meters                      (169),
+          farads                                    (170),
+          henrys                                    (171),
+          ohms                                      (4),
+          ohm-meters                                (172),
+          milliohms                                 (145),
+          kilohms                                   (122),
+          megohms                                   (123),
+          siemens                                   (173),   
+          siemens-per-meter                         (174),
+          teslas                                    (175),
+          volts                                     (5),
+          millivolts                                (124),
+          kilovolts                                 (6),
+          megavolts                                 (7),
+          volt-amperes                              (8),
+          kilovolt-amperes                          (9),
+           megavolt-amperes                   (10),
+           volt-amperes-reactive              (11),
+           kilovolt-amperes-reactive          (12),
+           megavolt-amperes-reactive          (13),
+           volts-per-degree-Kelvin            (176),
+           volts-per-meter                    (177),
+           degrees-phase                      (14),
+           power-factor                       (15),
+           webers                             (178),
+
+
+           joules                             (16),
+           kilojoules                         (17),
+           kilojoules-per-kilogram            (125),
+           megajoules                         (126),
+           watt-hours                         (18),
+           kilowatt-hours                     (19),
+           megawatt-hours                     (146),
+           btus                               (20),
+           kilo-btus                          (147),
+           mega-btus                          (148),
+           therms                             (21),
+           ton-hours                          (22),
+
+
+         joules-per-kilogram-dry-air          (23),
+         kilojoules-per-kilogram-dry-air      (149),
+         megajoules-per-kilogram-dry-air      (150),
+         btus-per-pound-dry-air               (24),
+         btus-per-pound                       (117),
+
+
+         joules-per-degree-Kelvin             (127),
+         kilojoules-per-degree-Kelvin         (151),
+         megajoules-per-degree-Kelvin         (152),
+         joules-per-kilogram-degree-Kelvin    (128),
+
+
+           newton                             (153),
+
+
+        cycles-per-hour                       (25),
+        cycles-per-minute                     (26),
+        hertz                                 (27),
+        kilohertz                             (129),
+        megahertz                             (130),
+        per-hour                              (131),
+
+
+        grams-of-water-per-kilogram-dry-air   (28),
+        percent-relative-humidity             (29),
+
+
+           millimeters                        (30),
+           centimeters                        (118),
+           meters                             (31),
+          inches                        (32),
+          feet                          (33),
+
+
+          candelas                      (179),
+          candelas-per-square-meter     (180),
+          watts-per-square-foot         (34),
+          watts-per-square-meter        (35),
+          lumens                        (36),
+          luxes                         (37),
+          foot-candles                  (38),
+
+
+          kilograms                     (39),
+          pounds-mass                   (40),
+          tons                          (41),
+
+
+        grams-per-second                (154),
+        grams-per-minute                (155),
+        kilograms-per-second            (42),
+        kilograms-per-minute            (43),
+        kilograms-per-hour              (44),
+        pounds-mass-per-second          (119),
+        pounds-mass-per-minute          (45),
+        pounds-mass-per-hour            (46),
+        tons-per-hour                   (156),
+
+
+          milliwatts                    (132),
+          watts                         (47),
+          kilowatts                     (48),
+          megawatts                     (49),
+          btus-per-hour                 (50),
+          kilo-btus-per-hour            (157),
+          horsepower                    (51),
+          tons-refrigeration            (52),
+
+
+         pascals                        (53),
+         hectopascals                   (133),
+         kilopascals                    (54),
+         millibars                      (134),
+         bars                           (55),
+         pounds-force-per-square-inch   (56),
+         centimeters-of-water           (57),
+         inches-of-water                (58),
+         millimeters-of-mercury         (59),
+         centimeters-of-mercury         (60),
+         inches-of-mercury              (61),
+
+
+       degrees-Celsius                  (62),
+       degrees-Kelvin                   (63),
+       degrees-Kelvin-per-hour          (181),
+       degrees-Kelvin-per-minute        (182),
+           degrees-Fahrenheit              (64),
+           degree-days-Celsius             (65),
+           degree-days-Fahrenheit          (66),
+           delta-degrees-Fahrenheit        (120),
+           delta-degrees-Kelvin            (121),
+
+
+           years                           (67),
+           months                          (68),
+           weeks                           (69),
+           days                            (70),
+           hours                           (71),
+           minutes                         (72),
+           seconds                         (73),
+           hundredths-seconds              (158),
+           milliseconds                    (159),
+
+
+           newton-meters                   (160),
+
+
+         millimeters-per-second            (161),
+         millimeters-per-minute            (162),
+         meters-per-second                 (74),
+         meters-per-minute                 (163),
+         meters-per-hour                   (164),
+         kilometers-per-hour               (75),
+         feet-per-second                   (76),
+         feet-per-minute                   (77),
+         miles-per-hour                    (78),
+
+         cubic-feet                        (79),
+         cubic-meters                      (80),
+         imperial-gallons                  (81),
+         liters                            (82),
+         us-gallons                        (83),
+
+
+        cubic-feet-per-second              (142),
+        cubic-feet-per-minute              (84),
+        cubic-meters-per-second            (85),
+        cubic-meters-per-minute            (165),
+        cubic-meters-per-hour              (135),
+        imperial-gallons-per-minute        (86),
+        liters-per-second                  (87),
+        liters-per-minute                  (88),
+        liters-per-hour                    (136),
+        us-gallons-per-minute              (89),
+
+
+           degrees-angular                 (90),
+           degrees-Celsius-per-hour        (91),
+           degrees-Celsius-per-minute      (92),
+           degrees-Fahrenheit-per-hour     (93),
+           degrees-Fahrenheit-per-minute   (94),
+           joule-seconds                   (183),
+          kilograms-per-cubic-meter                    (186),
+          kilowatt-hours-per-square-meter              (137),
+          kilowatt-hours-per-square-foot               (138),
+          megajoules-per-square-meter                  (139),
+          megajoules-per-square-foot                   (140),
+          no-units                                     (95),
+          newton-seconds                               (187),
+          newtons-per-meter                            (188),
+          parts-per-million                            (96),
+          parts-per-billion                            (97),
+          percent                                      (98),
+          percent-obscuration-per-foot                 (143),
+          percent-obscuration-per-meter                (144),
+          percent-per-second                           (99),
+          per-minute                                   (100),
+          per-second                                   (101),
+          psi-per-degree-Fahrenheit                    (102),
+          radians                                      (103),
+          radians-per-second                           (184),
+          revolutions-per-minute                       (104),
+          square-meters-per-Newton                     (185),
+          watts-per-meter-per-degree-Kelvin            (189),
+          watts-per-square-meter-degree-kelvin         (141),
+          ...
+          }
+
+BACnetExtendedParameter ::= CHOICE {
+   null         NULL,
+   real         REAL,
+   integer      Unsigned,
+   boolean      BOOLEAN,
+   double       DOUBLE,
+   octet        OCTET STRING,
+   bitstring    BIT STRING,
+   enum         ENUMERATED,
+   reference [0] BACnetDeviceObjectPropertyReference
+ }
+
+ BACnetCOVCriteria ::= CHOICE {
+    bitmask                         [0] BIT STRING,
+    referenced-property-increment   [1] REAL
+  }
+
+
+BACnetEventParameter ::= CHOICE {
+
+
+
+
+        change-of-bitstring       [0] SEQUENCE {
+                                         time-delay                   [0] Unsigned,
+                                         bitmask                      [1] BIT STRING,
+                                         list-of-bitstring-values     [2] SEQUENCE OF BIT STRING
+                                         },
+        change-of-state           [1] SEQUENCE {
+                                         time-delay          [0] Unsigned,
+                                         list-of-values      [1] SEQUENCE OF BACnetPropertyStates
+                                         },
+        change-of-value           [2] SEQUENCE {
+                                         time-delay          [0] Unsigned,
+                                         cov-criteria        [1] BACnetCOVCriteria
+                                         },
+        command-failure           [3] SEQUENCE {
+                                         time-delay                            [0] Unsigned,
+                                         feedback-property-reference           [1] BACnetDeviceObjectPropertyReference
+                                         },
+        floating-limit              [4] SEQUENCE {
+                                            time-delay                   [0] Unsigned,
+                                            setpoint-reference           [1] BACnetDeviceObjectPropertyReference,
+                                            low-diff-limit               [2] REAL,
+                                            high-diff-limit              [3] REAL,
+                                            deadband                     [4] REAL
+                                            },
+        out-of-range                [5] SEQUENCE {
+                                            time-delay          [0] Unsigned,
+                                            low-limit           [1] REAL,
+                                            high-limit          [2] REAL,
+                                            deadband            [3] REAL
+                                            },
+        
+        change-of-life-safety       [8] SEQUENCE {
+                                            time-delay                          [0] Unsigned,
+                                            list-of-life-safety-alarm-values [1] SEQUENCE OF BACnetLifeSafetyState,
+                                            list-of-alarm-values                [2] SEQUENCE OF BACnetLifeSafetyState,
+                                            mode-property-reference             [3] BACnetDeviceObjectPropertyReference
+                                            },
+        extended                    [9] SEQUENCE {
+                                            vendorId                [0] Unsigned,
+                                            extendedEventType [1] Unsigned,
+                                            parameters              [2] SEQUENCE OF BACnetExtendedParameter
+                                            },
+        buffer-ready                [10] SEQUENCE {
+                                            notification-threshold              [0] Unsigned,
+                                            previous-notification-count         [1] Unsigned32
+                                            },
+        unsigned-range              [11] SEQUENCE {
+                                            time-delay          [0] Unsigned,
+                                            low-limit           [1] Unsigned,
+                                            high-limit          [2] Unsigned
+                                            }
+        }
+
+
+
+
+BACnetEventState ::= ENUMERATED {
+          normal            (0),
+          fault             (1),
+          offnormal         (2),
+          high-limit        (3),
+          low-limit         (4),
+          life-safety-alarm (5),
+          ...
+          }
+
+
+
+
+BACnetEventTransitionBits ::= BIT STRING {
+      to-offnormal    (0),
+      to-fault        (1),
+      to-normal       (2)
+      }
+
+BACnetEventType ::= ENUMERATED {
+          change-of-bitstring           (0),
+          change-of-state               (1),
+          change-of-value               (2),
+          command-failure               (3),
+          floating-limit                (4),
+          out-of-range                  (5),
+          
+          
+          change-of-life-safety         (8),
+          extended                      (9),
+          buffer-ready                  (10),
+          unsigned-range                (11),
+          ...
+          }
+
+
+
+
+
+
+BACnetFileAccessMethod ::= ENUMERATED {
+      record-access                (0),
+      stream-access                (1)
+      }
+
+BACnetLifeSafetyMode ::= ENUMERATED {
+      off                      (0),
+      on                       (1),
+      test                     (2),
+      manned                   (3),
+      unmanned                 (4),
+      armed                    (5),
+      disarmed                 (6),
+      prearmed                 (7),
+      slow                     (8),
+      fast                     (9),
+         disconnected                  (10),
+         enabled                       (11),
+         disabled                      (12),
+         automatic-release-disabled    (13),
+         default                       (14),
+         ...
+         }
+
+
+
+BACnetLifeSafetyOperation ::= ENUMERATED {
+         none                  (0),
+         silence               (1),
+         silence-audible       (2),
+         silence-visual        (3),
+         reset                 (4),
+         reset-alarm           (5),
+         reset-fault           (6),
+         unsilence             (7),
+         unsilence-audible     (8),
+         unsilence-visual      (9),
+         ...
+         }
+
+
+
+
+BACnetLifeSafetyState ::= ENUMERATED {
+         quiet                (0),
+         pre-alarm            (1),
+         alarm                (2),
+         fault                (3),
+         fault-pre-alarm      (4),
+         fault-alarm          (5),
+         not-ready            (6),
+         active               (7),
+         tamper               (8),
+         test-alarm           (9),
+         test-active          (10),
+         test-fault           (11),
+         test-fault-alarm     (12),
+         holdup               (13),
+         duress               (14),
+         tamper-alarm         (15),
+         abnormal             (16),
+         emergency-power      (17),
+         delayed              (18),
+         blocked              (19),
+         local-alarm          (20),
+         general-alarm        (21),
+         supervisory          (22),
+         test-supervisory     (23),
+         ...
+         }
+
+
+BACnetLimitEnable ::= BIT STRING {
+      lowLimitEnable (0),
+      highLimitEnable (1)
+      }
+
+BACnetLogRecord ::= SEQUENCE {
+      timestamp      [0] BACnetDateAndTime,
+      logDatum       [1] CHOICE {
+                            log-status       [0] BACnetLogStatus,
+                            boolean-value    [1] BOOLEAN,
+                            real-value       [2] REAL,
+                            enum-value       [3] ENUMERATED,         
+                            unsigned-value [4] Unsigned,    
+                            signed-value     [5] INTEGER, 
+                            bitstring-value [6] BIT STRING, 
+                            null-value       [7] NULL,
+                            failure          [8] Error,
+                            time-change      [9] REAL,
+                            any-value        [10] ABSTRACT-SYNTAX.&Type 
+                            }
+      statusFlags    [2] BACnetStatusFlags OPTIONAL
+      }
+
+BACnetLogStatus ::= BIT STRING {
+      log-disabled     (0),
+      buffer-purged    (1)
+      }
+
+BACnetMaintenance ::= ENUMERATED {
+         none                      (0),
+         periodic-test             (1),
+         need-service-operational (2),
+         need-service-inoperative (3),
+         ...
+         }
+
+
+BACnetNewValue ::= CHOICE {
+   changed-bits          [0] BIT STRING,
+   changed-value         [1] REAL
+}
+
+BACnetNotificationParameters ::= CHOICE {
+
+
+
+        change-of-bitstring   [0] SEQUENCE {
+                                    referenced-bitstring     [0] BIT STRING,
+                                    status-flags             [1] BACnetStatusFlags
+                                    },
+        change-of-state       [1] SEQUENCE {
+                                    new-state                [0] BACnetPropertyStates,
+                                    status-flags             [1] BACnetStatusFlags
+                                    },
+        change-of-value       [2] SEQUENCE {
+                                    new-value                [0] BACnetNewValue,
+                            status-flags             [1] BACnetStatusFlags
+                            },
+command-failure       [3] SEQUENCE {
+                            command-value            [0] ABSTRACT-SYNTAX.&Type, 
+                            status-flags             [1] BACnetStatusFlags,
+                            feedback-value           [2] ABSTRACT-SYNTAX.&Type 
+                            },
+floating-limit        [4] SEQUENCE {
+                            reference-value          [0] REAL,
+                            status-flags             [1] BACnetStatusFlags,
+                            setpoint-value           [2] REAL,
+                            error-limit              [3] REAL
+                            },
+out-of-range          [5] SEQUENCE {
+                            exceeding-value          [0] REAL,
+                            status-flags             [1] BACnetStatusFlags,
+                            deadband                 [2] REAL,
+                            exceeded-limit           [3] REAL
+                            },
+complex-event-type [6] SEQUENCE OF BACnetPropertyValue,
+                      
+change-of-life-safety [8] SEQUENCE {
+                            new-state                [0] BACnetLifeSafetyState,
+                            new-mode                 [1] BACnetLifeSafetyMode,
+                            status-flags             [2] BACnetStatusFlags,
+                            operation-expected       [3] BACnetLifeSafetyOperation
+                            },
+extended            [9] SEQUENCE {
+                            vendorId                 [0] Unsigned,
+                            extendedEventType        [1] Unsigned,
+                            parameters               [2] SEQUENCE OF BACnetExtendedParameter
+                            },
+buffer-ready        [10] SEQUENCE {
+                            buffer-property          [0] BACnetDeviceObjectPropertyReference,
+                            previous-notification    [1] Unsigned32,
+                            current-notification     [2] Unsigned32
+                            },
+unsigned-range      [11] SEQUENCE {
+                            exceeding-value          [0] Unsigned,
+                            status-flags             [1] BACnetStatusFlags,
+                            exceeded-limit           [2] Unsigned
+                            }
+}
+BACnetNotifyType ::= ENUMERATED {
+      alarm            (0),
+      event            (1),
+      ack-notification (2)
+      }
+
+BACnetObjectPropertyReference ::= SEQUENCE {
+      objectIdentifier        [0] BACnetObjectIdentifier,
+      propertyIdentifier      [1] BACnetPropertyIdentifier,
+      propertyArrayIndex      [2] Unsigned OPTIONAL 
+                                                        
+      }
+
+BACnetObjectPropertyValue ::= SEQUENCE {
+      objectIdentifier         [0] BACnetObjectIdentifier,
+      propertyIdentifier       [1] BACnetPropertyIdentifier,
+      propertyArrayIndex       [2] Unsigned OPTIONAL,            
+                                                                 
+        value                      [3] ABSTRACT-SYNTAX.&Type, 
+        priority                   [4] Unsigned (1..16) OPTIONAL
+        }
+
+BACnetObjectType ::= ENUMERATED {
+      accumulator              (23),
+      analog-input             (0),
+      analog-output            (1),
+      analog-value             (2),
+      averaging                (18),
+      binary-input             (3),
+      binary-output            (4),
+      binary-value             (5),
+      calendar                 (6),
+      command                  (7),
+      device                   (8),
+      event-enrollment         (9),
+      file                     (10),
+      group                    (11),
+      life-safety-point        (21),
+      life-safety-zone         (22),
+      loop                     (12),
+      multi-state-input        (13),
+      multi-state-output       (14),
+      multi-state-value        (19),
+      notification-class       (15),
+      program                  (16),
+      pulse-converter          (24),
+      schedule                 (17),
+      
+      
+      trend-log                (20),
+      
+      
+      
+      
+      ...
+      }
+
+
+
+
+BACnetObjectTypesSupported ::= BIT STRING {
+         
+         analog-input         (0),
+         analog-output        (1),
+         analog-value         (2),
+         
+         binary-input         (3),
+         binary-output        (4),
+         binary-value         (5),
+         calendar             (6),
+         command              (7),
+         device               (8),
+         event-enrollment     (9),
+         file                 (10),
+         group                (11),
+         loop                 (12),
+         
+         
+         multi-state-input    (13),
+         multi-state-output   (14),
+         
+         notification-class   (15),
+         program              (16),
+         
+         schedule             (17),
+         
+
+         averaging            (18),
+         multi-state-value    (19),
+         trend-log            (20),
+         life-safety-point    (21),
+         life-safety-zone     (22),
+
+         accumulator          (23),
+         pulse-converter      (24)
+         }
+
+BACnetPolarity ::= ENUMERATED {
+      normal           (0),
+      reverse          (1)
+      }
+
+BACnetPrescale ::= SEQUENCE {
+      multiplier      [0] Unsigned,
+      moduloDivide [1] Unsigned
+      }
+
+BACnetPriorityArray ::= SEQUENCE SIZE (16) OF BACnetPriorityValue
+      
+
+BACnetPriorityValue ::= CHOICE {
+      null                   NULL,
+        real                      REAL,
+        binary                    BACnetBinaryPV,
+        integer                   Unsigned,
+        constructedValue       [0] ABSTRACT-SYNTAX.&Type
+        }
+
+BACnetProgramError ::= ENUMERATED {
+          normal          (0),
+          load-failed     (1),
+          internal        (2),
+          program         (3),
+          other           (4),
+          ...
+          }
+
+
+
+
+BACnetProgramRequest ::= ENUMERATED {
+      ready          (0),
+      load           (1),
+      run            (2),
+      halt           (3),
+      restart        (4),
+      unload         (5)
+      }
+
+BACnetProgramState ::= ENUMERATED {
+      idle             (0),
+      loading          (1),
+      running          (2),
+      waiting          (3),
+      halted           (4),
+      unloading        (5)
+      }
+
+BACnetPropertyIdentifier ::= ENUMERATED {
+      accepted-modes                                 (175),
+      acked-transitions                              (0),
+      ack-required                                   (1),
+      action                                         (2),
+      action-text                                    (3),
+      active-text                                    (4),
+      active-vt-sessions                             (5),
+      active-cov-subscriptions                       (152),
+      adjust-value                                   (176),
+      alarm-value                                    (6),
+      alarm-values                                   (7),
+      all                                            (8),
+      all-writes-successful                          (9),
+      apdu-segment-timeout                           (10),
+      apdu-timeout                                   (11),
+      application-software-version                   (12),
+      archive                                        (13),
+      attempted-samples                              (124),
+      auto-slave-discovery                           (169),
+average-value                               (125),
+backup-failure-timeout                      (153),
+bias                                        (14),
+buffer-size                                 (126),
+change-of-state-count                       (15),
+change-of-state-time                        (16),
+
+
+client-cov-increment                        (127),
+configuration-files                         (154),
+controlled-variable-reference               (19),
+controlled-variable-units                   (20),
+controlled-variable-value                   (21),
+count                                       (177),
+count-before-change                         (178),
+count-change-time                           (179),
+cov-increment                               (22),
+cov-period                                  (180),
+cov-resubscription-interval                 (128),
+
+database-revision                           (155),
+date-list                                   (23),
+daylight-savings-status                     (24),
+deadband                                    (25),
+derivative-constant                         (26),
+derivative-constant-units                   (27),
+description                                 (28),
+description-of-halt                         (29),
+device-address-binding                      (30),
+device-type                                 (31),
+direct-reading                              (156),
+effective-period                            (32),
+elapsed-active-time                         (33),
+error-limit                                 (34),
+event-enable                                (35),
+event-state                                 (36),
+event-time-stamps                           (130),
+event-type                                  (37),
+event-parameters                            (83), 
+exception-schedule                          (38),
+fault-values                                (39),
+feedback-value                              (40),
+file-access-method                          (41),
+file-size                                   (42),
+file-type                                   (43),
+firmware-revision                           (44),
+high-limit                                  (45),
+inactive-text                               (46),
+in-process                                  (47),
+input-reference                             (181),
+instance-of                                 (48),
+integral-constant                           (49),
+integral-constant-units                     (50),
+
+last-notify-record                          (173),
+last-restore-time                           (157),
+life-safety-alarm-values             (166),
+limit-enable                         (52),
+limit-monitoring-interval            (182),
+list-of-group-members                (53),
+list-of-object-property-references   (54),
+list-of-session-keys                 (55),
+local-date                           (56),
+local-time                           (57),
+location                             (58),
+log-buffer                           (131),
+log-device-object-property           (132),
+log-enable                           (133),
+log-interval                         (134),
+logging-object                       (183),
+logging-record                       (184),
+low-limit                            (59),
+maintenance-required                 (158),
+manipulated-variable-reference       (60),
+manual-slave-address-binding         (170),
+maximum-output                       (61),
+maximum-value                        (135),
+maximum-value-timestamp              (149),
+max-apdu-length-accepted             (62),
+max-info-frames                      (63),
+max-master                           (64),
+max-pres-value                       (65),
+max-segments-accepted                (167),
+member-of                            (159),
+minimum-off-time                     (66),
+minimum-on-time                      (67),
+minimum-output                       (68),
+minimum-value                        (136),
+minimum-value-timestamp              (150),
+min-pres-value                       (69),
+mode                                 (160),
+model-name                           (70),
+modification-date                    (71),
+notification-class                   (17), 
+notification-threshold               (137),
+notify-type                          (72),
+number-of-APDU-retries               (73),
+number-of-states                     (74),
+object-identifier                    (75),
+object-list                          (76),
+object-name                          (77),
+object-property-reference            (78),
+object-type                          (79),
+operation-expected                   (161),
+optional                             (80),
+out-of-service                       (81),
+output-units                         (82),
+
+polarity                             (84),
+prescale                             (185),
+present-value                        (85),
+
+priority                          (86),
+pulse-rate                        (186),
+priority-array                    (87),
+priority-for-writing              (88),
+process-identifier                (89),
+profile-name                      (168),
+program-change                    (90),
+program-location                  (91),
+program-state                     (92),
+proportional-constant             (93),
+proportional-constant-units       (94),
+
+protocol-object-types-supported   (96),
+protocol-revision                 (139),
+protocol-services-supported       (97),
+protocol-version                  (98),
+read-only                         (99),
+reason-for-halt                   (100),
+
+recipient-list                    (102),
+records-since-notification        (140),
+record-count                      (141),
+reliability                       (103),
+relinquish-default                (104),
+required                          (105),
+resolution                        (106),
+scale                             (187),
+scale-factor                      (188),
+schedule-default                  (174),
+segmentation-supported            (107),
+setpoint                          (108),
+setpoint-reference                (109),
+slave-address-binding             (171),
+setting                           (162),
+silenced                          (163),
+start-time                        (142),
+state-text                        (110),
+status-flags                      (111),
+stop-time                         (143),
+stop-when-full                    (144),
+system-status                     (112),
+time-delay                        (113),
+time-of-active-time-reset         (114),
+time-of-state-count-reset         (115),
+time-synchronization-recipients   (116),
+total-record-count                (145),
+tracking-value                    (164),
+units                             (117),
+update-interval                   (118),
+update-time                       (189),
+utc-offset                        (119),
+valid-samples                     (146),
+value-before-change               (190),
+value-set                         (191),
+value-change-time                 (192),
+variance-value                    (151),
+vendor-identifier                     (120),
+vendor-name                           (121),
+vt-classes-supported                  (122),
+weekly-schedule                       (123),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window-interval                       (147),
+window-samples                        (148),
+zone-members                          (165),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         ...
+         }
+
+
+
+
+
+
+
+BACnetPropertyReference ::= SEQUENCE {
+      propertyIdentifier       [0] BACnetPropertyIdentifier,
+      propertyArrayIndex       [1] Unsigned OPTIONAL 
+                                                         
+      }
+
+BACnetPropertyStates ::= CHOICE {
+
+
+
+
+         boolean-value               [0] BOOLEAN,
+         binary-value                [1] BACnetBinaryPV,
+         event-type                  [2] BACnetEventType,
+         polarity                    [3] BACnetPolarity,
+         program-change              [4] BACnetProgramRequest,
+         program-state               [5] BACnetProgramState,
+         reason-for-halt             [6] BACnetProgramError,
+         reliability                 [7] BACnetReliability,
+         state                       [8] BACnetEventState,
+         system-status               [9] BACnetDeviceStatus,
+         units                       [10] BACnetEngineeringUnits,
+         unsigned-value              [11] Unsigned,
+         life-safety-mode            [12] BACnetLifeSafetyMode,
+         life-safety-state           [13] BACnetLifeSafetyState,
+         ...
+         }
+
+
+
+
+
+BACnetPropertyValue ::= SEQUENCE {
+      PropertyIdentifier     [0] BACnetPropertyIdentifier,
+      propertyArrayIndex     [1] Unsigned OPTIONAL, 
+                                                        
+      value                  [2] ABSTRACT-SYNTAX.&Type, 
+      priority               [3] Unsigned (1..16) OPTIONAL 
+      }
+
+BACnetRecipient ::= CHOICE {
+      device [0] BACnetObjectIdentifier,
+      address [1] BACnetNetworkAddress
+      }
+
+BACnetRecipientProcess ::= SEQUENCE {
+      recipient [0] BACnetRecipient,
+      processIdentifier [1] Unsigned32
+      }
+
+BACnetReliability ::= ENUMERATED {
+          no-fault-detected   (0),
+          no-sensor           (1),
+          over-range          (2),
+          under-range         (3),
+          open-loop           (4),
+          shorted-loop        (5),
+          no-output           (6),
+          unreliable-other    (7),
+          process-error       (8),
+          multi-state-fault   (9),
+          configuration-error (10),
+          ...
+          }
+
+
+
+
+BACnetResultFlags ::= BIT STRING {
+      first-item           (0),
+      last-item            (1),
+      more-items           (2)
+      }
+
+BACnetScale ::= CHOICE {
+      floatScale      [0] REAL,
+      integerScale    [1] INTEGER
+      }
+BACnetSegmentation ::= ENUMERATED {
+      segmented-both        (0),
+      segmented-transmit    (1),
+      segmented-receive     (2),
+      no-segmentation       (3)
+      }
+
+BACnetServicesSupported ::= BIT STRING {
+
+         acknowledgeAlarm             (0),
+         confirmedCOVNotification     (1),
+         confirmedEventNotification   (2),
+         getAlarmSummary              (3),
+         getEnrollmentSummary         (4),
+         
+         subscribeCOV                 (5),
+         
+         
+
+
+          atomicReadFile               (6),
+          atomicWriteFile              (7),
+
+
+         addListElement                (8),
+         removeListElement             (9),
+         createObject                  (10),
+         deleteObject                  (11),
+         readProperty                  (12),
+         readPropertyConditional       (13),
+         readPropertyMultiple          (14),
+         
+         writeProperty                 (15),
+         writePropertyMultiple         (16),
+
+
+        deviceCommunicationControl     (17),
+        confirmedPrivateTransfer       (18),
+        confirmedTextMessage           (19),
+        reinitializeDevice             (20),
+
+
+          vtOpen                       (21),
+          vtClose                      (22),
+          vtData                       (23),
+
+
+          authenticate                 (24),
+          requestKey                   (25),
+
+
+        i-Am                           (26),
+        i-Have                         (27),
+        unconfirmedCOVNotification     (28),
+        unconfirmedEventNotification   (29),
+        unconfirmedPrivateTransfer     (30),
+        unconfirmedTextMessage             (31),
+        timeSynchronization                (32),
+        
+        who-Has                            (33),
+        who-Is                             (34),
+
+
+         readRange                         (35), 
+         utcTimeSynchronization            (36), 
+         lifeSafetyOperation               (37), 
+         subscribeCOVProperty              (38), 
+         getEventInformation               (39) 
+         }
+
+BACnetSessionKey ::= SEQUENCE {
+      key       OCTET STRING (SIZE(8)), 
+      peerAddress      BACnetNetworkAddress
+}
+
+BACnetSetpointReference ::= SEQUENCE {
+      reference [0] BACnetObjectPropertyReference OPTIONAL
+}
+
+BACnetSilencedState ::= ENUMERATED {
+         unsilenced       (0),
+         audible-silenced (1),
+         visible-silenced (2),
+         all-silenced     (3),
+         ...
+         }
+
+
+
+
+BACnetSpecialEvent ::= SEQUENCE {
+      period              CHOICE {
+                                calendarEntry       [0] BACnetCalendarEntry,
+                                calendarReference   [1] BACnetObjectIdentifier
+                                                 },
+      listOfTimeValues    [2] SEQUENCE OF BACnetTimeValue,
+      eventPriority       [3] Unsigned (1..16)
+      }
+
+BACnetStatusFlags ::= BIT STRING {
+      in-alarm          (0),
+      fault             (1),
+      overridden        (2),
+      out-of-service    (3)
+      }
+
+BACnetTimeStamp ::= CHOICE {
+      time                   [0]           Time,
+      sequenceNumber         [1]           Unsigned (0..65535),
+      dateTime               [2]           BACnetDateAndTime
+      }
+BACnetTimeValue ::= SEQUENCE {
+      time            Time,
+      value           ABSTRACT-SYNTAX.&Type 
+      }
+
+BACnetVTClass ::= ENUMERATED {
+          default-terminal (0),
+          ansi-x3-64       (1),
+          dec-vt52         (2),
+          dec-vt100        (3),
+          dec-vt220        (4),
+          hp-700-94        (5),
+          ibm-3130         (6),
+          ...
+          }
+
+
+
+
+BACnetVTSession ::= SEQUENCE {
+      local-vtSessionID     Unsigned8,
+      remote-vtSessionID    Unsigned8,
+      remote-vtAddress      BACnetNetworkAddress
+      }
+
+BACnetWeekNDay ::= OCTET STRING (SIZE (3))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ReadAccessResult ::= SEQUENCE {
+       objectIdentifier            [0] BACnetObjectIdentifier,
+       listOfResults               [1] SEQUENCE OF SEQUENCE {
+                propertyIdentifier         [2] BACnetPropertyIdentifier,
+                propertyArrayIndex         [3] Unsigned OPTIONAL, 
+                                                                     
+                                                                     
+                readResult         CHOICE {
+                                           propertyValue             [4] ABSTRACT-SYNTAX.&Type,
+                                           propertyAccessError       [5] Error
+                                           }
+                } OPTIONAL
+       }
+ReadAccessSpecification ::= SEQUENCE {
+       objectIdentifier         [0] BACnetObjectIdentifier,
+       listOfPropertyReferences [1] SEQUENCE OF BACnetPropertyReference
+       }
+
+WriteAccessSpecification ::= SEQUENCE {
+       objectIdentifier                [0] BACnetObjectIdentifier,
+       listOfProperties                [1] SEQUENCE OF BACnetPropertyValue
+       }
+
+END

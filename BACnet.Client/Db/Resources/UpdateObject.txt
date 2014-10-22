@@ -1,0 +1,11 @@
+﻿
+UPDATE Objects
+SET
+	name = @name,
+	props = @props,
+	last_refresh = DATETIME('now'),
+	last_refreshed = DATETIME('now')
+WHERE
+	device_instance = @deviceInstance AND
+	object_type = @objectType AND
+	instance = @instance;
