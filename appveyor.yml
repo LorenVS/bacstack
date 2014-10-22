@@ -1,2 +1,6 @@
+branches:
+  only:
+    - appveyor
+
 before_build:
   - nuget restore
