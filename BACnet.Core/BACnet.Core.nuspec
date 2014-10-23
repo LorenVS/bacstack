@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BACnet.Core</id>
+    <version>$version$</version>
+    <title>BACnet.Core</title>
+    <authors>Loren Van Spronsen</authors>
+    <owners>Loren Van Spronsen</owners>
+    <licenseUrl>https://bitbucket.org/lvanspronsen/bacnet/raw/master/LICENSE</licenseUrl>
+    <projectUrl>http://bitbucket.org/lvanspronsen/bacnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Core implementation of the BACnet protocol, including both network and application layers</description>
+    <copyright>Copyright 2014</copyright>
+  </metadata>
+</package>

@@ -1,4 +1,4 @@
-## A BACnet Stack in C#
+## A BACnet Stack in C Sharp
 
 This project implements a portion of the BACnet protocol in C#. It should work properly on the Mono platform, and potentially on mobile frameworks provided by Xamarin.
 
