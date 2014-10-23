@@ -2,6 +2,9 @@ branches:
   only:
     - appveyor
 
+install:
+  - nuget sources add -Name Eto -Source https://ci.appveyor.com/nuget/eto-2j6bnerswliq
+
 before_build:
   - nuget restore
 

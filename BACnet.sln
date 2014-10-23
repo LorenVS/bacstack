@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22129.1
+VisualStudioVersion = 14.0.22013.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BACnet.Core", "BACnet.Core\BACnet.Core.csproj", "{7537FEB5-E9B0-4292-964A-D4AACC0A72A1}"
 EndProject
@@ -32,8 +32,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BACnet.SchemaParser", "BACnet.SchemaParser\BACnet.SchemaParser.csproj", "{FAF72217-1FD4-434C-B97E-C138678ED3C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BACnet.SchemaCompiler", "BACnet.SchemaCompiler\BACnet.SchemaCompiler.csproj", "{4F4D77D9-623E-4123-8AC9-C01340F59422}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BACnet.Explorer.Gtk", "BACnet.Explorer.Gtk\BACnet.Explorer.Gtk.csproj", "{B282DA4C-0399-4382-9F26-AE872E69AD77}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F775FC8C-DECD-4B4D-84DC-62763C7A71EA}"
 	ProjectSection(SolutionItems) = preProject
@@ -100,10 +98,6 @@ Global
 		{4F4D77D9-623E-4123-8AC9-C01340F59422}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F4D77D9-623E-4123-8AC9-C01340F59422}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F4D77D9-623E-4123-8AC9-C01340F59422}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B282DA4C-0399-4382-9F26-AE872E69AD77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B282DA4C-0399-4382-9F26-AE872E69AD77}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B282DA4C-0399-4382-9F26-AE872E69AD77}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B282DA4C-0399-4382-9F26-AE872E69AD77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +107,5 @@ Global
 		{26A7E7BD-F969-4480-9453-1224AF0885A6} = {C9C09F14-C544-441D-A009-5DEFD5C97899}
 		{F5D66D87-87CE-4290-B35A-EFCA7DC9454E} = {C9C09F14-C544-441D-A009-5DEFD5C97899}
 		{939031B6-4734-42AC-98A9-20BDFC4708A2} = {C9C09F14-C544-441D-A009-5DEFD5C97899}
-		{B282DA4C-0399-4382-9F26-AE872E69AD77} = {C9C09F14-C544-441D-A009-5DEFD5C97899}
 	EndGlobalSection
 EndGlobal
