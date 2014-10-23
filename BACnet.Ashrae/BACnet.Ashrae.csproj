@@ -210,7 +210,6 @@
     <Compile Include="Generated\WritePropertyMultipleError.cs" />
     <Compile Include="Generated\WritePropertyMultipleRequest.cs" />
     <Compile Include="Generated\WritePropertyRequest.cs" />
-    <Compile Include="GenericRequests\ReadPropertyAck.cs" />
     <Compile Include="GenericRequests\ReadRangeAck.cs" />
     <Compile Include="Objects\INamedObject.cs" />
     <Compile Include="Objects\IAccumulator.cs" />

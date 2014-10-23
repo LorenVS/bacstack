@@ -56,8 +56,8 @@ namespace BACnet.Client
             var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
             var request = new ReadPropertyRequest(ObjectIdentifier, reference.PropertyIdentifier, reference.PropertyArrayIndex);
             var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            var ack = Client.ResponseAs<ReadPropertyAck<T>>(handle);
-            return ack.PropertyValue;
+            var ack = Client.ResponseAs<ReadPropertyAck>(handle);
+            return ack.PropertyValue.As<T>();
         }
 
         /// <summary>
