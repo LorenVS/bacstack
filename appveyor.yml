@@ -1,6 +1,6 @@
 branches:
   only:
-    - appveyor
+    - master
 
 install:
   - nuget sources add -Name Eto -Source https://ci.appveyor.com/nuget/eto-2j6bnerswliq
