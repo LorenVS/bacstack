@@ -59,7 +59,7 @@ namespace BACnet.Explorer.Core.Models
             }
             private set
             {
-                changeProperty(ref _expandable, value, nameof(Expandable));
+                changeProperty(ref _expandable, value, "Expandable");
             }
         }
         private bool _expandable;

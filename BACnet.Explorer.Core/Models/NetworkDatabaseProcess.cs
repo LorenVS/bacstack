@@ -18,7 +18,7 @@ namespace BACnet.Explorer.Core.Models
         public string DatabasePath
         {
             get { return _databasePath; }
-            set { changeProperty(ref _databasePath, value, nameof(DatabasePath)); }
+            set { changeProperty(ref _databasePath, value, "DatabasePath"); }
         }
         private string _databasePath;
 
