@@ -1,5 +1,5 @@
 ## A BACnet Stack in C Sharp
 
-This project implements a portion of the BACnet protocol in C#. It should work properly on the Mono platform, and potentially on mobile frameworks provided by Xamarin.
+[![Build status](https://ci.appveyor.com/api/projects/status/00msspxg49hph7xx/branch/master?svg=true)](https://ci.appveyor.com/project/LorenVanSpronsen/bacnet/branch/master)
 
-This location for the project is temporary, and the project will migrate to github.com/LorenVS/bacstack soon.
+This project implements a portion of the BACnet protocol in C#. It should work properly on the Mono platform, and potentially on mobile frameworks provided by Xamarin.
