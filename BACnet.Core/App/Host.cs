@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BACnet.Ashrae;
+using BACnet.Core.Exceptions;
 using BACnet.Core.Network;
 using BACnet.Core.App.Messages;
 using BACnet.Core.App.Transactions;
@@ -130,6 +131,39 @@ namespace BACnet.Core.App
             throw new Exception("Unknown message type: " + type);
         }
 
+        /// <summary>
+        /// Saves an unconfirmed request to its tagged form
+        /// </summary>
+        /// <param name="request">The request to save</param>
+        /// <returns>The unconfirmed request content</returns>
+        private byte[] _saveUnconfirmedRequest(IUnconfirmedRequest request)
+        {
+            switch (request.ServiceChoice)
+            {
+                case UnconfirmedServiceChoice.IAm:
+                    return Tags.EncodeBytes((IAmRequest)request);
+                case UnconfirmedServiceChoice.IHave:
+                    return Tags.EncodeBytes((IHaveRequest)request);
+                case UnconfirmedServiceChoice.TimeSynchronization:
+                    return Tags.EncodeBytes((TimeSynchronizationRequest)request);
+                case UnconfirmedServiceChoice.UnconfirmedCOVNotification:
+                    return Tags.EncodeBytes((UnconfirmedCOVNotificationRequest)request);
+                case UnconfirmedServiceChoice.UnconfirmedEventNotification:
+                    return Tags.EncodeBytes((UnconfirmedEventNotificationRequest)request);
+                case UnconfirmedServiceChoice.UnconfirmedPrivateTransfer:
+                    return Tags.EncodeBytes((UnconfirmedPrivateTransferRequest)request);
+                case UnconfirmedServiceChoice.UnconfirmedTextMessage:
+                    return Tags.EncodeBytes((UnconfirmedTextMessageRequest)request);
+                case UnconfirmedServiceChoice.UtcTimeSynchronization:
+                    return Tags.EncodeBytes((UtcTimeSynchronizationRequest)request);
+                case UnconfirmedServiceChoice.WhoHas:
+                    return Tags.EncodeBytes((WhoHasRequest)request);
+                case UnconfirmedServiceChoice.WhoIs:
+                    return Tags.EncodeBytes((WhoIsRequest)request);
+                default:
+                    throw new RejectException(RejectReason.UnrecognizedService);
+            }
+        }
 
         /// <summary>
         /// Loads an unconfirmed request from its tagged form
@@ -141,18 +175,47 @@ namespace BACnet.Core.App
         /// <returns>The loaded unconfirmed request</returns>
         private IUnconfirmedRequest _loadUnconfirmedRequest(UnconfirmedServiceChoice serviceChoice, byte[] buffer, int offset, int end)
         {
-            var registration = _options.UnconfirmedRegistrar.GetRegistration(serviceChoice);
             IUnconfirmedRequest request = null;
 
-            using (MemoryStream ms = new MemoryStream(buffer, offset, end - offset, false, false))
+            switch (serviceChoice)
             {
-                TagReader reader = new TagReader(ms);
-                TagReaderStream stream = new TagReaderStream(reader, registration.Schema);
-                request = registration.Load(stream);
+                case UnconfirmedServiceChoice.IAm:
+                    request = Tags.Decode<IAmRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.IHave:
+                    request = Tags.Decode<IHaveRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.TimeSynchronization:
+                    request = Tags.Decode<TimeSynchronizationRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.UnconfirmedCOVNotification:
+                    request = Tags.Decode<UnconfirmedCOVNotificationRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.UnconfirmedEventNotification:
+                    request = Tags.Decode<UnconfirmedEventNotificationRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.UnconfirmedPrivateTransfer:
+                    request = Tags.Decode<UnconfirmedPrivateTransferRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.UnconfirmedTextMessage:
+                    request = Tags.Decode<UnconfirmedTextMessageRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.UtcTimeSynchronization:
+                    request = Tags.Decode<UtcTimeSynchronizationRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.WhoHas:
+                    request = Tags.Decode<WhoHasRequest>(buffer, offset, end);
+                    break;
+                case UnconfirmedServiceChoice.WhoIs:
+                    request = Tags.Decode<WhoIsRequest>(buffer, offset, end);
+                    break;
+                default:
+                    throw new RejectException(RejectReason.UnrecognizedService);
             }
 
             return request;
         }
+
 
         /// <summary>
         /// Tags a confirmed request and retrieves its content
@@ -162,14 +225,70 @@ namespace BACnet.Core.App
         /// <returns>The tagged byte array</returns>
         private byte[] _saveConfirmedRequest(IConfirmedRequest request)
         {
-            var registration = _options.ConfirmedRegistrar.GetRegistration(request.ServiceChoice);
-
-            using(MemoryStream ms = new MemoryStream())
+            switch (request.ServiceChoice)
             {
-                TagWriter writer = new TagWriter(ms);
-                TagWriterSink sink = new TagWriterSink(writer, registration.Schema);
-                registration.Saver(sink, request);
-                return ms.ToArray();
+                case ConfirmedServiceChoice.AcknowledgeAlarm:
+                    return Tags.EncodeBytes((AcknowledgeAlarmRequest)request);
+                case ConfirmedServiceChoice.AddListElement:
+                    return Tags.EncodeBytes((AddListElementRequest)request);
+                case ConfirmedServiceChoice.AtomicReadFile:
+                    return Tags.EncodeBytes((AtomicReadFileRequest)request);
+                case ConfirmedServiceChoice.AtomicWriteFile:
+                    return Tags.EncodeBytes((AtomicWriteFileRequest)request);
+                case ConfirmedServiceChoice.Authenticate:
+                    return Tags.EncodeBytes((AuthenticateRequest)request);
+                case ConfirmedServiceChoice.ConfirmedCOVNotification:
+                    return Tags.EncodeBytes((ConfirmedCOVNotificationRequest)request);
+                case ConfirmedServiceChoice.ConfirmedEventNotification:
+                    return Tags.EncodeBytes((ConfirmedEventNotificationRequest)request);
+                case ConfirmedServiceChoice.ConfirmedPrivateTransfer:
+                    return Tags.EncodeBytes((ConfirmedPrivateTransferRequest)request);
+                case ConfirmedServiceChoice.ConfirmedTextMessage:
+                    return Tags.EncodeBytes((ConfirmedTextMessageRequest)request);
+                case ConfirmedServiceChoice.CreateObject:
+                    return Tags.EncodeBytes((CreateObjectRequest)request);
+                case ConfirmedServiceChoice.DeleteObject:
+                    return Tags.EncodeBytes((DeleteObjectRequest)request);
+                case ConfirmedServiceChoice.DeviceCommunicationControl:
+                    return Tags.EncodeBytes((DeviceCommunicationControlRequest)request);
+                case ConfirmedServiceChoice.GetAlarmSummary:
+                    return Tags.EncodeBytes((GetAlarmSummaryRequest)request);
+                case ConfirmedServiceChoice.GetEnrollmentSummary:
+                    return Tags.EncodeBytes((GetEnrollmentSummaryRequest)request);
+                case ConfirmedServiceChoice.GetEventInformation:
+                    return Tags.EncodeBytes((GetEventInformationRequest)request);
+                case ConfirmedServiceChoice.LifeSafetyOperation:
+                    return Tags.EncodeBytes((LifeSafetyOperationRequest)request);
+                case ConfirmedServiceChoice.ReadProperty:
+                    return Tags.EncodeBytes((ReadPropertyRequest)request);
+                case ConfirmedServiceChoice.ReadPropertyConditional:
+                    return Tags.EncodeBytes((ReadPropertyConditionalRequest)request);
+                case ConfirmedServiceChoice.ReadPropertyMultiple:
+                    return Tags.EncodeBytes((ReadPropertyMultipleRequest)request);
+                case ConfirmedServiceChoice.ReadRange:
+                    return Tags.EncodeBytes((ReadRangeRequest)request);
+                case ConfirmedServiceChoice.ReinitializeDevice:
+                    return Tags.EncodeBytes((ReinitializeDeviceRequest)request);
+                case ConfirmedServiceChoice.RemoveListElement:
+                    return Tags.EncodeBytes((RemoveListElementRequest)request);
+                case ConfirmedServiceChoice.RequestKey:
+                    return Tags.EncodeBytes((RequestKeyRequest)request);
+                case ConfirmedServiceChoice.SubscribeCOV:
+                    return Tags.EncodeBytes((SubscribeCOVRequest)request);
+                case ConfirmedServiceChoice.SubscribeCOVProperty:
+                    return Tags.EncodeBytes((SubscribeCOVPropertyRequest)request);
+                case ConfirmedServiceChoice.VtClose:
+                    return Tags.EncodeBytes((VtCloseRequest)request);
+                case ConfirmedServiceChoice.VtData:
+                    return Tags.EncodeBytes((VtDataRequest)request);
+                case ConfirmedServiceChoice.VtOpen:
+                    return Tags.EncodeBytes((VtOpenRequest)request);
+                case ConfirmedServiceChoice.WriteProperty:
+                    return Tags.EncodeBytes((WritePropertyRequest)request);
+                case ConfirmedServiceChoice.WritePropertyMultiple:
+                    return Tags.EncodeBytes((WritePropertyMultipleRequest)request);
+                default:
+                    throw new RejectException(RejectReason.UnrecognizedService);
             }
         }
 
@@ -290,19 +409,9 @@ namespace BACnet.Core.App
         /// <param name="request">The unconfirmed request</param>
         private void _sendUnconfirmedRequest(Address destination, bool expectingReply, IUnconfirmedRequest request)
         {
-            var registration = _options.UnconfirmedRegistrar.GetRegistration(request.ServiceChoice);
-
             UnconfirmedRequestMessage message = new UnconfirmedRequestMessage();
             message.ServiceChoice = (byte)request.ServiceChoice;
-
-            byte[] raw = null;
-            using(var ms = new MemoryStream())
-            {
-                TagWriter writer = new TagWriter(ms);
-                TagWriterSink sink = new TagWriterSink(writer, registration.Schema);
-                registration.Save(sink, request);
-                raw = ms.ToArray();
-            }
+            byte[] raw = _saveUnconfirmedRequest(request);
 
             OutboundAppgram appgram = new OutboundAppgram();
             appgram.Content = new AppgramContent(message, new BufferSegment(raw, 0, raw.Length));

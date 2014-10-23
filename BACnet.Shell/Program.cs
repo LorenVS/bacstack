@@ -37,14 +37,6 @@ namespace BACnet.Shell
 
             HostOptions hostOpts = new HostOptions();
 
-            hostOpts.UnconfirmedRegistrar.Register<IAmRequest>(UnconfirmedServiceChoice.IAm);
-            hostOpts.UnconfirmedRegistrar.Register<WhoIsRequest>(UnconfirmedServiceChoice.WhoIs);
-
-            hostOpts.ConfirmedRegistrar.Register<ReadPropertyRequest>(ConfirmedServiceChoice.ReadProperty);
-            hostOpts.ConfirmedRegistrar.Register<ReadPropertyMultipleRequest>(ConfirmedServiceChoice.ReadPropertyMultiple);
-            hostOpts.ConfirmedRegistrar.Register<WritePropertyRequest>(ConfirmedServiceChoice.WriteProperty);
-            hostOpts.ConfirmedRegistrar.Register<ReadRangeRequest>(ConfirmedServiceChoice.ReadRange);
-
             var dbOptions = new NetworkDatabaseOptions();
 
             using(ForeignDevicePort port = new ForeignDevicePort(options))

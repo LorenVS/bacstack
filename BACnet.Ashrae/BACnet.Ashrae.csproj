@@ -239,6 +239,7 @@
     <Compile Include="Partials\PropertyReference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Attributes\PropertyIdentifierAttribute.cs" />
+    <Compile Include="UnconfirmedRequests\IHave.cs" />
     <Compile Include="UnconfirmedRequests\IUnconfirmedRequest.cs" />
     <Compile Include="UnconfirmedRequests\IAm.cs" />
     <Compile Include="UnconfirmedRequests\TimeSynchronization.cs" />

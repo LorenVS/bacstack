@@ -14,23 +14,11 @@ namespace BACnet.Core.App
         public int ProcessId { get; set; }
 
         /// <summary>
-        /// The registrar for unconfirmed request types
-        /// </summary>
-        public UnconfirmedRequestRegistrar UnconfirmedRegistrar { get; set; }
-
-        /// <summary>
-        /// The registrar for confirmed request types
-        /// </summary>
-        public ConfirmedRequestRegistrar ConfirmedRegistrar { get; set; }
-
-        /// <summary>
         /// Constructs a new host options instance
         /// </summary>
         public HostOptions()
         {
             this.ProcessId = DefaultProcessIds.Host;
-            this.UnconfirmedRegistrar = new UnconfirmedRequestRegistrar();
-            this.ConfirmedRegistrar = new ConfirmedRequestRegistrar();
         }
 
         /// <summary>
@@ -50,9 +38,7 @@ namespace BACnet.Core.App
         {
             return new HostOptions()
             {
-                ProcessId = this.ProcessId,
-                UnconfirmedRegistrar = this.UnconfirmedRegistrar.Clone(),
-                ConfirmedRegistrar = this.ConfirmedRegistrar.Clone()
+                ProcessId = this.ProcessId
             };
         }
     }

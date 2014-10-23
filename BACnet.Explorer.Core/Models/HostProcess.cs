@@ -29,18 +29,6 @@ namespace BACnet.Explorer.Core.Models
                 ProcessId = this.ProcessId
             };
 
-            // TODO: better way of registering these?
-
-            var unconfirmed = opts.UnconfirmedRegistrar;
-            unconfirmed.Register<IAmRequest>(UnconfirmedServiceChoice.IAm);
-            unconfirmed.Register<WhoIsRequest>(UnconfirmedServiceChoice.WhoIs);
-
-            var confirmed = opts.ConfirmedRegistrar;
-            confirmed.Register<ReadPropertyRequest>(ConfirmedServiceChoice.ReadProperty);
-            confirmed.Register<ReadPropertyMultipleRequest>(ConfirmedServiceChoice.ReadPropertyMultiple);
-            confirmed.Register<ReadRangeRequest>(ConfirmedServiceChoice.ReadRange);
-            confirmed.Register<GetAlarmSummaryRequest>(ConfirmedServiceChoice.GetAlarmSummary);
-
             return opts;
         }
     }
