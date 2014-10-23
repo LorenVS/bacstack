@@ -11,5 +11,12 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Utility classes to ease BACnet client operations</description>
     <copyright>Copyright 2014</copyright>
+
+    <dependencies>
+      <dependency id="BACnet.Ashrae" />
+      <dependency id="BACnet.Core" />
+      <dependency id="BACnet.Tagging" />
+      <dependency id="BACnet.Types" />
+    </dependencies>
   </metadata>
 </package>

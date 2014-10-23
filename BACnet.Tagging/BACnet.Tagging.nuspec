@@ -11,5 +11,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Implementation of BACnet tagging as defined by ASHRAE</description>
     <copyright>Copyright 2014</copyright>
+
+    <dependencies>
+      <dependency id="BACnet.Types" />
+    </dependencies>
   </metadata>
 </package>

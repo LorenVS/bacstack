@@ -11,5 +11,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>IP datalink implementation for BACnet</description>
     <copyright>Copyright 2014</copyright>
+
+    <dependencies>
+      <dependency id="BACnet.Core" />
+    </dependencies>
   </metadata>
 </package>

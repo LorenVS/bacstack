@@ -11,5 +11,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Core implementation of the BACnet protocol, including both network and application layers</description>
     <copyright>Copyright 2014</copyright>
+
+    <dependencies>
+      <dependency id="BACnet.Ashrae" />
+      <dependency id="BACnet.Tagging" />
+      <dependency id="BACnet.Types" />
+    </dependencies>
   </metadata>
 </package>
