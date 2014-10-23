@@ -4,3 +4,7 @@ branches:
 
 before_build:
   - nuget restore
+
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
