@@ -46,7 +46,7 @@ namespace BACnet.Client.Descriptors
         public string Name
         {
             get { return _name; }
-            set { changeProperty(ref _name, value, nameof(Name)); }
+            set { changeProperty(ref _name, value, "Name"); }
         }
         private string _name;
 
@@ -100,7 +100,7 @@ namespace BACnet.Client.Descriptors
             {
                 switch (name)
                 {
-                    case nameof(Name):
+                    case "Name":
                         this.Name = info.Name;
                         break;
                 }

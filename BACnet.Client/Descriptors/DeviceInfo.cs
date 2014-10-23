@@ -18,7 +18,7 @@ namespace BACnet.Client.Descriptors
         public byte? DatabaseRevision
         {
             get { return _databaseRevision; }
-            set { changeProperty(ref _databaseRevision, value, nameof(DatabaseRevision)); }
+            set { changeProperty(ref _databaseRevision, value, "DatabaseRevision"); }
         }
         private byte? _databaseRevision;
 
@@ -69,7 +69,7 @@ namespace BACnet.Client.Descriptors
             {
                 switch (name)
                 {
-                    case nameof(DatabaseRevision):
+                    case "DatabaseRevision":
                         this.DatabaseRevision = di.DatabaseRevision;
                         break;
                     default:
