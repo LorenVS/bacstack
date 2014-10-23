@@ -31,55 +31,28 @@ namespace BACnet.Shell
             };
 
             PortManagerOptions portMgrOptions = new PortManagerOptions();
-
             RouterOptions routerOpts = new RouterOptions();
             routerOpts.PortNetworkMappings.Add(new KeyValuePair<byte, ushort>(1, 0));
-
             HostOptions hostOpts = new HostOptions();
 
-            var dbOptions = new NetworkDatabaseOptions();
 
-            using(ForeignDevicePort port = new ForeignDevicePort(options))
-            using(PortManager manager = new PortManager(portMgrOptions))
-            using(Router router = new Router(routerOpts))
+            using (ForeignDevicePort port = new ForeignDevicePort(options))
+            using (PortManager manager = new PortManager(portMgrOptions))
+            using (Router router = new Router(routerOpts))
             using (Host host = new Host(hostOpts))
-            //using (NetworkDatabase db = new NetworkDatabase(dbOptions))
+            using (Session session = new Session(port, manager, router, host))
             {
-                var processes = new IProcess[] { port, manager, router, host };//, db };
-
-                foreach(var p in processes.OfType<IPort>())
-                {
-                    p.Open();
-                }
-
-                foreach(var process in processes)
-                {
-                    process.Resolve(processes);
-                }
-
-
                 var client = new BACnet.Client.Client(host);
 
                 var name = client.With(300111)
                     .ReadProperty(dev => dev.ObjectName);
 
+                Console.WriteLine(name);
+
                 var bufferSize = client.With<ITrendLog>(300100, new ObjectId(20, 1))
                     .ReadProperty(tl => tl.BufferSize);
 
                 Console.WriteLine(bufferSize);
-
-                var logRecords = client.With<ITrendLog>(300100, new ObjectId(20, 1))
-                    .ReadRangeByPosition(tl => tl.LogBuffer, 1, 100);
-
-                foreach(var record in logRecords)
-                {
-                    if(record.LogDatum.IsRealValue)
-                    {
-                        Console.WriteLine("{0}: {1}", record.Timestamp.ToDateTime(), record.LogDatum.AsRealValue);
-                    }
-                }
-                
-                System.Threading.Thread.Sleep(10000);
             }
 
         }
