@@ -130,10 +130,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Db\Resources\GetQueuedRefreshes.txt" />
-    <Content Include="Db\Resources\GetObject.txt" />
-    <Content Include="Db\Resources\QueryObjects.txt" />
-    <Content Include="Db\Resources\UpdateObject.txt" />
-    <Content Include="Db\Resources\UpsertObject.txt" />
+    <None Include="Db\Resources\GetObject.txt" />
+    <None Include="Db\Resources\QueryObjects.txt" />
+    <None Include="Db\Resources\UpdateObject.txt" />
+    <None Include="Db\Resources\UpsertObject.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
