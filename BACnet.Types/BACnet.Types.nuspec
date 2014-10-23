@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BACnet.Types</id>
+    <version>$version$</version>
+    <title>BACnet.Types</title>
+    <authors>Loren Van Spronsen</authors>
+    <owners>Loren Van Spronsen</owners>
+    <licenseUrl>https://bitbucket.org/lvanspronsen/bacnet/raw/master/LICENSE</licenseUrl>
+    <projectUrl>http://bitbucket.org/lvanspronsen/bacnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Base type system for the BACnet stack</description>
+    <copyright>Copyright 2014</copyright>
+  </metadata>
+</package>
