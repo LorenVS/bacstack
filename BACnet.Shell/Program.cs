@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reactive;
+using System.Reactive.Linq;
 using BACnet.Ashrae;
 using BACnet.Ashrae.Objects;
 using BACnet.Core;
@@ -34,25 +33,29 @@ namespace BACnet.Shell
             RouterOptions routerOpts = new RouterOptions();
             routerOpts.PortNetworkMappings.Add(new KeyValuePair<byte, ushort>(1, 0));
             HostOptions hostOpts = new HostOptions();
-
-
+            DeviceFinderOptions finderOpts = new DeviceFinderOptions();
+            
             using (ForeignDevicePort port = new ForeignDevicePort(options))
             using (PortManager manager = new PortManager(portMgrOptions))
             using (Router router = new Router(routerOpts))
             using (Host host = new Host(hostOpts))
-            using (Session session = new Session(port, manager, router, host))
+            using (DeviceFinder finder = new DeviceFinder(finderOpts))
+            using (Session session = new Session(port, manager, router, host, finder))
             {
                 var client = new BACnet.Client.Client(host);
 
-                var name = client.With(300111)
-                    .ReadProperty(dev => dev.ObjectName);
+                // as long as there is at least 1 new devices found every 10 seconds,
+                // for each found device, read that devices name and print it to the console
 
-                Console.WriteLine(name);
-
-                var bufferSize = client.With<ITrendLog>(300100, new ObjectId(20, 1))
-                    .ReadProperty(tl => tl.BufferSize);
-
-                Console.WriteLine(bufferSize);
+                finder.Timeout(TimeSpan.FromSeconds(10))
+                    .Catch(Observable.Empty<DeviceTableEntry>())
+                    .ForEachAsync(entry =>
+                    {
+                        var name = client.With(entry.Instance)
+                            .ReadProperty(dev => dev.ObjectName);
+                        Console.WriteLine(name);
+                    })
+                    .Wait();
             }
 
         }

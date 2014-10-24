@@ -26,6 +26,7 @@ namespace BACnet.Explorer.Core
         public const string SessionNameLabel = "Name";
 
         // default process names
+        public const string DeviceFinderDefaultName = "Device Finder";
         public const string ForeignDevicePortDefaultName = "Foreign Device Port";
         public const string HostDefaultName = "Host";
         public const string NetworkDatabaseDefaultName = "Network Database";

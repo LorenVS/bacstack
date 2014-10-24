@@ -59,6 +59,7 @@
     <Compile Include="Controls\Editor.cs" />
     <Compile Include="Controls\IEditor.cs" />
     <Compile Include="Controls\IEditorBinding.cs" />
+    <Compile Include="Controls\DeviceFinderSettings.cs" />
     <Compile Include="Controls\ObjectPanel.cs" />
     <Compile Include="Controls\DevicePanel.cs" />
     <Compile Include="Controls\HostSettings.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Models\ForeignDevicePortProcess.cs" />
     <Compile Include="Models\HostProcess.cs" />
     <Compile Include="Models\MainFormModel.cs" />
+    <Compile Include="Models\DeviceFinderProcess.cs" />
     <Compile Include="Models\NetworkDatabaseProcess.cs" />
     <Compile Include="Models\ObjectRow.cs" />
     <Compile Include="Models\DescriptorObserverCollection.cs" />

@@ -79,6 +79,8 @@
     <Compile Include="Descriptors\ISyncable.cs" />
     <Compile Include="Descriptors\ObjectInfo.cs" />
     <Compile Include="Descriptors\PropertyChangedBase.cs" />
+    <Compile Include="DeviceFinder.cs" />
+    <Compile Include="DeviceFinderOptions.cs" />
     <Compile Include="ErrorOr.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GlobalObjectId.cs" />

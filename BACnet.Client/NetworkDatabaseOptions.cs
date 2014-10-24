@@ -10,6 +10,7 @@ namespace BACnet.Client
 {
     public class NetworkDatabaseOptions : IProcessOptions
     {
+
         /// <summary>
         /// The process id of the network database
         /// </summary>

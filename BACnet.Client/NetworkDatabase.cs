@@ -90,7 +90,7 @@ namespace BACnet.Client
         /// The host used to communicate with the network
         /// </summary>
         private Host _host;
-
+        
         /// <summary>
         /// The client used to send requests
         /// </summary>
@@ -100,17 +100,7 @@ namespace BACnet.Client
         /// The wrapper around the SQLite database
         /// </summary>
         private NetworkDb _db;
-
-        /// <summary>
-        /// The subscription to unconfirmed requests
-        /// </summary>
-        private IDisposable _unconfirmedRequestSubscription;
         
-        /// <summary>
-        /// The ranges of devices that have either been found or not
-        /// </summary>
-        private readonly LinkedList<DeviceRange> _ranges;
-
         /// <summary>
         /// Objects that are observing the network database
         /// </summary>
@@ -122,19 +112,9 @@ namespace BACnet.Client
         private C5.IPriorityQueue<IRefreshTask> _refreshQueue;
 
         /// <summary>
-        /// Timer used to send out who-is requests to search for devices
-        /// </summary>
-        private Timer _searchTimer;
-
-        /// <summary>
         /// Timer used to load the refresh tasks that need to be performed
         /// </summary>
         private Timer _fillRefreshQueueTimer;
-
-        /// <summary>
-        /// The last range for which a who-is was sent
-        /// </summary>
-        private LinkedListNode<DeviceRange> _lastRange;
 
         /// <summary>
         /// Threads used to load descriptor properties
@@ -159,8 +139,6 @@ namespace BACnet.Client
         {
             this._options = options.Clone();
             this._db = new NetworkDb(this._options.DatabasePath, _options.DescriptorRegistrar);
-            this._ranges = new LinkedList<DeviceRange>();
-            this._ranges.AddLast(new DeviceRange(false, 1, ObjectId.MaxInstance));
             this._observers = new List<DescriptorObserver>();
         }
 
@@ -195,18 +173,6 @@ namespace BACnet.Client
         {
             if (_disposeHostEvent != null)
                 _disposeHostEvent.Set();
-
-            if (_unconfirmedRequestSubscription != null)
-            {
-                _unconfirmedRequestSubscription.Dispose();
-                _unconfirmedRequestSubscription = null;
-            }
-
-            if (_searchTimer != null)
-            {
-                _searchTimer.Dispose();
-                _searchTimer = null;
-            }
 
             if(_fillRefreshQueueTimer != null)
             {
@@ -252,133 +218,6 @@ namespace BACnet.Client
                 _db.Dispose();
                 _db = null;
             }
-        }
-
-        /// <summary>
-        /// Returns the maximum of two datetimes
-        /// </summary>
-        /// <param name="d1">The first datetime</param>
-        /// <param name="d2">The second datetime</param>
-        /// <returns>The maximum of the two</returns>
-        private static DateTime dtMax(DateTime d1, DateTime d2)
-        {
-            return (d1 > d2) ? d1 : d2;
-        }
-
-        /// <summary>
-        /// Tries to merge ranges in between two nodes
-        /// </summary>
-        /// <param name="first">The first node</param>
-        /// <param name="second">The second node</param>
-        private void _mergeRanges(LinkedListNode<DeviceRange> first, LinkedListNode<DeviceRange> second)
-        {
-            if (first == null)
-                first = _ranges.First;
-            if (second == null)
-                second = _ranges.Last;
-            var temp = first;
-
-            while(temp != second && temp.Next != null)
-            {
-                var range1 = temp.Value;
-                var range2 = temp.Next.Value;
-
-                if(range1.End == range2.Start - 1 && range1.Found == range2.Found)
-                {
-                    // we can only merge if the two ranges are right next to each
-                    // other (which they always should be), and if they have the
-                    // same Found value
-                    temp.Value = range1.WithEnd(range2.End);
-                    _ranges.Remove(temp.Next);
-                }
-                else
-                {
-                    temp = temp.Next;
-                }
-
-
-            }
-        }
-
-        /// <summary>
-        /// Marks a device as being found, performing
-        /// the necessary operations on the device ranges to keep them consistent
-        /// </summary>
-        /// <param name="instance">The instance of the device</param>
-        /// <param name="found">True if the device was found, false otherwise</param>
-        private void _markDeviceAsFound(uint instance, bool found = true)
-        {
-            LinkedListNode<DeviceRange> node = null;
-
-            for(var it = _ranges.First; it != null;)
-            {
-                if(it.Value.Start <= instance && it.Value.End >= instance)
-                {
-                    node = it;
-                    break;
-                }
-                else
-                {
-                    it = it.Next;
-                }
-            }
-
-            // the device in the range already has the appropriate Found value
-            if (node.Value.Found == found)
-                return;
-
-            var range = node.Value;
-            var previous = node.Previous;
-            var next = node.Next;
-
-            if (node.Value.Start == instance && node.Value.End == instance)
-            {
-                // only device in the range, we replace the whole range
-                node.Value = range.WithFound(found);
-            }
-            else if (node.Value.Start == instance)
-            {
-                // this device is at the start of the range
-                _ranges.AddBefore(node,
-                    new DeviceRange(
-                        found,
-                        instance,
-                        instance
-                    ));
-
-                node.Value = range.WithStart(instance + 1);
-            }
-            else if (node.Value.End == instance)
-            {
-                // this device is at the end of the range
-                _ranges.AddAfter(node,
-                    new DeviceRange(
-                        found,
-                        instance,
-                        instance));
-
-                node.Value = range.WithEnd(instance - 1);
-            }
-            else
-            {
-                // this device is in the middle of the range
-                _ranges.AddBefore(node,
-                    new DeviceRange(
-                        range.Found,
-                        range.Start,
-                        instance - 1));
-
-                _ranges.AddBefore(node,
-                    new DeviceRange(
-                        found,
-                        instance,
-                        instance));
-
-                node.Value = node.Value.WithStart(instance + 1);
-            }
-
-            _mergeRanges(previous, next);
-
         }
         
         /// <summary>
@@ -473,50 +312,6 @@ namespace BACnet.Client
         }
 
         /// <summary>
-        /// Called when the search timer ticks, and the
-        /// next Who-Is request should be sent
-        /// </summary>
-        /// <param name="state"></param>
-        private void _searchTick(object state)
-        {
-            DeviceRange range = null;
-
-            lock(_lock)
-            {
-                // get the next range we should send
-                // a who-is request for
-
-                var node = _lastRange;
-                if (node == null)
-                    node = _ranges.First;
-                else
-                    node = node.Next;
-
-                DateTime maxLastSearch = DateTime.UtcNow.Add(RangeSearchInterval.Negate());
-
-                while (node != null && (node.Value.Found || node.Value.LastSearch > maxLastSearch))
-                    node = node.Next;
-
-                if(node != null)
-                {
-                    range = node.Value;
-                    range.Attempts++;
-                    range.LastSearch = DateTime.UtcNow;
-                    _lastRange = node;
-                }
-            }
-
-            if(range != null)
-            {
-                WhoIsRequest request = new WhoIsRequest(
-                        range.Start,
-                        range.End);
-
-                _host.SendUnconfirmedRequest(Address.GlobalBroadcast, true, request);
-            }
-        }
-
-        /// <summary>
         /// Called whenever the fillRefreshQueueTimer ticks, loading
         /// objects that need to be refreshed from the database
         /// </summary>
@@ -579,7 +374,6 @@ namespace BACnet.Client
 
             _host = host;
             _client = new Client(host);
-            _searchTimer = new Timer(_searchTick, null, DeviceSearchInterval, DeviceSearchInterval);
             _fillRefreshQueueTimer = new Timer(_fillRefreshQueue, null, TimeSpan.Zero, FillRefreshQueueInterval);
 
             _refreshThreads = new Thread[ReadThreadCount];
@@ -588,10 +382,12 @@ namespace BACnet.Client
                 _refreshThreads[i] = new Thread(_refreshThreadStart);
                 _refreshThreads[i].Start();
             }
-
-            _unconfirmedRequestSubscription = _host.Subscribe(this);
         }
 
+        /// <summary>
+        /// Disposes of a descriptor subscription, unsubscribing the observer
+        /// </summary>
+        /// <param name="observer">The observer to unsubscribe</param>
         private void _disposeDescriptorSubscription(IDescriptorObserver<ObjectInfo, GlobalObjectId> observer)
         {
             lock(_lock)
@@ -678,8 +474,6 @@ namespace BACnet.Client
                 // we add devices to the database when we receive IAm requests from them
                 lock(_lock)
                 {
-                    _markDeviceAsFound(value.Source.Instance);
-
                     if(_insertObject(
                         value.Source.VendorId,
                         value.Source.Instance,
@@ -980,7 +774,6 @@ namespace BACnet.Client
                 }
             }
         }
-
 
         private class RefreshObjectsTask : IRefreshTask
         {

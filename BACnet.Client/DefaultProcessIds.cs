@@ -10,5 +10,6 @@ namespace BACnet.Client
     {
         internal const int Base = 200;
         public const int NetworkDatabase = Base + 1;
+        public const int DeviceFinder = Base + 2;
     }
 }

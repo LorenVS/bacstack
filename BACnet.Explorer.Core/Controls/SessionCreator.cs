@@ -30,6 +30,7 @@ namespace BACnet.Explorer.Core.Controls
             _session.Processes.Add(new PortManagerProcess());
             _session.Processes.Add(new RouterProcess());
             _session.Processes.Add(new HostProcess());
+            _session.Processes.Add(new DeviceFinderProcess ());
             _session.Processes.Add(new NetworkDatabaseProcess());
 
             var left = new TableLayout(1, 3);
@@ -144,6 +145,11 @@ namespace BACnet.Explorer.Core.Controls
             {
                 var process = temp as ForeignDevicePortProcess;
                 content = new ForeignDevicePortSettings(process);
+            }
+            else if(temp is DeviceFinderProcess)
+            {
+                var process = temp as DeviceFinderProcess;
+                content = new DeviceFinderSettings(process);
             }
             else if(temp is NetworkDatabaseProcess)
             {
