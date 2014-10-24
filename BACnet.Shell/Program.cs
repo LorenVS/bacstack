@@ -9,6 +9,7 @@ using BACnet.Core.App;
 using BACnet.Core.Datalink;
 using BACnet.Core.Network;
 using BACnet.Client;
+using BACnet.Ethernet;
 using BACnet.IP;
 using BACnet.Types;
 
@@ -19,6 +20,7 @@ namespace BACnet.Shell
     {
         public static void Main(string[] args)
         {
+            /*
             ForeignDevicePortOptions options = new ForeignDevicePortOptions()
             {
                 PortId = 1,
@@ -28,14 +30,21 @@ namespace BACnet.Shell
                 LocalPort = 47808,
                 RegistrationInterval = TimeSpan.FromSeconds(30)
             };
+            */
+
+            EthernetPortOptions ethOptions = new EthernetPortOptions()
+            {
+                PortId = 1
+            };
 
             PortManagerOptions portMgrOptions = new PortManagerOptions();
             RouterOptions routerOpts = new RouterOptions();
             routerOpts.PortNetworkMappings.Add(new KeyValuePair<byte, ushort>(1, 0));
             HostOptions hostOpts = new HostOptions();
             DeviceFinderOptions finderOpts = new DeviceFinderOptions();
-            
-            using (ForeignDevicePort port = new ForeignDevicePort(options))
+
+            //using (ForeignDevicePort port = new ForeignDevicePort(options))
+            using (EthernetPort port = new EthernetPort(ethOptions))
             using (PortManager manager = new PortManager(portMgrOptions))
             using (Router router = new Router(routerOpts))
             using (Host host = new Host(hostOpts))
@@ -51,9 +60,7 @@ namespace BACnet.Shell
                     .Catch(Observable.Empty<DeviceTableEntry>())
                     .ForEachAsync(entry =>
                     {
-                        var name = client.With(entry.Instance)
-                            .ReadProperty(dev => dev.ObjectName);
-                        Console.WriteLine(name);
+                        Console.WriteLine(entry.Instance);
                     })
                     .Wait();
             }

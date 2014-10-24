@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BACnet.Ethernet</id>
+    <version>$version$</version>
+    <title>BACnet.Ethernet</title>
+    <authors>Loren Van Spronsen</authors>
+    <owners>Loren Van Spronsen</owners>
+    <licenseUrl>https://bitbucket.org/lvanspronsen/bacnet/raw/master/LICENSE</licenseUrl>
+    <projectUrl>http://bitbucket.org/lvanspronsen/bacnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Ethernet datalink implementation for BACnet</description>
+    <copyright>Copyright 2014</copyright>
+
+    <dependencies>
+      <dependency id="BACnet.Core" />
+    </dependencies>
+  </metadata>
+</package>
