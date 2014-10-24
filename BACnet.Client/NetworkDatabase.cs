@@ -130,7 +130,12 @@ namespace BACnet.Client
         /// Set whenever the database is disposing
         /// </summary>
         private ManualResetEventSlim _disposeHostEvent;
-        
+
+        /// <summary>
+        /// The subscription to unconfirmed requests
+        /// </summary>
+        private IDisposable _unconfirmedRequestSubscription;
+
         /// <summary>
         /// Constructs a new network database instance
         /// </summary>
@@ -173,6 +178,12 @@ namespace BACnet.Client
         {
             if (_disposeHostEvent != null)
                 _disposeHostEvent.Set();
+
+            if(_unconfirmedRequestSubscription != null)
+            {
+                _unconfirmedRequestSubscription.Dispose();
+                _unconfirmedRequestSubscription = null;
+            }
 
             if(_fillRefreshQueueTimer != null)
             {
@@ -374,6 +385,9 @@ namespace BACnet.Client
 
             _host = host;
             _client = new Client(host);
+
+            _unconfirmedRequestSubscription = _host.Subscribe(this);
+
             _fillRefreshQueueTimer = new Timer(_fillRefreshQueue, null, TimeSpan.Zero, FillRefreshQueueInterval);
 
             _refreshThreads = new Thread[ReadThreadCount];

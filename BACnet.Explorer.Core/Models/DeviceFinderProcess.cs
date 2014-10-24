@@ -24,7 +24,7 @@ namespace BACnet.Explorer.Core.Models
         /// <returns>The process options instance</returns>
         public override IProcessOptions CreateOptions()
         {
-            var ret = new NetworkDatabaseOptions()
+            var ret = new DeviceFinderOptions()
             {
                 ProcessId = this.ProcessId
             };
