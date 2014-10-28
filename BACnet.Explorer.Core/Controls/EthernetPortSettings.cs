@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Eto;
 using Eto.Forms;
+using SharpPcap.LibPcap;
 using BACnet.Core.Datalink;
 using BACnet.Explorer.Core.Models;
 
@@ -36,20 +37,11 @@ namespace BACnet.Explorer.Core.Controls
                 DualBindingMode.TwoWay);
 
             _deviceName = new ComboBox();
-            _deviceName.Items.AddRange(
-                SharpPcap.CaptureDeviceList.Instance
-                    .Select(dev => new ListItem()
-                    {
-                        Key = dev.Name,
-                        Text = dev.Description
-                    })
-            );
-            _deviceName.Bind(
-                cb => cb.SelectedKey,
-                _process,
-                proc => proc.DeviceName,
-                DualBindingMode.TwoWay);
-
+            _deviceName.DataStore = LibPcapLiveDeviceList.Instance.Where(dev => dev.Interface != null);
+            _deviceName.KeyBinding = new PropertyBinding<string>("Name");
+            _deviceName.TextBinding = new PropertyBinding<string>("Description");
+            _deviceName.SelectedValueChanged += _deviceNameChanged;
+            
             this.BeginVertical();
             this.AddRow(new Label() { Text = Constants.ProcessNameLabel }, _name);
             this.AddRow(new Label() { Text = Constants.ProcessIdLabel }, _processId);
@@ -58,6 +50,12 @@ namespace BACnet.Explorer.Core.Controls
 
 
             this.AddRow();
+        }
+
+        private void _deviceNameChanged(object sender, EventArgs e)
+        {
+            var device = (LibPcapLiveDevice)_deviceName.SelectedValue;
+            _process.DeviceName = device.Name;
         }
     }
 }

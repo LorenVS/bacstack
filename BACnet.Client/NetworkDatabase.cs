@@ -157,7 +157,7 @@ namespace BACnet.Client
             {
                 IRefreshTask task = null;
 
-                if (_refreshQueueSem.Wait(TimeSpan.FromSeconds(1)))
+                if (_refreshQueueSem.Wait(TimeSpan.FromSeconds(.1)))
                 {
                     lock (_lock)
                     {

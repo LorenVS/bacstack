@@ -221,7 +221,7 @@ namespace BACnet.Core.App.Transactions
             message.Segmented = false;
             message.MoreFollows = false;
             message.SegmentedResponseAccepted = true;
-            message.MaxAppgramLengthAccepted = int.MaxValue;
+            message.MaxSegmentsAccepted = int.MaxValue;
             message.MaxAppgramLengthAccepted = (int)_device.MaxAppgramLength; // TODO: retrieve from local device?
             message.InvokeId = _invokeId;
             message.SequenceNumber = (byte)_windowStart;

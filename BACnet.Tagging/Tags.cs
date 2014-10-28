@@ -92,7 +92,7 @@ namespace BACnet.Tagging
         /// <returns>The next offset</returns>
         public static int Decode<T>(byte[] buffer, int offset, int end, out T value)
         {
-            using (var ms = new MemoryStream(buffer, offset, end, false))
+            using (var ms = new MemoryStream(buffer, offset, end - offset, false))
             {
                 TagReader reader = new TagReader(ms);
                 TagReaderStream stream = new TagReaderStream(reader, Value<T>.Schema);

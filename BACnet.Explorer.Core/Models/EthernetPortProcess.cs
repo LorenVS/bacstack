@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpPcap.LibPcap;
 using BACnet.Core;
 using BACnet.Ethernet;
 
@@ -36,9 +37,9 @@ namespace BACnet.Explorer.Core.Models
             this.Name = Constants.EthernetPortDefaultName;
             this.ProcessId = BACnet.Ethernet.DefaultProcessIds.EthernetPort;
 
-            var device = SharpPcap.CaptureDeviceList.Instance.FirstOrDefault();
-            if (device != null)
-                this.DeviceName = device.Name;
+            var devices = LibPcapLiveDeviceList.Instance.Where(dev => dev.Interface != null);
+            var device = devices.FirstOrDefault();
+            DeviceName = device == null ? null : device.Name;
         }
 
         /// <summary>

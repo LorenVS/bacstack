@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpPcap;
+using SharpPcap.LibPcap;
 using BACnet.Core;
 using BACnet.Core.Datalink;
 
@@ -50,7 +51,7 @@ namespace BACnet.Ethernet
         /// <summary>
         /// The capture device to use
         /// </summary>
-        private ICaptureDevice _device;
+        private LibPcapLiveDevice _device;
 
         /// <summary>
         /// The mac address bytes for the capture device
@@ -79,10 +80,9 @@ namespace BACnet.Ethernet
         /// Retrieves the capture device that is used by this port
         /// </summary>
         /// <returns>The capture device instance</returns>
-        private ICaptureDevice _getCaptureDevice()
+        private LibPcapLiveDevice _getCaptureDevice()
         {
-            var devices = CaptureDeviceList.Instance;
-            bool found = false;
+            var devices = LibPcapLiveDeviceList.Instance.Where(dev => dev.Interface != null);
 
             if(_options.DeviceName != null)
                 return devices.Where(dev => dev.Name == _options.DeviceName).FirstOrDefault();
@@ -90,23 +90,8 @@ namespace BACnet.Ethernet
             {
                 foreach(var device in devices)
                 {
-                    device.Open();
-
-                    try
-                    {
-                        found = (device.LinkType == PacketDotNet.LinkLayers.Ethernet
-                            && device.MacAddress != null);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                    finally
-                    {
-                        device.Close();
-                    }
-
-                    if (found)
+                    if (device.LinkType == PacketDotNet.LinkLayers.Ethernet
+                        && device.Interface.MacAddress != null)
                         return device;
                 }
 
@@ -121,13 +106,13 @@ namespace BACnet.Ethernet
         {
             lock(_lock)
             {
-                _device.Open();
+                _device.Open(DeviceMode.Normal, 1);
 
                 // filter to only bacnet packets
                 _device.Filter = "ether proto 0x82";
                 _device.StartCapture();
 
-                this._deviceMac = _device.MacAddress.GetAddressBytes();
+                this._deviceMac = _device.Interface.MacAddress.GetAddressBytes();
             }
         }
 
@@ -163,8 +148,8 @@ namespace BACnet.Ethernet
                 return;
 
             // don't process any packets sent by the local device
-            //if (_isOutboundPacket(e.Packet.Data))
-            //    return;
+            if (_isOutboundPacket(e.Packet.Data))
+                return;
 
             byte[] buffer = e.Packet.Data;
             int offset = 0;
