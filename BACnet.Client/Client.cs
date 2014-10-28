@@ -48,24 +48,33 @@ namespace BACnet.Client
             var stream = value.Provider.CreateStream(value, schema);
             return Value<T>.Loader(stream);
         }
+        
+        /// <summary>
+        /// Sends a request and retrieves the response as a specific type
+        /// </summary>
+        /// <typeparam name="T">The response type</typeparam>
+        /// <param name="deviceInstance">The device instance of the destination device</param>
+        /// <param name="request">The request to send</param>
+        /// <returns>The response value</returns>
+        public Task<TAck> SendRequestAsync<TAck>(uint deviceInstance, IConfirmedRequest request)
+            where TAck : IComplexAck
+        {
+            var handle = new ComplexAckHandle<TAck>();
+            Host.SendConfirmedRequest(handle, deviceInstance, request);
+            return handle.GetResponseAsync();
+        }
 
         /// <summary>
-        /// Loads a complex ack response type from a client transaction handle
+        /// Sends a request, expecting a simple ack in response
         /// </summary>
-        /// <typeparam name="T">The type of the complex ack</typeparam>
-        /// <param name="handle">The client transaction handle</param>
-        /// <returns>The complex ack instance</returns>
-        public T ResponseAs<T>(IClientTransactionHandle handle)
-            where T : IComplexAck
+        /// <param name="deviceInstance">The device instance of the destination device</param>
+        /// <param name="request">The request to send</param>
+        /// <returns>The task to wait for a simple ack in response</returns>
+        public Task SendRequestAsync(uint deviceInstance, IConfirmedRequest request)
         {
-            var schema = Value<T>.Schema;
-            var stream = handle.GetResponse();
-            if (stream == null)
-                throw new Exception("Received a response without any content");
-
-            TagReader reader = new TagReader(stream);
-            TagReaderStream readerStream = new TagReaderStream(reader, schema);
-            return Value<T>.Loader(readerStream);
+            var handle = new SimpleAckHandle();
+            Host.SendConfirmedRequest(handle, deviceInstance, request);
+            return handle.WaitAsync();
         }
 
         /// <summary>
@@ -167,12 +176,42 @@ namespace BACnet.Client
         /// <param name="objectIdentifier">The object identifier of the object to read</param>
         /// <param name="references">The references of the properties to read</param>
         /// <returns>The generic values</returns>
-        internal GenericValue[] SendRPM(uint deviceInstance, ObjectId objectIdentifier, params PropertyReference[] references)
+        internal async Task<GenericValue[]> SendRPMAsync(uint deviceInstance, ObjectId objectIdentifier, params PropertyReference[] references)
         {
             var request = _createRPM(objectIdentifier, references);
-            var handle = Host.SendConfirmedRequest(deviceInstance, request);
-            var ack = ResponseAs<ReadPropertyMultipleAck>(handle);
+            var ack = await SendRequestAsync<ReadPropertyMultipleAck>(deviceInstance, request);
             var values = _extractValues(ack);
+
+            if (values.Length != references.Length)
+                throw new Exception();
+
+            return values;
+        }
+
+        /// <summary>
+        /// Sends a read property multiple request
+        /// and retrieves the results as ReadResult instances
+        /// </summary>
+        /// <param name="deviceInstance">The device instance to read from</param>
+        /// <param name="references">The references to read</param>
+        /// <returns>The read results</returns>
+        internal async Task<ReadAccessResult.ReadResultType[]> SendRPMForReadResultsAsync(uint deviceInstance, params ObjectPropertyReference[] references)
+        {
+            List<ReadAccessSpecification> specs = new List<ReadAccessSpecification>();
+            ReadPropertyMultipleRequest request = null;
+            var groups = references.GroupBy(r => r.ObjectIdentifier);
+
+            foreach(var group in groups)
+            {
+                specs.Add(new ReadAccessSpecification(
+                    group.Key,
+                    new ReadOnlyArray<PropertyReference>(group.Select(r => new PropertyReference(r.PropertyIdentifier, r.PropertyArrayIndex)))
+                ));
+            }
+
+            request = new ReadPropertyMultipleRequest(new ReadOnlyArray<ReadAccessSpecification>(specs));
+            var ack = await SendRequestAsync<ReadPropertyMultipleAck>(deviceInstance, request);
+            var values = _extractReadResults(ack);
 
             if (values.Length != references.Length)
                 throw new Exception();
@@ -189,42 +228,7 @@ namespace BACnet.Client
         /// <returns>The read results</returns>
         internal ReadAccessResult.ReadResultType[] SendRPMForReadResults(uint deviceInstance, params ObjectPropertyReference[] references)
         {
-            List<ReadAccessSpecification> specs = new List<ReadAccessSpecification>();
-            ReadPropertyMultipleRequest request = null;
-            var groups = references.GroupBy(r => r.ObjectIdentifier);
-
-            foreach(var group in groups)
-            {
-                specs.Add(new ReadAccessSpecification(
-                    group.Key,
-                    new ReadOnlyArray<PropertyReference>(group.Select(r => new PropertyReference(r.PropertyIdentifier, r.PropertyArrayIndex)))
-                ));
-            }
-
-            request = new ReadPropertyMultipleRequest(new ReadOnlyArray<ReadAccessSpecification>(specs));
-            var handle = Host.SendConfirmedRequest(deviceInstance, request);
-            var ack = ResponseAs<ReadPropertyMultipleAck>(handle);
-            var values = _extractReadResults(ack);
-
-            if (values.Length != references.Length)
-                throw new Exception();
-
-            return values;
-        }
-
-        /// <summary>
-        /// Sends a read property multiple request
-        /// and retrieves the results as ReadResult instances
-        /// </summary>
-        /// <param name="deviceInstance">The device instance to read from</param>
-        /// <param name="references">The references to read</param>
-        /// <returns>The read results</returns>
-        internal Task<ReadAccessResult.ReadResultType[]> SendRPMForReadResultsAsync(uint deviceInstance, params ObjectPropertyReference[] references)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.SendRPMForReadResults(deviceInstance, references);
-            });
+            return SendRPMForReadResultsAsync(deviceInstance, references).Result;
         }
 
         /// <summary>
@@ -241,17 +245,6 @@ namespace BACnet.Client
                 return new ErrorOr<T>(result.AsPropertyValue.As<T>());
         }
         
-        /// <summary>
-        /// Reads a set of properties from a remote device
-        /// </summary>
-        /// <param name="deviceInstance">The device instance</param>
-        /// <param name="references">The property referneces to read</param>
-        /// <returns>The read resuls</returns>
-        public ReadAccessResult.ReadResultType[] ReadPropertyMultiple(uint deviceInstance, params ObjectPropertyReference[] references)
-        {
-            return SendRPMForReadResults(deviceInstance, references);
-        }
-
         /// <summary>
         /// Creates an object scope, which allows strongly
         /// typed operations to be performed on a single object

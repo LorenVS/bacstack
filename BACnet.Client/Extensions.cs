@@ -17,11 +17,12 @@ namespace BACnet.Client
         /// <typeparam name="T">The type of object</typeparam>
         /// <param name="scope">The object scope</param>
         /// <returns>The active alarms</returns>
-        public static ReadOnlyArray<GetAlarmSummaryAck.Element> GetAlarms<T>(this ObjectHandle<T> scope) where T : IDevice
+        public static async Task<ReadOnlyArray<GetAlarmSummaryAck.Element>> GetAlarmsAsync<T>(this ObjectHandle<T> scope) where T : IDevice
         {
             var request = new GetAlarmSummaryRequest();
-            var handle = scope.Client.Host.SendConfirmedRequest(scope.DeviceInstance, request);
-            var ack = scope.Client.ResponseAs<GetAlarmSummaryAck>(handle);
+            var ack = await scope.Client.SendRequestAsync<GetAlarmSummaryAck>(
+                scope.DeviceInstance,
+                request);
             return ack.Item;
         }
 
@@ -31,12 +32,9 @@ namespace BACnet.Client
         /// <typeparam name="T">The type of object</typeparam>
         /// <param name="scope">The object scope</param>
         /// <returns>The active alarms</returns>
-        public static Task<ReadOnlyArray<GetAlarmSummaryAck.Element>> GetAlarmsAsync<T>(this ObjectHandle<T> scope) where T : IDevice
+        public static ReadOnlyArray<GetAlarmSummaryAck.Element> GetAlarms<T>(this ObjectHandle<T> scope) where T : IDevice
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return scope.GetAlarms();
-            });
+            return scope.GetAlarmsAsync().Result;
         }
     }
 }

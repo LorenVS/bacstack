@@ -61,10 +61,10 @@
     <Compile Include="App\Transactions\ClientState.cs" />
     <Compile Include="App\Transactions\ClientTransaction.cs" />
     <Compile Include="App\Transactions\ClientTransactionHandle.cs" />
-    <Compile Include="App\Transactions\IClientTransactionHandle.cs" />
-    <Compile Include="App\Transactions\IClientTransactionResult.cs" />
+    <Compile Include="App\Transactions\ComplexAckHandle.cs" />
     <Compile Include="App\Transactions\ServerState.cs" />
     <Compile Include="App\ConfirmedRequestRegistrar.cs" />
+    <Compile Include="App\Transactions\SimpleAckHandle.cs" />
     <Compile Include="App\UnconfirmedRequestRegistrar.cs" />
     <Compile Include="BufferExtensions.cs" />
     <Compile Include="BufferSegment.cs" />
@@ -82,6 +82,7 @@
     <Compile Include="IContent.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="IProcessOptions.cs" />
+    <Compile Include="MultiBufferStream.cs" />
     <Compile Include="Network\Address.cs" />
     <Compile Include="Network\OutboundAppgram.cs" />
     <Compile Include="Network\InboundAppgram.cs" />

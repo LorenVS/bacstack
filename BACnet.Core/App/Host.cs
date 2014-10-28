@@ -387,14 +387,17 @@ namespace BACnet.Core.App
                 request.SegmentationSupported,
                 (ushort)request.VendorID);
 
-            _devices.Upsert(entry);
-
-            for(var node = _deviceSearches.First; node != null; node = node.Next)
+            lock(_lock)
             {
-                if(node.Value.Feed(entry))
+                _devices.Upsert(entry);
+
+                for (var node = _deviceSearches.First; node != null; node = node.Next)
                 {
-                    node.Value.Dispose();
-                    _deviceSearches.Remove(node);
+                    if (node.Value.Feed(entry))
+                    {
+                        node.Value.Dispose();
+                        _deviceSearches.Remove(node);
+                    }
                 }
             }
 
@@ -608,28 +611,30 @@ namespace BACnet.Core.App
         /// <summary>
         /// Sends a confirmed request
         /// </summary>
+        /// <param name="handle">The handle used to control the transaction</param>
         /// <param name="address">The address of the destination device</param>
         /// <param name="request">The request to send</param>
-        public IClientTransactionHandle SendConfirmedRequest(Address address, IConfirmedRequest request)
+        public void SendConfirmedRequest(ClientTransactionHandle handle, Address address, IConfirmedRequest request)
         {
             lock(_lock)
             {
                 var bytes = _saveConfirmedRequest(request);
-                return _txManager.SendConfirmedRequest(address, (byte)request.ServiceChoice, bytes);       
+                _txManager.SendConfirmedRequest(handle, address, (byte)request.ServiceChoice, bytes);       
             }
         }
 
         /// <summary>
         /// Sends a confirmed request
         /// </summary>
+        /// <param name="handle">The handle used to control the transaction</param>
         /// <param name="instance">The address of the destination device</param>
         /// <param name="request">The request to send</param>
-        public IClientTransactionHandle SendConfirmedRequest(uint instance, IConfirmedRequest request)
+        public void SendConfirmedRequest(ClientTransactionHandle handle, uint instance, IConfirmedRequest request)
         {
             lock(_lock)
             {
                 var bytes = _saveConfirmedRequest(request);
-                return _txManager.SendConfirmedRequest(instance, (byte)request.ServiceChoice, bytes);
+                _txManager.SendConfirmedRequest(handle, instance, (byte)request.ServiceChoice, bytes);
             }
         }
 
@@ -678,10 +683,7 @@ namespace BACnet.Core.App
                 offset = message.Deserialize(buffer, offset, end);
 
                 InboundUnconfirmedRequest request = null;
-                lock(_lock)
-                {
-                    request = _processMessage(value, message, buffer, offset, end);
-                }
+                request = _processMessage(value, message, buffer, offset, end);
 
                 if(request != null)
                 {

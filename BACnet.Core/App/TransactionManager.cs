@@ -72,11 +72,11 @@ namespace BACnet.Core.App
         /// <summary>
         /// Sends a confirmed request
         /// </summary>
+        /// <param name="handle">The transaction handle</param>
         /// <param name="destination">The destination address</param>
         /// <param name="serviceChoice">The service choice of the request</param>
         /// <param name="request">The request to send</param>
-        /// <returns>The handle to the client transaction</returns>
-        public IClientTransactionHandle SendConfirmedRequest(Address destination, byte serviceChoice, byte[] request)
+        public void SendConfirmedRequest(ClientTransactionHandle handle, Address destination, byte serviceChoice, byte[] request)
         {
             lock(_lock)
             {
@@ -85,24 +85,24 @@ namespace BACnet.Core.App
                 var transaction = new ClientTransaction(
                     _host,
                     this,
+                    handle,
                     invokeId,
                     destination,
                     serviceChoice,
                     request);
 
                 this._clientTransactions.Add(transaction);
-                return transaction.GetHandle();
             }
         }
 
         /// <summary>
         /// Sends a confirmed request
         /// </summary>
+        /// <param name="handle">The transaction handle</param>
         /// <param name="deviceInstance">The destination address</param>
         /// <param name="serviceChoice">The service choice of the request</param>
         /// <param name="request">The request to send</param>
-        /// <returns>The handle to the client transaction</returns>
-        public IClientTransactionHandle SendConfirmedRequest(uint deviceInstance, byte serviceChoice, byte[] request)
+        public void SendConfirmedRequest(ClientTransactionHandle handle, uint deviceInstance, byte serviceChoice, byte[] request)
         {
             lock(_lock)
             {
@@ -111,13 +111,13 @@ namespace BACnet.Core.App
                 var transaction = new ClientTransaction(
                     _host,
                     this,
+                    handle,
                     invokeId,
                     deviceInstance,
                     serviceChoice,
                     request);
 
                 this._clientTransactions.Add(transaction);
-                return transaction.GetHandle();
             }
         }
 

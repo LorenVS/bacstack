@@ -731,7 +731,7 @@ namespace BACnet.Client
                         .ReadProperty(dev => dev.ObjectList);
                     db._insertObjects(VendorId, DeviceInstance, objectList);
                 }
-                catch(BACnetException)
+                catch(AggregateException)
                 {
 
                 }
@@ -783,7 +783,7 @@ namespace BACnet.Client
                     db._db.UpdateObject(info);
                     db._updateObject(info);
                 }
-                catch (BACnetException)
+                catch (AggregateException)
                 {
                 }
             }
@@ -850,7 +850,7 @@ namespace BACnet.Client
                     db._db.UpdateObjects(infos);
                     db._updateObjects(infos);
                 }
-                catch (BACnetException)
+                catch (AggregateException)
                 {
                 }
             }

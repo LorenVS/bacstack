@@ -99,15 +99,13 @@ namespace BACnet.Client
         /// Sends the appropriate read requests to read all queued properties
         /// and resolves the requests on a marshalled thread
         /// </summary>
-        public Task SendAsync()
+        public async Task SendAsync()
         {
-            List<Task> tasks = new List<Task>();
             foreach(var group in _requests.GroupBy(req => req.DeviceInstance))
             {
-                tasks.Add(_sendGroup(group));
+                await _sendGroup(group);
             }
             _requests.Clear();
-            return Task.WhenAll(tasks);
         }
 
         public struct ReadQueueObjectHandle<TObj>

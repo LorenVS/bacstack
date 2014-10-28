@@ -51,12 +51,13 @@ namespace BACnet.Client
         /// <typeparam name="T">The type of the property to read</typeparam>
         /// <param name="propertyExpr">The property expression</param>
         /// <returns>The property value</returns>
-        public T ReadProperty<T>(Expression<Func<TObj, T>> propertyExpr)
+        public async Task<T> ReadPropertyAsync<T>(Expression<Func<TObj, T>> propertyExpr)
         {
             var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
             var request = new ReadPropertyRequest(ObjectIdentifier, reference.PropertyIdentifier, reference.PropertyArrayIndex);
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            var ack = Client.ResponseAs<ReadPropertyAck>(handle);
+            var ack = await Client.SendRequestAsync<ReadPropertyAck>(
+                DeviceInstance,
+                request);
             return ack.PropertyValue.As<T>();
         }
 
@@ -66,15 +67,25 @@ namespace BACnet.Client
         /// <typeparam name="T">The type of the property to read</typeparam>
         /// <param name="propertyExpr">The property expression</param>
         /// <returns>The property value</returns>
-        public Task<T1> ReadPropertyAsync<T1>(
+        public T1 ReadProperty<T1>(
             Expression<Func<TObj, T1>> propertyExpr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadProperty(propertyExpr);
-            });
+            return ReadPropertyAsync(propertyExpr).Result;
         }
 
+
+        /// <summary>
+        /// Reads a property from the object
+        /// </summary>
+        /// <typeparam name="T1">The type of property to read</typeparam>
+        /// <param name="property1Expr">The property expression</param>
+        public async Task<Tuple<T1>> ReadPropertiesAsync<T1>(Expression<Func<TObj, T1>> property1Expr)
+        {
+            var values = await Client.SendRPMAsync(DeviceInstance, ObjectIdentifier,
+                ObjectHelpers.GetPropertyReference(property1Expr));
+
+            return new Tuple<T1>(values[0].As<T1>());
+        }
 
         /// <summary>
         /// Reads a property from the object
@@ -83,24 +94,7 @@ namespace BACnet.Client
         /// <param name="property1Expr">The property expression</param>
         public Tuple<T1> ReadProperties<T1>(Expression<Func<TObj, T1>> property1Expr)
         {
-            var values = Client.SendRPM(DeviceInstance, ObjectIdentifier,
-                ObjectHelpers.GetPropertyReference(property1Expr));
-
-            return new Tuple<T1>(
-                values[0].As<T1>());
-        }
-
-        /// <summary>
-        /// Reads a property from the object
-        /// </summary>
-        /// <typeparam name="T1">The type of property to read</typeparam>
-        /// <param name="property1Expr">The property expression</param>
-        public Task<Tuple<T1>> ReadPropertiesAsync<T1>(Expression<Func<TObj, T1>> property1Expr)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadProperties(property1Expr);
-            });
+            return ReadPropertiesAsync(property1Expr).Result;
         }
 
         /// <summary>
@@ -111,11 +105,11 @@ namespace BACnet.Client
         /// <param name="property1Expr">The expression for the first property</param>
         /// <param name="property2Expr">The expression for the second property</param>
         /// <returns>The two property tuple</returns>
-        public Tuple<T1, T2> ReadProperties<T1, T2>(
+        public async Task<Tuple<T1, T2>> ReadPropertiesAsync<T1, T2>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr)
         {
-            var values = Client.SendRPM(DeviceInstance, ObjectIdentifier,
+            var values = await Client.SendRPMAsync(DeviceInstance, ObjectIdentifier,
                 ObjectHelpers.GetPropertyReference(property1Expr),
                 ObjectHelpers.GetPropertyReference(property2Expr));
 
@@ -132,14 +126,11 @@ namespace BACnet.Client
         /// <param name="property1Expr">The expression for the first property</param>
         /// <param name="property2Expr">The expression for the second property</param>
         /// <returns>The two property tuple</returns>
-        public Task<Tuple<T1, T2>> ReadPropertiesAsync<T1, T2>(
+        public Tuple<T1, T2> ReadProperties<T1, T2>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadProperties(property1Expr, property2Expr);
-            });
+            return ReadPropertiesAsync(property1Expr, property2Expr).Result;
         }
 
 
@@ -153,12 +144,12 @@ namespace BACnet.Client
         /// <param name="property2Expr">The expression for the second property</param>
         /// <param name="property3Expr">The expression for the third property</param>
         /// <returns>The three property tuple</returns>
-        public Tuple<T1, T2, T3> ReadProperties<T1, T2, T3>(
+        public async Task<Tuple<T1, T2, T3>> ReadPropertiesAsync<T1, T2, T3>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr)
         {
-            var values = Client.SendRPM(DeviceInstance, ObjectIdentifier,
+            var values = await Client.SendRPMAsync(DeviceInstance, ObjectIdentifier,
                 ObjectHelpers.GetPropertyReference(property1Expr),
                 ObjectHelpers.GetPropertyReference(property2Expr),
                 ObjectHelpers.GetPropertyReference(property3Expr));
@@ -179,15 +170,15 @@ namespace BACnet.Client
         /// <param name="property2Expr">The expression for the second property</param>
         /// <param name="property3Expr">The expression for the third property</param>
         /// <returns>The three property tuple</returns>
-        public Task<Tuple<T1, T2, T3>> ReadPropertiesAsync<T1, T2, T3>(
+        public Tuple<T1, T2, T3> ReadProperties<T1, T2, T3>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadProperties(property1Expr, property2Expr, property3Expr);
-            });
+            return ReadPropertiesAsync(
+                property1Expr,
+                property2Expr,
+                property3Expr).Result;
         }
 
 
@@ -203,13 +194,13 @@ namespace BACnet.Client
         /// <param name="property3Expr">The expression for the third property</param>
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <returns>The four property tuple</returns>
-        public Tuple<T1, T2, T3, T4> ReadProperties<T1, T2, T3, T4>(
+        public async Task<Tuple<T1, T2, T3, T4>> ReadPropertiesAsync<T1, T2, T3, T4>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr)
         {
-            var values = Client.SendRPM(DeviceInstance, ObjectIdentifier,
+            var values = await Client.SendRPMAsync(DeviceInstance, ObjectIdentifier,
                 ObjectHelpers.GetPropertyReference(property1Expr),
                 ObjectHelpers.GetPropertyReference(property2Expr),
                 ObjectHelpers.GetPropertyReference(property3Expr),
@@ -234,16 +225,17 @@ namespace BACnet.Client
         /// <param name="property3Expr">The expression for the third property</param>
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <returns>The four property tuple</returns>
-        public Task<Tuple<T1, T2, T3, T4>> ReadPropertiesAsync<T1, T2, T3, T4>(
+        public Tuple<T1, T2, T3, T4> ReadProperties<T1, T2, T3, T4>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadProperties(property1Expr, property2Expr, property3Expr, property4Expr);
-            });
+            return ReadPropertiesAsync(
+                property1Expr,
+                property2Expr,
+                property3Expr,
+                property4Expr).Result;
         }
 
 
@@ -261,14 +253,14 @@ namespace BACnet.Client
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <param name="property5Expr">The expression for the fifth property</param>
         /// <returns>The five property tuple</returns>
-        public Tuple<T1, T2, T3, T4, T5> ReadProperties<T1, T2, T3, T4, T5>(
+        public async Task<Tuple<T1, T2, T3, T4, T5>> ReadPropertiesAsync<T1, T2, T3, T4, T5>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr,
             Expression<Func<TObj, T5>> property5Expr)
         {
-            var values = Client.SendRPM(DeviceInstance, ObjectIdentifier,
+            var values = await Client.SendRPMAsync(DeviceInstance, ObjectIdentifier,
                 ObjectHelpers.GetPropertyReference(property1Expr),
                 ObjectHelpers.GetPropertyReference(property2Expr),
                 ObjectHelpers.GetPropertyReference(property3Expr),
@@ -297,17 +289,19 @@ namespace BACnet.Client
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <param name="property5Expr">The expression for the fifth property</param>
         /// <returns>The five property tuple</returns>
-        public Task<Tuple<T1, T2, T3, T4, T5>> ReadPropertiesAsync<T1, T2, T3, T4, T5>(
+        public Tuple<T1, T2, T3, T4, T5> ReadProperties<T1, T2, T3, T4, T5>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr,
             Expression<Func<TObj, T5>> property5Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadProperties(property1Expr, property2Expr, property3Expr, property4Expr, property5Expr);
-            });
+            return ReadPropertiesAsync(
+                property1Expr,
+                property2Expr,
+                property3Expr,
+                property4Expr,
+                property5Expr).Result;
         }
 
 #region ReadPropertiesSafe
@@ -317,9 +311,9 @@ namespace BACnet.Client
         /// </summary>
         /// <typeparam name="T1">The type of property to read</typeparam>
         /// <param name="property1Expr">The property expression</param>
-        public Tuple<ErrorOr<T1>> ReadPropertiesSafe<T1>(Expression<Func<TObj, T1>> property1Expr)
+        public async Task<Tuple<ErrorOr<T1>>> ReadPropertiesSafeAsync<T1>(Expression<Func<TObj, T1>> property1Expr)
         {
-            var results = Client.SendRPMForReadResults(DeviceInstance,
+            var results = await Client.SendRPMForReadResultsAsync(DeviceInstance,
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property1Expr));
 
             return new Tuple<ErrorOr<T1>>(
@@ -331,12 +325,9 @@ namespace BACnet.Client
         /// </summary>
         /// <typeparam name="T1">The type of property to read</typeparam>
         /// <param name="property1Expr">The property expression</param>
-        public Task<Tuple<ErrorOr<T1>>> ReadPropertiesSafeAsync<T1>(Expression<Func<TObj, T1>> property1Expr)
+        public Tuple<ErrorOr<T1>> ReadPropertiesSafe<T1>(Expression<Func<TObj, T1>> property1Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadPropertiesSafe(property1Expr);
-            });
+            return ReadPropertiesSafeAsync(property1Expr).Result;
         }
 
         /// <summary>
@@ -347,11 +338,11 @@ namespace BACnet.Client
         /// <param name="property1Expr">The expression for the first property</param>
         /// <param name="property2Expr">The expression for the second property</param>
         /// <returns>The two property tuple</returns>
-        public Tuple<ErrorOr<T1>, ErrorOr<T2>> ReadPropertiesSafe<T1, T2>(
+        public async Task<Tuple<ErrorOr<T1>, ErrorOr<T2>>> ReadPropertiesSafeAsync<T1, T2>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr)
         {
-            var values = Client.SendRPMForReadResults(DeviceInstance,
+            var values = await Client.SendRPMForReadResultsAsync(DeviceInstance,
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property1Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property2Expr));
 
@@ -368,14 +359,11 @@ namespace BACnet.Client
         /// <param name="property1Expr">The expression for the first property</param>
         /// <param name="property2Expr">The expression for the second property</param>
         /// <returns>The two property tuple</returns>
-        public Task<Tuple<ErrorOr<T1>, ErrorOr<T2>>> ReadPropertiesSafeAsync<T1, T2>(
+        public Tuple<ErrorOr<T1>, ErrorOr<T2>> ReadPropertiesSafe<T1, T2>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadPropertiesSafe(property1Expr, property2Expr);
-            });
+            return ReadPropertiesSafeAsync(property1Expr, property2Expr).Result;
         }
 
 
@@ -389,12 +377,12 @@ namespace BACnet.Client
         /// <param name="property2Expr">The expression for the second property</param>
         /// <param name="property3Expr">The expression for the third property</param>
         /// <returns>The three property tuple</returns>
-        public Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>> ReadPropertiesSafe<T1, T2, T3>(
+        public async Task<Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>>> ReadPropertiesSafeAsync<T1, T2, T3>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr)
         {
-            var values = Client.SendRPMForReadResults(DeviceInstance,
+            var values = await Client.SendRPMForReadResultsAsync(DeviceInstance,
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property1Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property2Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property3Expr));
@@ -415,15 +403,12 @@ namespace BACnet.Client
         /// <param name="property2Expr">The expression for the second property</param>
         /// <param name="property3Expr">The expression for the third property</param>
         /// <returns>The three property tuple</returns>
-        public Task<Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>>> ReadPropertiesSafeAsync<T1, T2, T3>(
+        public Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>> ReadPropertiesSafe<T1, T2, T3>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadPropertiesSafe(property1Expr, property2Expr, property3Expr);
-            });
+            return ReadPropertiesSafeAsync(property1Expr, property2Expr, property3Expr).Result;
         }
 
 
@@ -439,13 +424,13 @@ namespace BACnet.Client
         /// <param name="property3Expr">The expression for the third property</param>
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <returns>The four property tuple</returns>
-        public Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>> ReadPropertiesSafe<T1, T2, T3, T4>(
+        public async Task<Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>>> ReadPropertiesSafeAsync<T1, T2, T3, T4>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr)
         {
-            var values = Client.SendRPMForReadResults(DeviceInstance,
+            var values = await Client.SendRPMForReadResultsAsync(DeviceInstance,
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property1Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property2Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property3Expr),
@@ -470,16 +455,13 @@ namespace BACnet.Client
         /// <param name="property3Expr">The expression for the third property</param>
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <returns>The four property tuple</returns>
-        public Task<Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>>> ReadPropertiesSafeAsync<T1, T2, T3, T4>(
+        public Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>> ReadPropertiesSafe<T1, T2, T3, T4>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadPropertiesSafe(property1Expr, property2Expr, property3Expr, property4Expr);
-            });
+            return ReadPropertiesSafeAsync(property1Expr, property2Expr, property3Expr, property4Expr).Result;
         }
 
 
@@ -497,14 +479,14 @@ namespace BACnet.Client
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <param name="property5Expr">The expression for the fifth property</param>
         /// <returns>The five property tuple</returns>
-        public Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>, ErrorOr<T5>> ReadPropertiesSafe<T1, T2, T3, T4, T5>(
+        public async Task<Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>, ErrorOr<T5>>> ReadPropertiesSafeAsync<T1, T2, T3, T4, T5>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr,
             Expression<Func<TObj, T5>> property5Expr)
         {
-            var values = Client.SendRPMForReadResults(DeviceInstance,
+            var values = await Client.SendRPMForReadResultsAsync(DeviceInstance,
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property1Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property2Expr),
                 ObjectHelpers.GetObjectPropertyReference(ObjectIdentifier, property3Expr),
@@ -533,78 +515,35 @@ namespace BACnet.Client
         /// <param name="property4Expr">The expression for the fourth property</param>
         /// <param name="property5Expr">The expression for the fifth property</param>
         /// <returns>The five property tuple</returns>
-        public Task<Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>, ErrorOr<T5>>> ReadPropertiesSafeAsync<T1, T2, T3, T4, T5>(
+        public Tuple<ErrorOr<T1>, ErrorOr<T2>, ErrorOr<T3>, ErrorOr<T4>, ErrorOr<T5>> ReadPropertiesSafe<T1, T2, T3, T4, T5>(
             Expression<Func<TObj, T1>> property1Expr,
             Expression<Func<TObj, T2>> property2Expr,
             Expression<Func<TObj, T3>> property3Expr,
             Expression<Func<TObj, T4>> property4Expr,
             Expression<Func<TObj, T5>> property5Expr)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadPropertiesSafe(property1Expr, property2Expr, property3Expr, property4Expr, property5Expr);
-            });
+            return ReadPropertiesSafeAsync(
+                property1Expr,
+                property2Expr,
+                property3Expr,
+                property4Expr,
+                property5Expr).Result;
         }
 
 #endregion
 
-
-
-
         /// <summary>
         /// Reads an entire range of an array from the object
         /// </summary>
         /// <typeparam name="T">The element type of the array</typeparam>
         /// <param name="propertyExpr">The expression of the array</param>
+        /// <param name="range">The range to read, or None for the entire array</param>
         /// <returns>The resulting array range</returns>
-        public ReadOnlyArray<T> ReadRange<T>(
-            Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr)
-        {
-            
-            var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
-
-            var request = new ReadRangeRequest(
-                ObjectIdentifier,
-                reference.PropertyIdentifier,
-                reference.PropertyArrayIndex,
-                Option<ReadRangeRequest.RangeType>.None
-            );
-
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            var ack = Client.ResponseAs<ReadRangeAck<T>>(handle);
-            return ack.ItemData;
-        }
-
-        /// <summary>
-        /// Reads an entire range of an array from the object
-        /// </summary>
-        /// <typeparam name="T">The element type of the array</typeparam>
-        /// <param name="propertyExpr">The expression of the array</param>
-        /// <returns>The resulting array range</returns>
-        public Task<ReadOnlyArray<T>> ReadRangeAsync<T>(
-            Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadRange(propertyExpr);
-            });
-        }
-
-        /// <summary>
-        /// Reads a range of an array from the object by the array index
-        /// </summary>
-        /// <typeparam name="T">The element type of the array</typeparam>
-        /// <param name="propertyExpr">The expression of the array</param>
-        /// <param name="startIndex">The index to start reading</param>
-        /// <param name="count">The number of entries to read</param>
-        /// <returns>The resulting array range</returns>
-        public ReadOnlyArray<T> ReadRangeByPosition<T>(
+        public async Task<ReadOnlyArray<T>> ReadRangeAsync<T>(
             Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
-            uint startIndex,
-            int count)
+            Option<ReadRangeRequest.RangeType> range = default(Option<ReadRangeRequest.RangeType>))
         {
             var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
-            var range = ReadRangeRequest.RangeType.NewByPosition(startIndex, count);
 
             var request = new ReadRangeRequest(
                 ObjectIdentifier,
@@ -613,9 +552,22 @@ namespace BACnet.Client
                 range
             );
 
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            var ack = Client.ResponseAs<ReadRangeAck<T>>(handle);
+            var ack = await Client.SendRequestAsync<ReadRangeAck<T>>(DeviceInstance, request);
             return ack.ItemData;
+        }
+
+        /// <summary>
+        /// Reads an entire range of an array from the object
+        /// </summary>
+        /// <typeparam name="T">The element type of the array</typeparam>
+        /// <param name="propertyExpr">The expression of the array</param>
+        /// <param name="range">The range to read, or None for the entire array</param>
+        /// <returns>The resulting array range</returns>
+        public ReadOnlyArray<T> ReadRange<T>(
+            Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
+            Option<ReadRangeRequest.RangeType> range = default(Option<ReadRangeRequest.RangeType>))
+        {
+            return ReadRangeAsync(propertyExpr, range).Result;
         }
 
         /// <summary>
@@ -631,38 +583,24 @@ namespace BACnet.Client
             uint startIndex,
             int count)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadRangeByPosition(propertyExpr, startIndex, count);
-            });
+            var range = ReadRangeRequest.RangeType.NewByPosition(startIndex, count);
+            return ReadRangeAsync(propertyExpr, range);
         }
 
         /// <summary>
-        /// Reads a range of an array from the object by sequence number
+        /// Reads a range of an array from the object by the array index
         /// </summary>
         /// <typeparam name="T">The element type of the array</typeparam>
         /// <param name="propertyExpr">The expression of the array</param>
-        /// <param name="referenceIndex">The sequence number to start reading at</param>
+        /// <param name="startIndex">The index to start reading</param>
         /// <param name="count">The number of entries to read</param>
         /// <returns>The resulting array range</returns>
-        public ReadOnlyArray<T> ReadRangeBySequenceNumber<T>(
+        public ReadOnlyArray<T> ReadRangeByPosition<T>(
             Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
-            uint referenceIndex,
+            uint startIndex,
             int count)
         {
-            var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
-            var range = ReadRangeRequest.RangeType.NewBySequenceNumber(referenceIndex, count);
-
-            var request = new ReadRangeRequest(
-                ObjectIdentifier,
-                reference.PropertyIdentifier,
-                reference.PropertyArrayIndex,
-                range
-            );
-
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            var ack = Client.ResponseAs<ReadRangeAck<T>>(handle);
-            return ack.ItemData;
+            return ReadRangeByPositionAsync(propertyExpr, startIndex, count).Result;
         }
 
         /// <summary>
@@ -678,10 +616,41 @@ namespace BACnet.Client
             uint referenceIndex,
             int count)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadRangeBySequenceNumber(propertyExpr, referenceIndex, count);
-            });
+            var range = ReadRangeRequest.RangeType.NewBySequenceNumber(referenceIndex, count);
+            return ReadRangeAsync(propertyExpr, range);
+        }
+
+        /// <summary>
+        /// Reads a range of an array from the object by sequence number
+        /// </summary>
+        /// <typeparam name="T">The element type of the array</typeparam>
+        /// <param name="propertyExpr">The expression of the array</param>
+        /// <param name="referenceIndex">The sequence number to start reading at</param>
+        /// <param name="count">The number of entries to read</param>
+        /// <returns>The resulting array range</returns>
+        public ReadOnlyArray<T> ReadRangeBySequenceNumber<T>(
+            Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
+            uint referenceIndex,
+            int count)
+        {
+            return ReadRangeBySequenceNumberAsync(propertyExpr, referenceIndex, count).Result;
+        }
+
+        /// <summary>
+        /// Reads a range of an array from the object by date time
+        /// </summary>
+        /// <typeparam name="T">The element type of the array</typeparam>
+        /// <param name="propertyExpr">The expression of the array</param>
+        /// <param name="start">The datetime to start reading at</param>
+        /// <param name="count">The number of entries to read</param>
+        /// <returns>The resulting array range</returns>
+        public Task<ReadOnlyArray<T>> ReadRangeByTimeAsync<T>(
+            Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
+            DateAndTime start,
+            int count)
+        {
+            var range = ReadRangeRequest.RangeType.NewByTime(start, count);
+            return ReadRangeAsync(propertyExpr, range);
         }
 
         /// <summary>
@@ -694,10 +663,10 @@ namespace BACnet.Client
         /// <returns>The resulting array range</returns>
         public ReadOnlyArray<T> ReadRangeByTime<T>(
             Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
-            DateTime start,
+            DateAndTime start,
             int count)
         {
-            return ReadRangeByTime(propertyExpr, DateAndTime.FromDateTime(start), count);
+            return ReadRangeByTimeAsync(propertyExpr, start, count).Result;
         }
 
         /// <summary>
@@ -726,51 +695,19 @@ namespace BACnet.Client
         /// <returns>The resulting array range</returns>
         public ReadOnlyArray<T> ReadRangeByTime<T>(
             Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
-            DateAndTime start,
+            DateTime start,
             int count)
         {
-            var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
-            var range = ReadRangeRequest.RangeType.NewByTime(start, count);
-
-            var request = new ReadRangeRequest(
-                ObjectIdentifier,
-                reference.PropertyIdentifier,
-                reference.PropertyArrayIndex,
-                range
-            );
-
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            var ack = Client.ResponseAs<ReadRangeAck<T>>(handle);
-            return ack.ItemData;
+            return ReadRangeByTimeAsync(propertyExpr, start, count).Result;
         }
-
+        
         /// <summary>
-        /// Reads a range of an array from the object by date time
-        /// </summary>
-        /// <typeparam name="T">The element type of the array</typeparam>
-        /// <param name="propertyExpr">The expression of the array</param>
-        /// <param name="start">The datetime to start reading at</param>
-        /// <param name="count">The number of entries to read</param>
-        /// <returns>The resulting array range</returns>
-        public Task<ReadOnlyArray<T>> ReadRangeByTimeAsync<T>(
-            Expression<Func<TObj, ReadOnlyArray<T>>> propertyExpr,
-            DateAndTime start,
-            int count)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                return this.ReadRangeByTime(propertyExpr, start, count);
-            });
-        }
-
-        /// <summary>C:\git\bacnet\BACnet.Client\DefaultProcessIds.cs
         /// Writes a property on the object
         /// </summary>
         /// <typeparam name="T">The type of property to write</typeparam>
         /// <param name="propertyExpr">The property expression</param>
         /// <param name="propertyValue">The property value</param>
-        public void WriteProperty<T>(
-            Expression<Func<TObj, T>> propertyExpr, T propertyValue)
+        public Task WritePropertyAsync<T>(Expression<Func<TObj, T>> propertyExpr, T propertyValue)
         {
             var reference = ObjectHelpers.GetPropertyReference(propertyExpr);
 
@@ -781,11 +718,8 @@ namespace BACnet.Client
                 TaggedGenericValue.Encode(propertyValue)
             );
 
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            if (handle.GetResponse() != null)
-                throw new Exception();
+            return Client.SendRequestAsync(DeviceInstance, request);
         }
-
 
         /// <summary>
         /// Writes a property on the object
@@ -793,13 +727,9 @@ namespace BACnet.Client
         /// <typeparam name="T">The type of property to write</typeparam>
         /// <param name="propertyExpr">The property expression</param>
         /// <param name="propertyValue">The property value</param>
-        public Task WritePropertyAsync<T>(
-            Expression<Func<TObj, T>> propertyExpr, T propertyValue)
+        public void WriteProperty<T>(Expression<Func<TObj, T>> propertyExpr, T propertyValue)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                this.WriteProperty(propertyExpr, propertyValue);
-            });
+            WritePropertyAsync(propertyExpr, propertyValue).Wait();
         }
 
     }

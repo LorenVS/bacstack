@@ -79,23 +79,18 @@ namespace BACnet.Client
         /// <summary>
         /// Creates the object
         /// </summary>
-        public void Create()
+        public Task CreateAsync()
         {
             var request = new CreateObjectRequest(ObjectSpecifier, new ReadOnlyArray<PropertyValue>(_properties));
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            if (handle.GetResponse() != null)
-                throw new Exception();
+            return Client.SendRequestAsync(DeviceInstance, request);
         }
 
         /// <summary>
         /// Creates the object
         /// </summary>
-        public Task CreateAsync()
+        public void Create()
         {
-            return Task.Factory.StartNew(() =>
-            {
-                this.Create();
-            });
+            CreateAsync().Wait();
         }
     }
 }

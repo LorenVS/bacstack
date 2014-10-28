@@ -73,7 +73,8 @@ namespace BACnet.Core.App.Transactions
         private DeviceTableEntry _device;
 
         /// <summary>
-        /// The handle used to control this transaction
+        /// The handle used to control this transaction and
+        /// process its response
         /// </summary>
         private ClientTransactionHandle _handle;
 
@@ -112,19 +113,21 @@ namespace BACnet.Core.App.Transactions
         /// </summary>
         /// <param name="host">The host that initiated the transaction</param>
         /// <param name="manager">The transaction manager</param>
+        /// <param name="handle">The handle used to control this transaction and process its response</param>
         /// <param name="invokeId">The invocation id for the transaction</param>
         /// <param name="deviceInstance">The instance of the destination device</param>
         /// <param name="serviceChoice">The service choice of the request</param>
         /// <param name="request">The request content</param>
-        public ClientTransaction(Host host, TransactionManager manager, byte invokeId, uint deviceInstance, byte serviceChoice, byte[] request)
+        public ClientTransaction(Host host, TransactionManager manager, ClientTransactionHandle handle, byte invokeId, uint deviceInstance, byte serviceChoice, byte[] request)
         {
             this._host = host;
             this._manager = manager;
+            this._handle = handle;
             this._invokeId = invokeId;
             this._serviceChoice = serviceChoice;
             this._request = request;
             this._state = ClientState.GetDeviceInfo;
-            this._handle = new ClientTransactionHandle(this);
+            this._handle.SetTransaction(this);
             host.SearchForDevice(deviceInstance, this);
         }
 
@@ -134,31 +137,24 @@ namespace BACnet.Core.App.Transactions
         /// </summary>
         /// <param name="host">The host that initiated the transaction</param>
         /// <param name="manager">The transaction manager</param>
+        /// <param name="handle">The handle used to control this transaction and process its response</param>
         /// <param name="invokeId">The invocation id for the transaction</param>
         /// <param name="deviceAddress">The address of the destination device</param>
         /// <param name="serviceChoice">The service choice of the request</param>
         /// <param name="request">The request content</param>
-        public ClientTransaction(Host host, TransactionManager manager, byte invokeId, Address deviceAddress, byte serviceChoice, byte[] request)
+        public ClientTransaction(Host host, TransactionManager manager, ClientTransactionHandle handle, byte invokeId, Address deviceAddress, byte serviceChoice, byte[] request)
         {
             this._host = host;
             this._manager = manager;
+            this._handle = handle;
             this._invokeId = invokeId;
             this._serviceChoice = serviceChoice;
             this._request = request;
             this._state = ClientState.GetDeviceInfo;
-            this._handle = new ClientTransactionHandle(this);
+            this._handle.SetTransaction(this);
             host.SearchForDevice(deviceAddress, this);
         }
-
-        /// <summary>
-        /// Retrieves the handle for this transaction
-        /// </summary>
-        /// <returns>The handle instance</returns>
-        public IClientTransactionHandle GetHandle()
-        {
-            return _handle;
-        }
-
+        
         /// <summary>
         /// Disposes of all resources held by the transaction
         /// </summary>
@@ -279,17 +275,20 @@ namespace BACnet.Core.App.Transactions
         {
             lock(_lock)
             {
-                _requestAttempt++;
+                if (_state == ClientState.AwaitConfirmation)
+                {
+                    _requestAttempt++;
 
-                if (_requestAttempt >= RequestAttempts)
-                {
-                    // TODO: should probably be a timeout error instead of an abort
-                    _handle.FeedAbort(AbortReason.Other);
-                    _manager.DisposeTransaction(this);
-                }
-                else
-                {
-                    _sendInitialRequestSegment();
+                    if (_requestAttempt >= RequestAttempts)
+                    {
+                        // TODO: should probably be a timeout error instead of an abort
+                        _handle.FeedAbort(AbortReason.Other);
+                        _transitionTo(ClientState.Disposed);
+                    }
+                    else
+                    {
+                        _sendInitialRequestSegment();
+                    }
                 }
             }
         }
@@ -305,7 +304,7 @@ namespace BACnet.Core.App.Transactions
                 if(_state == ClientState.SegmentedConfirmation)
                 {
                     _handle.FeedAbort(AbortReason.Other);
-                    _manager.DisposeTransaction(this);
+                    _transitionTo(ClientState.Disposed);
                 }
             }
         }
@@ -415,7 +414,7 @@ namespace BACnet.Core.App.Transactions
             {
                 if (_state == ClientState.AwaitConfirmation)
                 {
-                    _handle.FeedSimpleAck(message);
+                    _handle.FeedSimpleAck();
                     _manager.DisposeTransaction(this);
                 }
             }
@@ -505,7 +504,7 @@ namespace BACnet.Core.App.Transactions
                 if (_state == ClientState.AwaitConfirmation)
                 {
                     _handle.FeedError(message.Error);
-                    _manager.DisposeTransaction(this);
+                    _transitionTo(ClientState.Disposed);
                 }
             }
         }
@@ -522,7 +521,7 @@ namespace BACnet.Core.App.Transactions
                 if (_state == ClientState.AwaitConfirmation)
                 {
                     _handle.FeedReject((RejectReason)message.RejectReason);
-                    _manager.DisposeTransaction(this);
+                    _transitionTo(ClientState.Disposed);
                 }
             }
         }
@@ -553,7 +552,6 @@ namespace BACnet.Core.App.Transactions
 
                 _handle.FeedAbort(reason);
                 _transitionTo(ClientState.Disposed);
-                _manager.DisposeTransaction(this);
             }
         }
 

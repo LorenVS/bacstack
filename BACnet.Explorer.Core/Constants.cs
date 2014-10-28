@@ -14,6 +14,7 @@ namespace BACnet.Explorer.Core
         public const string CreateSessionButtonText = "Create Session";
         public const string BbmdHostLabel = "BBMD Host";
         public const string BbmdPortLabel = "BBMD Port";
+        public const string DeviceNameLabel = "Device";
         public const string ExistingSessionText = "Existing Session";
         public const string LocalHostLabel = "Local Host";
         public const string LocalPortLabel = "Local Port";
@@ -28,6 +29,7 @@ namespace BACnet.Explorer.Core
         // default process names
         public const string DeviceFinderDefaultName = "Device Finder";
         public const string ForeignDevicePortDefaultName = "Foreign Device Port";
+        public const string EthernetPortDefaultName = "Ethernet Port";
         public const string HostDefaultName = "Host";
         public const string NetworkDatabaseDefaultName = "Network Database";
         public const string PortManagerDefaultName = "Port Manager";

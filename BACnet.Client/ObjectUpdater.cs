@@ -68,11 +68,7 @@ namespace BACnet.Client
         /// </summary>
         public void Update()
         {
-            var spec = new WriteAccessSpecification(ObjectIdentifier, new ReadOnlyArray<PropertyValue>(_properties));
-            var request = new WritePropertyMultipleRequest(new ReadOnlyArray<WriteAccessSpecification>(false, spec));
-            var handle = Client.Host.SendConfirmedRequest(DeviceInstance, request);
-            if (handle.GetResponse() != null)
-                throw new Exception();
+            UpdateAsync().Wait();
         }
 
         /// <summary>
@@ -80,10 +76,9 @@ namespace BACnet.Client
         /// </summary>
         public Task UpdateAsync()
         {
-            return Task.Factory.StartNew(() =>
-            {
-                this.Update();
-            });
+            var spec = new WriteAccessSpecification(ObjectIdentifier, new ReadOnlyArray<PropertyValue>(_properties));
+            var request = new WritePropertyMultipleRequest(new ReadOnlyArray<WriteAccessSpecification>(false, spec));
+            return Client.SendRequestAsync(DeviceInstance, request);
         }
     }
 }

@@ -146,6 +146,11 @@ namespace BACnet.Explorer.Core.Controls
                 var process = temp as ForeignDevicePortProcess;
                 content = new ForeignDevicePortSettings(process);
             }
+            else if(temp is EthernetPortProcess)
+            {
+                var process = temp as EthernetPortProcess;
+                content = new EthernetPortSettings(process);
+            }
             else if(temp is DeviceFinderProcess)
             {
                 var process = temp as DeviceFinderProcess;

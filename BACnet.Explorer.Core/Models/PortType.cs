@@ -17,6 +17,11 @@ namespace BACnet.Explorer.Core.Models
                 {
                     Name = "Foreign Device Port",
                     Type = typeof(ForeignDevicePortProcess)
+                },
+                new PortType()
+                {
+                    Name = "Ethernet Port",
+                    Type = typeof(EthernetPortProcess)
                 }
             };
         }
