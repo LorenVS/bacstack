@@ -106,10 +106,11 @@ namespace BACnet.Ethernet
         {
             lock(_lock)
             {
-                _device.Open(DeviceMode.Normal, 1);
+                _device.Open(DeviceMode.Normal, 5);
 
                 // filter to only bacnet packets
                 _device.Filter = "ether proto 0x82";
+                _device.StopCaptureTimeout = TimeSpan.FromSeconds(1);
                 _device.StartCapture();
 
                 this._deviceMac = _device.Interface.MacAddress.GetAddressBytes();
