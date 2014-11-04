@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BACnet.Core.Jobs
 {
-    public interface IScheduler
+    public interface IScheduler : IProcess
     {
         /// <summary>
         /// Schedules a job for execution

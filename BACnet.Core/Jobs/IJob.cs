@@ -10,6 +10,11 @@ namespace BACnet.Core.Jobs
     public interface IJob
     {
         /// <summary>
+        /// The relative weight of the job
+        /// </summary>
+        int Weight { get; }
+
+        /// <summary>
         /// The destination device
         /// </summary>
         Recipient Destination { get; }
