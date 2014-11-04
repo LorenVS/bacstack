@@ -89,6 +89,7 @@
     <Compile Include="Jobs\SimpleScheduler.cs" />
     <Compile Include="MultiBufferStream.cs" />
     <Compile Include="Network\Address.cs" />
+    <Compile Include="Network\IRouteSearchCallback.cs" />
     <Compile Include="Network\OutboundAppgram.cs" />
     <Compile Include="Network\InboundAppgram.cs" />
     <Compile Include="Network\Messages\IAmRouterToNetworkMessage.cs" />
