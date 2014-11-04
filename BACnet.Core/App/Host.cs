@@ -545,18 +545,21 @@ namespace BACnet.Core.App
         /// <param name="callback">The callback to invoke when the device is found</param>
         public void SearchForDevice(uint instance, IDeviceSearchCallback callback)
         {
+            DeviceTableEntry device = null;
+
             lock(_lock)
             {
-                var device = _devices.Get(instance);
-                if (device != null)
-                    callback.DeviceFound(device);
-                else
+                device = _devices.Get(instance);
+                if(device == null)
                 {
                     DeviceSearch search = new DeviceSearch(this, instance, callback);
                     this._deviceSearches.AddLast(search);
                     _sendWhoIsForInstance(instance);
                 }
             }
+
+            if (device != null)
+                callback.DeviceFound(device);
         }
 
         /// <summary>

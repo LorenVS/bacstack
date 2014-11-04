@@ -62,6 +62,11 @@ namespace BACnet.Core.Network
         private readonly LinkedList<NetgramContent> _netgramQueue = new LinkedList<NetgramContent>();
 
         /// <summary>
+        /// The list of all the routes that are being searched for
+        /// </summary>
+        private readonly LinkedList<RouteSearch> _routeSearches = new LinkedList<RouteSearch>();
+
+        /// <summary>
         /// The network search timers that are currently active
         /// </summary>
         private readonly LinkedList<NetworkSearchTimer> _networkSearchTimers = new LinkedList<NetworkSearchTimer>();
@@ -558,6 +563,19 @@ namespace BACnet.Core.Network
             {
                 _router._disposeSubscription(_observer);
             }
+        }
+
+        private class RouteSearch
+        {
+            /// <summary>
+            /// The network that is being searched for
+            /// </summary>
+            public ushort Network { get; private set; }
+
+            /// <summary>
+            /// The callback instance
+            /// </summary>
+            public IRouteSearchCallback Callback { get; private set; }
         }
         
         private class NetworkSearchTimer : IDisposable
