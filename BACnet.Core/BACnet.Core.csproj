@@ -103,6 +103,7 @@
     <Compile Include="Network\RoutingTable.cs" />
     <Compile Include="Network\Router.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchList.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SubscriptionList.cs" />
   </ItemGroup>

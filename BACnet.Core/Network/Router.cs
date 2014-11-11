@@ -564,7 +564,7 @@ namespace BACnet.Core.Network
                 _router._disposeSubscription(_observer);
             }
         }
-
+        
         private class RouteSearch
         {
             /// <summary>

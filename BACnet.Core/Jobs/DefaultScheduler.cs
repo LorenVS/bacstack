@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BACnet.Core.App;
 using BACnet.Core.Datalink;
-using BACnet.Core.Network
+using BACnet.Core.Network;
 
 namespace BACnet.Core.Jobs
 {
