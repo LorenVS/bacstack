@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BACnet.Ashrae;
 using BACnet.Core.Network;
 
 namespace BACnet.Core.App
@@ -97,6 +98,23 @@ namespace BACnet.Core.App
                     return entry;
             }
             return null;
+        }
+
+
+        /// <summary>
+        /// Finds a device using a BACnet recipient
+        /// </summary>
+        /// <param name="recipient">The recipient</param>
+        /// <returns>The device table entry, or null if no entry exists</returns>
+        public DeviceTableEntry Get(Recipient recipient)
+        {
+            switch (recipient.Tag)
+            {
+                case Recipient.Tags.Address:
+                    return this.GetByAddress(new Address(recipient.AsAddress));
+                case Recipient.Tags.Device:
+                    return this.Get(recipient.AsDevice.Instance);
+            }
         }
 
     }

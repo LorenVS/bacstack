@@ -45,7 +45,6 @@
     <Compile Include="App\DeviceTableEntry.cs" />
     <Compile Include="App\Host.cs" />
     <Compile Include="App\HostOptions.cs" />
-    <Compile Include="App\IDeviceSearchCallback.cs" />
     <Compile Include="App\InboundUnconfirmedRequest.cs" />
     <Compile Include="App\Messages\AbortMessage.cs" />
     <Compile Include="App\Messages\ComplexAckMessage.cs" />

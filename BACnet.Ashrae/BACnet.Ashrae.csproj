@@ -236,7 +236,9 @@
     <Compile Include="Objects\IDevice.cs" />
     <Compile Include="Partials\DateAndTime.cs" />
     <Compile Include="Partials\DeviceObjectPropertyReference.cs" />
+    <Compile Include="Partials\NetworkAddress.cs" />
     <Compile Include="Partials\PropertyReference.cs" />
+    <Compile Include="Partials\Recipient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Attributes\PropertyIdentifierAttribute.cs" />
     <Compile Include="UnconfirmedRequests\IHave.cs" />

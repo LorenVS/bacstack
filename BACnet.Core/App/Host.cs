@@ -15,7 +15,7 @@ using BACnet.Types;
 
 namespace BACnet.Core.App
 {
-    public class Host : IProcess, IObserver<InboundAppgram>, IObservable<InboundUnconfirmedRequest>
+    public class Host : IProcess, IObserver<InboundAppgram>, IObservable<InboundUnconfirmedRequest>, ISearchHandler<Recipient>
     {
         /// <summary>
         /// The number of times to attempt a device search
@@ -48,9 +48,9 @@ namespace BACnet.Core.App
         private readonly DeviceTable _devices;
 
         /// <summary>
-        /// List of device searches that are currently active
+        /// The list of device searches
         /// </summary>
-        private readonly LinkedList<DeviceSearch> _deviceSearches;
+        private readonly SearchList<Recipient, DeviceTableEntry> _deviceSearches;
 
         /// <summary>
         /// The transaction manager for the host
@@ -81,7 +81,7 @@ namespace BACnet.Core.App
         {
             this._options = options.Clone();
             this._devices = new DeviceTable();
-            this._deviceSearches = new LinkedList<DeviceSearch>();
+            this._deviceSearches = new SearchList<Recipient, DeviceTableEntry>(this);
             this._txManager = new TransactionManager(this);
             this._unconfirmedRequestObservers = new SubscriptionList<InboundUnconfirmedRequest>();
         }
@@ -390,16 +390,11 @@ namespace BACnet.Core.App
             lock(_lock)
             {
                 _devices.Upsert(entry);
-
-                for (var node = _deviceSearches.First; node != null; node = node.Next)
-                {
-                    if (node.Value.Feed(entry))
-                    {
-                        node.Value.Dispose();
-                        _deviceSearches.Remove(node);
-                    }
-                }
             }
+
+            _deviceSearches.ResultFound(
+                Recipient.NewDevice(request.IAmDeviceIdentifier),
+                entry);
 
             return entry;
         }
@@ -508,81 +503,27 @@ namespace BACnet.Core.App
             _sendUnconfirmedRequest(Address.GlobalBroadcast, true, request);
         }
 
-        /// <summary>
-        /// Called whenever a timer ticks for a device search
-        /// </summary>
-        /// <param name="search">The device search</param>
-        private void _searchTick(DeviceSearch search)
-        {
-            lock(_lock)
-            {
-                var node = _deviceSearches.Find(search);
-                if (node != null)
-                {
-                    search.Attempt++;
-                    if (search.Attempt >= DeviceSearchAttempts)
-                    {
-                        _deviceSearches.Remove(node);
-                        search.Callback.DeviceSearchTimedOut();
-                        search.Dispose();
-                    }
-                    else if (search.IsInstanceSearch)
-                    {
-                        _sendWhoIsForInstance(search.Instance);
-                    }
-                    else
-                    {
-                        _sendWhoIsForAddress(search.Address);
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Searches for a device (Sends a who-is request)
         /// </summary>
-        /// <param name="instance">The instance of the device to search for</param>
+        /// <param name="instance">The recipient of the device to search for</param>
         /// <param name="callback">The callback to invoke when the device is found</param>
-        public void SearchForDevice(uint instance, IDeviceSearchCallback callback)
+        public void SearchForDevice(Recipient recipient, ISearchCallback<Recipient, DeviceTableEntry> callback)
         {
             DeviceTableEntry device = null;
 
             lock(_lock)
             {
-                device = _devices.Get(instance);
-                if(device == null)
-                {
-                    DeviceSearch search = new DeviceSearch(this, instance, callback);
-                    this._deviceSearches.AddLast(search);
-                    _sendWhoIsForInstance(instance);
-                }
+                device = _devices.Get(recipient);
             }
 
             if (device != null)
                 callback.DeviceFound(device);
+            else
+                _deviceSearches.Search(recipient, callback);
         }
-
-        /// <summary>
-        /// Searches for a device (Sends a who-is request)
-        /// </summary>
-        /// <param name="address">The address of the device to search for</param>
-        /// <param name="callback">The callback to invoke when the device is found</param>
-        public void SearchForDevice(Address address, IDeviceSearchCallback callback)
-        {
-            lock(_lock)
-            {
-                var device = _devices.GetByAddress(address);
-                if (device != null)
-                    callback.DeviceFound(device);
-                else
-                {
-                    DeviceSearch search = new DeviceSearch(this, address, callback);
-                    this._deviceSearches.AddLast(search);
-                    _sendWhoIsForAddress(address);
-                }
-            }
-        }
-
+        
         /// <summary>
         /// Sends an unconfirmed request
         /// </summary>
@@ -663,6 +604,22 @@ namespace BACnet.Core.App
             }
         }
 
+        /// <summary>
+        /// Performs a search for a device on the network
+        /// </summary>
+        /// <param name="key">The device to search for</param>
+        void ISearchHandler<Recipient>.DoSearch(Recipient key)
+        {
+            switch (key.Tag)
+            {
+                case Recipient.Tags.Address:
+                    _sendWhoIsForAddress(new Address(key.AsAddress));
+                    break;
+                case Recipient.Tags.Device:
+                    _sendWhoIsForInstance(key.AsDevice.Instance);
+                    break;
+            }
+        }
 
         /// <summary>
         /// Called whenever the router instance receives an appgram
@@ -777,127 +734,6 @@ namespace BACnet.Core.App
                 offset += Content.End - Content.Offset;
                 return offset;
             }
-        }
-
-        private class DeviceSearch : IDisposable
-        {
-            /// <summary>
-            /// The host instance
-            /// </summary>
-            public Host Host { get; private set; }
-
-            /// <summary>
-            /// True if this device search is searching
-            /// for a device instance, false if it is searching
-            /// for an address
-            /// </summary>
-            public bool IsInstanceSearch { get; private set; }
-
-            /// <summary>
-            /// The device instance that is being searched for
-            /// </summary>
-            public uint Instance { get; private set; }
-            
-            /// <summary>
-            /// The address that is being searched for
-            /// </summary>
-            public Address Address { get; private set; }
-
-            /// <summary>
-            /// The callback object for the search
-            /// </summary>
-            public IDeviceSearchCallback Callback { get; private set; }
-
-            public int Attempt { get; set; }
-            private Timer _timer;
-
-            /// <summary>
-            /// Constructs a new device search instance
-            /// </summary>
-            /// <param name="host">The host instance</param>
-            /// <param name="instance">The device instance to search for</param>
-            /// <param name="callback">The callback object for the search</param>
-            public DeviceSearch(Host host, uint instance, IDeviceSearchCallback callback)
-            {
-                this.Host = host;
-                this.IsInstanceSearch = true;
-                this.Instance = instance;
-                this.Callback = callback;
-
-                this.Attempt = 0;
-
-                this._timer = new Timer(
-                    _tick,
-                    null,
-                    DeviceSearchInterval,
-                    DeviceSearchInterval
-                    );
-            }
-
-            /// <summary>
-            /// Constructs a new device search instance
-            /// </summary>
-            /// <param name="host">The host instance</param>
-            /// <param name="address">The device address to search for</param>
-            /// <param name="callback">The callback object for the search</param>
-            public DeviceSearch(Host host, Address address, IDeviceSearchCallback callback)
-            {
-                this.Host = host;
-                this.IsInstanceSearch = false;
-                this.Address = address;
-                this.Callback = callback;
-
-                this.Attempt = 0;
-
-                this._timer = new Timer(
-                    _tick,
-                    null,
-                    DeviceSearchInterval,
-                    DeviceSearchInterval
-                    );
-            }
-
-            /// <summary>
-            /// Disposes of the device search instance
-            /// </summary>
-            public void Dispose()
-            {
-                if(_timer != null)
-                {
-                    _timer.Dispose();
-                    _timer = null;
-                }
-            }
-
-            /// <summary>
-            /// Called whenever the timer ticks
-            /// </summary>
-            /// <param name="state">The state of the timer</param>
-            private void _tick(object state)
-            {
-                Host._searchTick(this);
-            }
-
-            /// <summary>
-            /// Feeds a new device table entry into the
-            /// search
-            /// </summary>
-            /// <param name="entry">The to feed</param>
-            /// <returns>True if the search is now satisfied, false otherwise</returns>
-            public bool Feed(DeviceTableEntry entry)
-            {
-                bool satisfies = false;
-
-                if (IsInstanceSearch && entry.Instance == Instance)
-                    satisfies = true;
-                else if (!IsInstanceSearch && entry.Instance != Instance)
-                    satisfies = true;
-
-                if(satisfies)
-                    this.Callback.DeviceFound(entry);
-                return satisfies;
-            }
-
         }
 
         private class UnconfirmedRequestSubscription : IDisposable

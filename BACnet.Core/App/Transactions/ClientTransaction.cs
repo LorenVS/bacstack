@@ -10,7 +10,7 @@ using BACnet.Core.Network;
 
 namespace BACnet.Core.App.Transactions
 {
-    public class ClientTransaction : IDisposable, IDeviceSearchCallback
+    public class ClientTransaction : IDisposable, ISearchCallback<Recipient, DeviceTableEntry>
     {
         /// <summary>
         /// The time to wait fro a response to the transaction
@@ -115,10 +115,10 @@ namespace BACnet.Core.App.Transactions
         /// <param name="manager">The transaction manager</param>
         /// <param name="handle">The handle used to control this transaction and process its response</param>
         /// <param name="invokeId">The invocation id for the transaction</param>
-        /// <param name="deviceInstance">The instance of the destination device</param>
+        /// <param name="destination">The destination device</param>
         /// <param name="serviceChoice">The service choice of the request</param>
         /// <param name="request">The request content</param>
-        public ClientTransaction(Host host, TransactionManager manager, ClientTransactionHandle handle, byte invokeId, uint deviceInstance, byte serviceChoice, byte[] request)
+        public ClientTransaction(Host host, TransactionManager manager, ClientTransactionHandle handle, byte invokeId, Recipient destination, byte serviceChoice, byte[] request)
         {
             this._host = host;
             this._manager = manager;
@@ -128,31 +128,7 @@ namespace BACnet.Core.App.Transactions
             this._request = request;
             this._state = ClientState.GetDeviceInfo;
             this._handle.SetTransaction(this);
-            host.SearchForDevice(deviceInstance, this);
-        }
-
-
-        /// <summary>
-        /// Constructs a new ClientTransaction instance
-        /// </summary>
-        /// <param name="host">The host that initiated the transaction</param>
-        /// <param name="manager">The transaction manager</param>
-        /// <param name="handle">The handle used to control this transaction and process its response</param>
-        /// <param name="invokeId">The invocation id for the transaction</param>
-        /// <param name="deviceAddress">The address of the destination device</param>
-        /// <param name="serviceChoice">The service choice of the request</param>
-        /// <param name="request">The request content</param>
-        public ClientTransaction(Host host, TransactionManager manager, ClientTransactionHandle handle, byte invokeId, Address deviceAddress, byte serviceChoice, byte[] request)
-        {
-            this._host = host;
-            this._manager = manager;
-            this._handle = handle;
-            this._invokeId = invokeId;
-            this._serviceChoice = serviceChoice;
-            this._request = request;
-            this._state = ClientState.GetDeviceInfo;
-            this._handle.SetTransaction(this);
-            host.SearchForDevice(deviceAddress, this);
+            host.SearchForDevice(destination, this);
         }
         
         /// <summary>
@@ -560,7 +536,7 @@ namespace BACnet.Core.App.Transactions
         /// in a device table entry
         /// </summary>
         /// <param name="entry">The entry that was found</param>
-        void IDeviceSearchCallback.DeviceFound(DeviceTableEntry entry)
+        void ISearchCallback<Recipient, DeviceTableEntry>.OnFound(DeviceTableEntry entry)
         {
             lock(_lock)
             {
@@ -580,7 +556,7 @@ namespace BACnet.Core.App.Transactions
         /// <summary>
         /// Called when a device search times out
         /// </summary>
-        void IDeviceSearchCallback.DeviceSearchTimedOut()
+        void ISearchCallback<Recipient, DeviceTableEntry>.OnTimeout()
         {
             lock(_lock)
             {

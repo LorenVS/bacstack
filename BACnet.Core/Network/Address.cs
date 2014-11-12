@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BACnet.Ashrae;
 using BACnet.Core.Datalink;
 
 namespace BACnet.Core.Network
@@ -40,6 +41,16 @@ namespace BACnet.Core.Network
         {
             this.Network = network;
             this.Mac = mac;
+        }
+
+        /// <summary>
+        /// Constructs a new address based on an Ashrae NetworkAddress instance
+        /// </summary>
+        /// <param name="addr">The network address instance</param>
+        public Address(NetworkAddress addr)
+        {
+            this.Network = addr.NetworkNumber;
+            this.Mac = new Mac(addr.MacAddress);
         }
 
         /// <summary>

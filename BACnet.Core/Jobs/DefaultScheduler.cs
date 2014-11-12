@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BACnet.Ashrae;
 using BACnet.Core.App;
 using BACnet.Core.Datalink;
 using BACnet.Core.Network;
 
 namespace BACnet.Core.Jobs
 {
-    public class DefaultScheduler : IScheduler, IDeviceSearchCallback
+    public class DefaultScheduler : IScheduler, ISearchCallback<Recipient, DeviceTableEntry>
     {
         /// <summary>
         /// The maximum number of concurrent requests
@@ -63,7 +64,7 @@ namespace BACnet.Core.Jobs
         /// The hash set of all the devices that are currently
         /// being searched for
         /// </summary>
-        private HashSet<uint> _deviceSearchesActive;
+        private HashSet<Recipient> _deviceSearchesActive;
 
         /// <summary>
         /// Jobs that are currently searching for device information
@@ -161,13 +162,13 @@ namespace BACnet.Core.Jobs
         /// Searches for a device, if a search for that device is not
         /// already active
         /// </summary>
-        /// <param name="instance">The device instance to search for</param>
-        private void _searchForDevice(uint instance)
+        /// <param name="destination">The device to search for</param>
+        private void _searchForDevice(Recipient destination)
         {
-            if (_host == null || _deviceSearchesActive.Contains(instance))
+            if (_host == null || _deviceSearchesActive.Contains(destination))
                 return;
-            _deviceSearchesActive.Add(instance);
-            _host.SearchForDevice(instance, this);
+            _deviceSearchesActive.Add(destination);
+            _host.SearchForDevice(destination, this);
         }
 
         /// <summary>
@@ -218,7 +219,7 @@ namespace BACnet.Core.Jobs
         /// Called when a device has been found
         /// </summary>
         /// <param name="entry">The device table entry</param>
-        void IDeviceSearchCallback.DeviceFound(DeviceTableEntry entry)
+        void ISearchCallback<Recipient, DeviceTableEntry>.OnFound(DeviceTableEntry entry)
         {
             lock(_lock)
             {
@@ -241,7 +242,7 @@ namespace BACnet.Core.Jobs
         /// <summary>
         /// Called when a device search has timed out
         /// </summary>
-        void IDeviceSearchCallback.DeviceSearchTimedOut()
+        void ISearchCallback<Recipient, DeviceTableEntry>.OnTimeout()
         {
             // needs support for failing a job...
         }

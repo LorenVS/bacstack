@@ -91,6 +91,26 @@ namespace BACnet.Core
         }
 
         /// <summary>
+        /// Disposes of any search attempts for a specific key
+        /// </summary>
+        /// <param name="key">The key to dispose attempts for</param>
+        private void _disposeAttempts(TKey key)
+        {
+            for(var node = _attempts.First; node != null;)
+            {
+                if (_keyComparer.Compare(key, node.Value.Key) == 0)
+                {
+                    var temp = node.Next;
+                    node.Value.Dispose();
+                    _attempts.Remove(node);
+                    node = temp;
+                }
+                else
+                    node = node.Next;
+            }
+        }
+
+        /// <summary>
         /// Called when a search attempt timer ticks
         /// </summary>
         private void _searchTick(object state)
@@ -107,6 +127,8 @@ namespace BACnet.Core
                 if (attempt.attempt > _maxRetries)
                 {
                     timeout = true;
+                    attempt.Dispose();
+                    _attempts.Remove(attempt);
                     requests = _collectRequests(attempt.Key);
                 }
             }
@@ -121,6 +143,21 @@ namespace BACnet.Core
         }
 
         /// <summary>
+        /// Requests a search for a key
+        /// </summary>
+        /// <param name="key">The key to search for</param>
+        /// <param name="callback">The search callback</param>
+        public void Search(TKey key, ISearchCallback<TKey, TResult> callback)
+        {
+            var request = new SearchRequest(key, callback);
+            lock(_lock)
+            {
+                _requests.AddLast(request);
+            }
+            _handler.DoSearch(key);
+        }
+
+        /// <summary>
         /// Called by the search handler whenever a result is found
         /// </summary>
         /// <param name="key">The key of the result</param>
@@ -132,6 +169,7 @@ namespace BACnet.Core
             lock(_lock)
             {
                 requests = _collectRequests(key);
+                _disposeAttempts(key);
             }
 
             if(requests != null)
