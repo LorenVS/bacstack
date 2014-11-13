@@ -60,15 +60,6 @@ namespace BACnet.Core.Datalink
         }
 
         /// <summary>
-        /// Checks to see if this mac address contains a broadcast address
-        /// </summary>
-        /// <returns>True if the mac address is a broadcast address, false otherwise</returns>
-        public bool IsBroadcast()
-        {
-            return this.bytes == null;
-        }
-
-        /// <summary>
         /// Constructs a new mac address instance
         /// by copying bytes from a buffer
         /// </summary>
@@ -84,6 +75,26 @@ namespace BACnet.Core.Datalink
                 this.bytes = new byte[length];
                 Buffer.BlockCopy(bytes, offset, this.bytes, 0, length);
             }
+        }
+
+        /// <summary>
+        /// Checks to see if this mac address contains a broadcast address
+        /// </summary>
+        /// <returns>True if the mac address is a broadcast address, false otherwise</returns>
+        public bool IsBroadcast()
+        {
+            return this.bytes == null;
+        }
+
+        /// <summary>
+        /// Converts this mac address to a byte array
+        /// </summary>
+        /// <returns>The mac address bytes</returns>
+        public byte[] ToBytes()
+        {
+            byte[] ret = new byte[this.bytes.Length];
+            Array.Copy(this.bytes, ret, this.bytes.Length);
+            return ret;
         }
 
         /// <summary>

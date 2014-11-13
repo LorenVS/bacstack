@@ -6,12 +6,17 @@ using System.Threading;
 
 namespace BACnet.Core
 {
-    public class SearchList<TKey, TResult>
+    public class SearchList<TKey, TResult> : IDisposable
     {
         /// <summary>
         /// Lock synchronizing access to the search list
         /// </summary>
         private readonly object _lock = new object();
+
+        /// <summary>
+        /// Whether or not the list has been disposed
+        /// </summary>
+        private bool _disposed = false;
 
         /// <summary>
         /// The search handler
@@ -60,6 +65,29 @@ namespace BACnet.Core
             _tempRequests = new List<SearchRequest>();
             _maxRetries = 2;
             _keyComparer = Comparer<TKey>.Default;
+        }
+
+        /// <summary>
+        /// Disposes of the search list
+        /// </summary>
+        public void Dispose()
+        {
+            LinkedList<SearchRequest> requests = null;
+
+            lock(_lock)
+            {
+                _disposed = true;
+                requests = _requests;
+                _requests = null;
+
+                foreach (var attempt in _attempts)
+                    attempt.Dispose();
+                _attempts.Clear();
+            }
+
+            foreach (var request in requests)
+                request.Callback.OnTimeout(request.Key);
+            requests.Clear();
         }
 
         /// <summary>
@@ -149,12 +177,19 @@ namespace BACnet.Core
         /// <param name="callback">The search callback</param>
         public void Search(TKey key, ISearchCallback<TKey, TResult> callback)
         {
+            bool disposed = false;
             var request = new SearchRequest(key, callback);
             lock(_lock)
             {
-                _requests.AddLast(request);
+                disposed = _disposed;
+                if(!disposed)
+                    _requests.AddLast(request);
             }
-            _handler.DoSearch(key);
+
+            if (!disposed)
+                _handler.DoSearch(key);
+            else
+                callback.OnTimeout(key);
         }
 
         /// <summary>
@@ -168,6 +203,9 @@ namespace BACnet.Core
 
             lock(_lock)
             {
+                if (_disposed)
+                    return;
+
                 requests = _collectRequests(key);
                 _disposeAttempts(key);
             }

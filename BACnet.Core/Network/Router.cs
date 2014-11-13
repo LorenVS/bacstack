@@ -9,7 +9,7 @@ using BACnet.Core.Network.Messages;
 
 namespace BACnet.Core.Network
 {
-    public class Router : IProcess, IObservable<InboundAppgram>, IObserver<InboundNetgram>
+    public class Router : IProcess, IObservable<InboundAppgram>, IObserver<InboundNetgram>, ISearchHandler<ushort>, ISearchCallback<ushort, Route>
     {
         /// <summary>
         /// The timespan to leave between searches for a route to a network
@@ -62,14 +62,9 @@ namespace BACnet.Core.Network
         private readonly LinkedList<NetgramContent> _netgramQueue = new LinkedList<NetgramContent>();
 
         /// <summary>
-        /// The list of all the routes that are being searched for
+        /// THe list of all the routes that are being searched for
         /// </summary>
-        private readonly LinkedList<RouteSearch> _routeSearches = new LinkedList<RouteSearch>();
-
-        /// <summary>
-        /// The network search timers that are currently active
-        /// </summary>
-        private readonly LinkedList<NetworkSearchTimer> _networkSearchTimers = new LinkedList<NetworkSearchTimer>();
+        private SearchList<ushort, Route> _routeSearches;
 
         /// <summary>
         /// Constructs a new Router instance
@@ -77,6 +72,7 @@ namespace BACnet.Core.Network
         public Router(RouterOptions options)
         {
             this._options = options.Clone();
+            this._routeSearches = new SearchList<ushort, Route>(this);
 
             foreach (var mapping in _options.PortNetworkMappings)
             {
@@ -114,9 +110,16 @@ namespace BACnet.Core.Network
         {
             _disposePortManagerSubscription();
 
+            if (_routeSearches != null)
+            {
+                _routeSearches.Dispose();
+                _routeSearches = null;
+            }
+
             _netgramQueue.Clear();
 
             _appgramObservers.Clear();
+
         }
 
         /// <summary>
@@ -131,8 +134,11 @@ namespace BACnet.Core.Network
                 return header.Source;
             else
             {
-                Route route = _table.GetRouteByPortId(netgram.Port.PortId);
-                return new Address(route.Network, netgram.Source);
+                lock(_lock)
+                {
+                    Route route = _table.GetRouteByPortId(netgram.Port.PortId);
+                    return new Address(route.Network, netgram.Source);
+                }
             }
         }
 
@@ -199,35 +205,20 @@ namespace BACnet.Core.Network
             // we only use routes from directly connected devices
             if (header.Destination == null && message.Networks != null)
             {
-                foreach (var network in message.Networks)
+                List<Route> routes = new List<Route>();
+
+                lock(_lock)
                 {
-                    var route = _table.AddRemoteRoute(network, netgram.Port.PortId, netgram.Source);
-
-                    for(var node = _netgramQueue.First; node != null;)
+                    foreach (var network in message.Networks)
                     {
-                        if (node.Value.Destination.Network == network)
-                        {
-                            var temp = node.Next;
-                            _sendWithRoute(route, node.Value);
-                            _netgramQueue.Remove(node);
-                            node = temp;
-                        }
-                        else
-                            node = node.Next;
+                        var route = _table.AddRemoteRoute(network, netgram.Port.PortId, netgram.Source);
+                        routes.Add(route);
                     }
+                }
 
-                    for (var node = _networkSearchTimers.First; node != null;)
-                    {
-                        if (node.Value.Network == network)
-                        {
-                            var temp = node.Next;
-                            node.Value.Dispose();
-                            _networkSearchTimers.Remove(node);
-                            node = temp;
-                        }
-                        else
-                            node = node.Next;
-                    }
+                foreach(var route in routes)
+                {
+                    _routeSearches.ResultFound(route.Network, route);
                 }
             }
         }
@@ -334,8 +325,14 @@ namespace BACnet.Core.Network
             netgram.PortId = portId;
             netgram.Destination = mac;
             netgram.Content = content;
-            if (_portManager != null)
-                _portManager.SendNetgram(netgram);
+
+            PortManager pm = null;
+            lock(_lock)
+            {
+                pm = _portManager;
+            }
+            if (pm != null)
+                pm.SendNetgram(netgram);
         }
 
         /// <summary>
@@ -352,76 +349,23 @@ namespace BACnet.Core.Network
                 // don't need a route, since we are globally broadcasting
                 _sendWithRoute(null, content);
             }
-            else if((route = _table.GetRoute(destination.Network)) != null)
-            {
-                // we have a route to the destination network, which we can use
-                _sendWithRoute(route, content);
-            }
             else
             {
-                // we currently have no route to the network, so we
-                // need to enqueue the netgram and search for this network
-                _netgramQueue.AddLast(content);
-                _queueNetworkSearch(destination.Network);
-            }
-        }
-
-        /// <summary>
-        /// Queues a search for a route to a network
-        /// </summary>
-        /// <param name="network">The network to search for</param>
-        private void _queueNetworkSearch(ushort network)
-        {
-            foreach(var timer in _networkSearchTimers)
-            {
-                if(timer.Network == network)
+                lock(_lock)
                 {
-                    timer.Reset();
-                    return;
-                }
-            }
-
-            var newTimer = new NetworkSearchTimer(this, network);
-            _networkSearchTimers.AddLast(newTimer);
-        }
-
-        /// <summary>
-        /// Called whenever a network search ticks
-        /// </summary>
-        /// <param name="timer">The timer instance</param>
-        /// <param name="attempt">The attempt number</param>
-        private void _networkSearchTick(NetworkSearchTimer timer, int attempt)
-        {
-            lock(_lock)
-            {
-                if(!_networkSearchTimers.Contains(timer))
-                {
-                    // if the timer is not present, it has already
-                    // been disposed (probably because the i-am-router
-                    // request came back) so we don't need to do anything
-                    return;
+                    route = _table.GetRoute(destination.Network);
+                    if (route == null)
+                        _netgramQueue.AddLast(content);
                 }
 
-                if (attempt <= Router.NetworkSearchAttempts)
+                if(route != null)
                 {
-                    _searchForRouteToNetwork(timer.Network);
+                    // we have a route to the destination network, which we can use
+                    _sendWithRoute(route, content);
                 }
                 else
                 {
-                    for (var node = _netgramQueue.First; node != null;)
-                    {
-                        if (node.Value.Destination.Network == timer.Network)
-                        {
-                            var temp = node.Next;
-                            _netgramQueue.Remove(node);
-                            node = temp;
-                        }
-                        else
-                            node = node.Next;
-                    }  
-
-                    _networkSearchTimers.Remove(timer);
-                    timer.Dispose();
+                    _routeSearches.Search(destination.Network, this);
                 }
             }
         }
@@ -495,6 +439,66 @@ namespace BACnet.Core.Network
         }
 
         /// <summary>
+        /// Performs a search for a route
+        /// </summary>
+        /// <param name="key">The network number to search for</param>
+        void ISearchHandler<ushort>.DoSearch(ushort key)
+        {
+            _searchForRouteToNetwork(key);
+        }
+
+        /// <summary>
+        /// Collects queued netgrams for a specific network
+        /// </summary>
+        /// <param name="network">The network to collect</param>
+        /// <returns>The queued netgrams</returns>
+        private List<NetgramContent> _collectQueuedNetgrams(ushort network)
+        {
+            List<NetgramContent> ret = null;
+
+            lock(_lock)
+            {
+                for(var node = _netgramQueue.First; node != null;)
+                {
+                    if (node.Value.Destination.Network == network)
+                    {
+                        var temp = node.Next;
+                        ret = ret ?? new List<NetgramContent>();
+                        ret.Add(node.Value);
+                        _netgramQueue.Remove(node);
+                        node = temp;
+                    }
+                    else
+                        node = node.Next;
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Called when a route has been found for a queued netgram
+        /// </summary>
+        /// <param name="result">The route that was found</param>
+        void ISearchCallback<ushort, Route>.OnFound(Route result)
+        {
+            var queued = _collectQueuedNetgrams(result.Network);
+            foreach (var netgram in queued)
+                _sendWithRoute(result, netgram);
+        }
+
+        /// <summary>
+        /// Called when a route search has timed out for a network
+        /// </summary>
+        /// <param name="key">The timed out network number</param>
+        void ISearchCallback<ushort, Route>.OnTimeout(ushort key)
+        {
+            // just remove those netgrams, we don't do anything
+            // with them
+            _collectQueuedNetgrams(key);
+        }
+
+        /// <summary>
         /// Called when the port manager receives the next
         /// netgram instance
         /// </summary>
@@ -509,20 +513,13 @@ namespace BACnet.Core.Network
             offset = header.Deserialize(buffer, offset, end);
             InboundAppgram appgram = null;
 
-            lock(_lock)
+            if (header.IsNetworkMessage)
             {
-                if (header.IsNetworkMessage)
-                {
-                    _processNetworkMessage(value, header, buffer, offset, end);
-                }
-                else
-                {
-                    appgram = _createInboundAppgram(value, header, buffer, offset, end);
-                }
+                _processNetworkMessage(value, header, buffer, offset, end);
             }
-
-            if(appgram != null)
+            else
             {
+                appgram = _createInboundAppgram(value, header, buffer, offset, end);
                 _appgramObservers.Next(appgram);
             }
         }
@@ -565,55 +562,7 @@ namespace BACnet.Core.Network
             }
         }
         
-        private class RouteSearch
-        {
-            /// <summary>
-            /// The network that is being searched for
-            /// </summary>
-            public ushort Network { get; private set; }
-
-            /// <summary>
-            /// The callback instance
-            /// </summary>
-            public IRouteSearchCallback Callback { get; private set; }
-        }
         
-        private class NetworkSearchTimer : IDisposable
-        {
-            public ushort Network { get; private set; }
-            private Router _router;
-            private int _attempt;
-            private Timer _timer;
-
-            public NetworkSearchTimer(Router router, ushort network)
-            {
-                this.Network = network;
-                this._router = router;
-                this._attempt = 0;
-                this._timer = new Timer(_tick, null, TimeSpan.Zero, Router.NetworkSearchInterval);
-            }
-
-            private void _tick(object state)
-            {
-                _router._networkSearchTick(this, _attempt + 1);
-                _attempt++;
-            }
-
-            public void Reset()
-            {
-                _attempt = 0;
-            }
-
-            public void Dispose()
-            {
-                if(_timer != null)
-                {
-                    _timer.Dispose();
-                    _timer = null;
-                }
-            }
-        }
-
         private class NetgramContent : IContent
         {
             public Address Destination { get; private set; }

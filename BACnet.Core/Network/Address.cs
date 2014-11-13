@@ -72,6 +72,17 @@ namespace BACnet.Core.Network
         }
 
         /// <summary>
+        /// Converts this address to an ASHRAE NetworkAddress
+        /// </summary>
+        /// <returns>The network address instance</returns>
+        public NetworkAddress ToNetworkAddress()
+        {
+            return new NetworkAddress(
+                this.Network,
+                this.Mac.ToBytes());
+        }
+
+        /// <summary>
         /// Compares two addresses to determine
         /// if they are equal
         /// </summary>

@@ -82,10 +82,12 @@
     <Compile Include="IProcess.cs" />
     <Compile Include="IProcessOptions.cs" />
     <Compile Include="Jobs\DefaultScheduler.cs" />
+    <Compile Include="Jobs\DefaultSchedulerOptions.cs" />
     <Compile Include="Jobs\IJob.cs" />
     <Compile Include="Jobs\IJobInvocation.cs" />
     <Compile Include="Jobs\IScheduler.cs" />
     <Compile Include="Jobs\SimpleScheduler.cs" />
+    <Compile Include="Jobs\SimpleSchedulerOptions.cs" />
     <Compile Include="MultiBufferStream.cs" />
     <Compile Include="Network\Address.cs" />
     <Compile Include="Network\IRouteSearchCallback.cs" />

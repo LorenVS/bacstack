@@ -50,7 +50,7 @@ namespace BACnet.Core.App
         /// <summary>
         /// The list of device searches
         /// </summary>
-        private readonly SearchList<Recipient, DeviceTableEntry> _deviceSearches;
+        private SearchList<Recipient, DeviceTableEntry> _deviceSearches;
 
         /// <summary>
         /// The transaction manager for the host
@@ -429,6 +429,12 @@ namespace BACnet.Core.App
             lock(_lock)
             {
                 _disposeRouter();
+
+                if (_deviceSearches != null)
+                {
+                    _deviceSearches.Dispose();
+                    _deviceSearches = null;
+                }
             }
         }
 
@@ -519,7 +525,7 @@ namespace BACnet.Core.App
             }
 
             if (device != null)
-                callback.DeviceFound(device);
+                callback.OnFound(device);
             else
                 _deviceSearches.Search(recipient, callback);
         }

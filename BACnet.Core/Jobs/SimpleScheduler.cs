@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,15 +10,25 @@ namespace BACnet.Core.Jobs
     public class SimpleScheduler : IScheduler
     {
         /// <summary>
+        /// The process id of the BACnet process
+        /// </summary>
+        public int ProcessId { get { return _options.ProcessId; } }
+
+        /// <summary>
         /// The lock synchronizing access to the scheduler
         /// </summary>
         private readonly object _lock = new object();
 
         /// <summary>
-        /// The maximum number of concurrent jobs to execute
+        /// Whether or not the scheduler has been disposed
         /// </summary>
-        public int MaxConcurrentJobs { get; private set; }
-        
+        private bool _disposed = false;
+
+        /// <summary>
+        /// The options for this scheduler process
+        /// </summary>
+        private SimpleSchedulerOptions _options;
+
         /// <summary>
         /// The jobs that are queued for execution
         /// </summary>
@@ -36,12 +47,15 @@ namespace BACnet.Core.Jobs
         /// <summary>
         /// Constructs a new simple scheduler instance
         /// </summary>
-        public SimpleScheduler(int maxConcurrentJobs)
+        public SimpleScheduler(SimpleSchedulerOptions options)
         {
-            this.MaxConcurrentJobs = maxConcurrentJobs;
+            Contract.Requires(options != null);
+            Contract.Requires(options.MaxConcurrentJobs > 0);
+
+            this._options = options.Clone();
             this._queuedJobs = new Queue<IJob>();
             this._executingCount = 0;
-            this._executingJobs = new Invocation[MaxConcurrentJobs];
+            this._executingJobs = new Invocation[_options.MaxConcurrentJobs];
         }
 
         /// <summary>
@@ -52,6 +66,8 @@ namespace BACnet.Core.Jobs
         {
             lock(_lock)
             {
+                
+
                 for(int i = 0; i < _executingJobs.Length; i++)
                 {
                     if (Object.ReferenceEquals(_executingJobs[i], invocation))
@@ -71,12 +87,12 @@ namespace BACnet.Core.Jobs
         /// </summary>
         private void _executeNextJobs()
         {
-            Invocation[] newInvocations = new Invocation[MaxConcurrentJobs];
+            Invocation[] newInvocations = new Invocation[_options.MaxConcurrentJobs];
             int newCount = 0;
 
             lock(_lock)
             {
-                while(_executingCount < MaxConcurrentJobs && _queuedJobs.Count > 0)
+                while(_executingCount < _options.MaxConcurrentJobs && _queuedJobs.Count > 0)
                 {
                     IJob job = _queuedJobs.Dequeue();
                     int index = _findNullIndex();

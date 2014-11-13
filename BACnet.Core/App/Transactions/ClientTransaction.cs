@@ -556,7 +556,7 @@ namespace BACnet.Core.App.Transactions
         /// <summary>
         /// Called when a device search times out
         /// </summary>
-        void ISearchCallback<Recipient, DeviceTableEntry>.OnTimeout()
+        void ISearchCallback<Recipient, DeviceTableEntry>.OnTimeout(Recipient recipient)
         {
             lock(_lock)
             {

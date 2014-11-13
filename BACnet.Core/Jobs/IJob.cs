@@ -24,5 +24,11 @@ namespace BACnet.Core.Jobs
         /// </summary>
         /// <param name="invocation">The invocation context</param>
         void Execute(IJobInvocation invocation);
+
+        /// <summary>
+        /// Aborts the job
+        /// </summary>
+        /// <param name="reason">The abort reason</param>
+        void Abort(AbortReason reason);
     }
 }
