@@ -34,9 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eto, Version=1.99.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Eto.Forms.2.0.0.80\lib\net45\Eto.dll</HintPath>
+    <Reference Include="Eto, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eto.Forms.2.0.7\lib\net45\Eto.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.2014.1.474\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>

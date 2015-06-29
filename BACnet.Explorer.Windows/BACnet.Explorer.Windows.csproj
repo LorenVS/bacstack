@@ -55,9 +55,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eto, Version=1.99.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Eto.Forms.2.0.0.80\lib\net45\Eto.dll</HintPath>
+    <Reference Include="Eto, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eto.Forms.2.0.7\lib\net45\Eto.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Eto.OxyPlot, Version=1.0.5377.38510, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -67,9 +67,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Eto.OxyPlot.Wpf.1.0.5377.38510\lib\net45\Eto.OxyPlot.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Eto.Wpf, Version=1.99.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Eto.Platform.Wpf.2.0.0.80\lib\net45\Eto.Wpf.dll</HintPath>
+    <Reference Include="Eto.Wpf, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Eto.Platform.Wpf.2.0.7\lib\net45\Eto.Wpf.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
