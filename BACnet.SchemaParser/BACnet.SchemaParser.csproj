@@ -57,10 +57,18 @@
     <Compile Include="PrimitiveDefinition.cs" />
     <Compile Include="PrimitiveType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolver.cs" />
+    <Compile Include="SchemaLoader.cs" />
     <Compile Include="SequenceDefinition.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="TokenType.cs" />
     <Compile Include="TypeDefinition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BACnet.Types\BACnet.Types.csproj">
+      <Project>{e220a688-a98f-491d-80a9-0f34bce1216f}</Project>
+      <Name>BACnet.Types</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

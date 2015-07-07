@@ -49,6 +49,9 @@
     <Compile Include="IValueSink.cs" />
     <Compile Include="IValueStream.cs" />
     <Compile Include="PropertyAttribute.cs" />
+    <Compile Include="Registrar.cs" />
+    <Compile Include="Schemas\ObjectSchema.cs" />
+    <Compile Include="Schemas\PropertySchema.cs" />
     <Compile Include="StreamOp.cs" />
     <Compile Include="Value.cs" />
     <Compile Include="Values\GenericValue.cs" />

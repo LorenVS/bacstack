@@ -1,6 +1,7 @@
 bin/
 obj/
 packages/
+.vs/
 *.suo
 *.user
 *.ide

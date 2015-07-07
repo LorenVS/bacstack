@@ -20,21 +20,14 @@ namespace BACnet.Shell
     {
         public static void Main(string[] args)
         {
-            /*
             ForeignDevicePortOptions options = new ForeignDevicePortOptions()
             {
                 PortId = 1,
-                BbmdHost = "<bbmd-ip-here>",
+                BbmdHost = "142.33.64.30",
                 BbmdPort = 47808,
                 LocalHost = "0.0.0.0",
                 LocalPort = 47808,
                 RegistrationInterval = TimeSpan.FromSeconds(30)
-            };
-            */
-
-            EthernetPortOptions ethOptions = new EthernetPortOptions()
-            {
-                PortId = 1
             };
 
             PortManagerOptions portMgrOptions = new PortManagerOptions();
@@ -43,8 +36,7 @@ namespace BACnet.Shell
             HostOptions hostOpts = new HostOptions();
             DeviceFinderOptions finderOpts = new DeviceFinderOptions();
 
-            //using (ForeignDevicePort port = new ForeignDevicePort(options))
-            using (EthernetPort port = new EthernetPort(ethOptions))
+            using (ForeignDevicePort port = new ForeignDevicePort(options))
             using (PortManager manager = new PortManager(portMgrOptions))
             using (Router router = new Router(routerOpts))
             using (Host host = new Host(hostOpts))
@@ -56,13 +48,13 @@ namespace BACnet.Shell
                 // as long as there is at least 1 new devices found every 10 seconds,
                 // for each found device, read that devices name and print it to the console
 
-                finder.Timeout(TimeSpan.FromSeconds(10))
+                foreach(var device in finder.Timeout(TimeSpan.FromSeconds(10))
                     .Catch(Observable.Empty<DeviceTableEntry>())
-                    .ForEachAsync(entry =>
-                    {
-                        Console.WriteLine(entry.Instance);
-                    })
-                    .Wait();
+                    .ToEnumerable())
+                {
+                    var name = client.With(device.Instance).ReadProperty(dev => dev.ObjectName);
+                    Console.WriteLine(name);
+                }
             }
 
         }
