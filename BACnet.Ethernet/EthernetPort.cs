@@ -34,6 +34,11 @@ namespace BACnet.Ethernet
         public int ProcessId { get { return _options.ProcessId; } }
 
         /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        public Session Session { get; set; }
+
+        /// <summary>
         /// The lock synchronizing access to the port
         /// </summary>
         private readonly object _lock = new object();
@@ -57,12 +62,7 @@ namespace BACnet.Ethernet
         /// The mac address bytes for the capture device
         /// </summary>
         private byte[] _deviceMac;
-
-        /// <summary>
-        /// The observers that are subscribed to inbound netgrams
-        /// </summary>
-        private SubscriptionList<InboundNetgram> _observers;
-
+        
         /// <summary>
         /// Creates a new ethernet port instance
         /// </summary>
@@ -72,9 +72,24 @@ namespace BACnet.Ethernet
             this._options = options.Clone();
             this._device = _getCaptureDevice();
             this._device.OnPacketArrival += _onPacketArrival;
-            this._observers = new SubscriptionList<InboundNetgram>();
         }
-        
+
+        /// <summary>
+        /// The message types which are handled by this process
+        /// </summary>
+        public IEnumerable<Type> MessageTypes
+        {
+            get { return new Type[] { }; }
+        }
+
+        /// <summary>
+        /// Handles a message queued on this session.
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        public bool HandleMessage(IMessage message)
+        {
+            return false;
+        }
 
         /// <summary>
         /// Retrieves the capture device that is used by this port
@@ -172,10 +187,14 @@ namespace BACnet.Ethernet
             if (dsap != 0x82 || ssap != 0x82 || control != 0x03)
                 return;
 
-            InboundNetgram netgram = new InboundNetgram(this);
-            netgram.Segment = new BufferSegment(buffer, offset, buffer.Length);
-            netgram.Source = source;
-            _observers.Next(netgram);
+            NetgramReceivedMessage message = new NetgramReceivedMessage(
+                this.PortId,
+                source,
+                new BufferSegment(buffer, offset, buffer.Length));
+            if (Session != null)
+            {
+                Session.QueueMessage(message);
+            }
         }
 
         /// <summary>
@@ -231,29 +250,7 @@ namespace BACnet.Ethernet
             }
 
         }
-
-        /// <summary>
-        /// Subscribes to netgrams received by the port
-        /// </summary>
-        /// <param name="observer">The observer</param>
-        /// <returns>The disposable instance for the subscription</returns>
-        public IDisposable Subscribe(IObserver<InboundNetgram> observer)
-        {
-            _observers.Register(observer);
-            return new NetgramSubscription(this, observer);
-        }
-
-        /// <summary>
-        /// Unsubscribes an observer from receiving netgram notifications
-        /// </summary>
-        /// <param name="observer">The observer to unsubscribe</param>
-        private void _unsubscribe(IObserver<InboundNetgram> observer)
-        {
-            var observers = _observers;
-            if(observers != null)
-                observers.Unregister(observer);
-        }
-
+        
         /// <summary>
         /// Resolves the dependencies of this port
         /// </summary>
@@ -274,12 +271,6 @@ namespace BACnet.Ethernet
                 {
                     if (disposing)
                     {
-                        if(_observers != null)
-                        {
-                            _observers.Dispose();
-                            _observers = null;
-                        }
-
                         if(_device != null)
                         {
                             _device.StopCapture();
@@ -301,23 +292,6 @@ namespace BACnet.Ethernet
         {
             dispose(true);
         }
-
-        private class NetgramSubscription : IDisposable
-        {
-            private EthernetPort _port;
-            private IObserver<InboundNetgram> _observer;
-
-            public NetgramSubscription(EthernetPort port, IObserver<InboundNetgram> observer)
-            {
-                this._port = port;
-                this._observer = observer;
-            }
-
-            public void Dispose()
-            {
-                _port._unsubscribe(_observer);
-            }
-        }
-
+        
     }
 }

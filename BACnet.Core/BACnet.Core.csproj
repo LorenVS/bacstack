@@ -71,6 +71,7 @@
     <Compile Include="Datalink\InboundNetgram.cs" />
     <Compile Include="Datalink\IPort.cs" />
     <Compile Include="Datalink\Mac.cs" />
+    <Compile Include="Datalink\NetgramReceivedMessage.cs" />
     <Compile Include="Datalink\OutboundNetgram.cs" />
     <Compile Include="Datalink\PortManager.cs" />
     <Compile Include="Datalink\PortManagerOptions.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Exceptions\ErrorException.cs" />
     <Compile Include="Exceptions\RejectException.cs" />
     <Compile Include="IContent.cs" />
+    <Compile Include="IMessage.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="IProcessOptions.cs" />
     <Compile Include="MultiBufferStream.cs" />

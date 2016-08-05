@@ -14,6 +14,23 @@ namespace BACnet.Core
         int ProcessId { get; }
 
         /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        Session Session { get; set; }
+
+        /// <summary>
+        /// The message types that this process can handle
+        /// </summary>
+        IEnumerable<Type> MessageTypes { get; }
+
+        /// <summary>
+        /// Handles a message within the current session
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        /// <returns>True if the message was handled, false otherwise</returns>
+        bool HandleMessage(IMessage message);
+
+        /// <summary>
         /// Resolves any dependencies of this process
         /// with a list of processes
         /// </summary>

@@ -82,6 +82,11 @@ namespace BACnet.Client
         public int ProcessId { get { return _options.ProcessId; } }
 
         /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        public Session Session { get; set; }
+
+        /// <summary>
         /// The options instance for the network database
         /// </summary>
         private readonly NetworkDatabaseOptions _options;
@@ -145,6 +150,23 @@ namespace BACnet.Client
             this._options = options.Clone();
             this._db = new NetworkDb(this._options.DatabasePath, _options.DescriptorRegistrar);
             this._observers = new List<DescriptorObserver>();
+        }
+
+        /// <summary>
+        /// The message types which are handled by this process
+        /// </summary>
+        public IEnumerable<Type> MessageTypes
+        {
+            get { return new Type[] { }; }
+        }
+
+        /// <summary>
+        /// Handles a message queued on this session.
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        public bool HandleMessage(IMessage message)
+        {
+            return false;
         }
 
         /// <summary>

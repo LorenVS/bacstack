@@ -38,6 +38,11 @@ namespace BACnet.IP
         public byte PortId { get { return _options.PortId; } }
 
         /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        public Session Session { get; set; }
+
+        /// <summary>
         /// Lock used to synchronize access to the port
         /// </summary>
         private readonly object _lock = new object();
@@ -56,13 +61,7 @@ namespace BACnet.IP
         /// The udp server used to send and receive datagrams
         /// </summary>
         private UDPAsyncServer _server;
-
-        /// <summary>
-        /// The observers that are used to receive netgrams
-        /// from this port
-        /// </summary>
-        private readonly SubscriptionList<InboundNetgram> _netgramObservers;
-
+        
         /// <summary>
         /// The timer instance used to schedule foreign device registration
         /// </summary>
@@ -83,11 +82,27 @@ namespace BACnet.IP
             this._options = options.Clone();
             this._state = State.Closed;
             this._server = null;
-            this._netgramObservers = new SubscriptionList<InboundNetgram>();
             this._registrationTimer = null;
             this._registrationTimeout = DateTime.MinValue;
         }
-        
+
+        /// <summary>
+        /// The message types which are handled by this process
+        /// </summary>
+        public IEnumerable<Type> MessageTypes
+        {
+            get { return new Type[] { }; }
+        }
+
+        /// <summary>
+        /// Handles a message queued on this session.
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        public bool HandleMessage(IMessage message)
+        {
+            return false;
+        }
+
         /// <summary>
         /// Begins registration of the foreign device
         /// with the BBMD
@@ -225,7 +240,7 @@ namespace BACnet.IP
             int offset = 0;
             BvlcHeader header = null;
             IBvlcMessage message = null;
-            InboundNetgram netgram = null;
+            NetgramReceivedMessage netgram = null;
             Mac mac = IPUtils.IPEndPointToMac(ep);
 
             try
@@ -246,8 +261,8 @@ namespace BACnet.IP
                     netgram = _processMessage(mac, message, buffer, offset, length);
                 }
 
-                if (netgram != null)
-                    _netgramObservers.Next(netgram);
+                if (netgram != null && Session != null)
+                    Session.QueueMessage(netgram);
             }
             catch(Exception ex)
             {
@@ -264,7 +279,7 @@ namespace BACnet.IP
         /// <param name="offset">The offset of the content within the message</param>
         /// <param name="length">The length of the received datagram</param>
         /// <returns>The inbound netgram to propagate, if any</returns>
-        private InboundNetgram _processMessage(Mac mac, IBvlcMessage message, byte[] buffer, int offset, int length)
+        private NetgramReceivedMessage _processMessage(Mac mac, IBvlcMessage message, byte[] buffer, int offset, int length)
         {
             switch(message.Function)
             {
@@ -289,12 +304,12 @@ namespace BACnet.IP
         /// <param name="buffer">The buffer containing the netgram content</param>
         /// <param name="offset">The offset of the netgram within the buffer</param>
         /// <param name="length">The length of the received datagram</param>
-        private InboundNetgram _createInboundNetgram(Mac mac, byte[] buffer, int offset, int length)
+        private NetgramReceivedMessage _createInboundNetgram(Mac mac, byte[] buffer, int offset, int length)
         {
-            InboundNetgram netgram = new InboundNetgram(this);
-            netgram.Source = mac;
-            netgram.Segment = new BufferSegment(buffer, offset, length);
-            return netgram;
+            return new NetgramReceivedMessage(
+                this.PortId,
+                mac,
+                new BufferSegment(buffer, offset, length));
         }
 
         /// <summary>
@@ -361,8 +376,6 @@ namespace BACnet.IP
                 _server.Dispose();
                 _server = null;
             }
-
-            _netgramObservers.Clear();
         }
 
         /// <summary>
@@ -464,42 +477,6 @@ namespace BACnet.IP
                 }
             }
         }
-
-        /// <summary>
-        /// Registers a new netgram observer with the port
-        /// </summary>
-        /// <param name="observer">The observer to register</param>
-        public IDisposable Subscribe(IObserver<InboundNetgram> observer)
-        {
-            var ret = new NetgramSubscription(this, observer);
-            this._netgramObservers.Register(observer);
-            return ret;
-        }
-
-        /// <summary>
-        /// Unsubscribes a netgram observer from the port
-        /// </summary>
-        /// <param name="observer">The observer to unsubscribe</param>
-        private void _unsubscribe(IObserver<InboundNetgram> observer)
-        {
-            this._netgramObservers.Unregister(observer);
-        }
-
-        private class NetgramSubscription : IDisposable
-        {
-            private ForeignDevicePort _port;
-            private IObserver<InboundNetgram> _observer;
-
-            public NetgramSubscription(ForeignDevicePort port, IObserver<InboundNetgram> observer)
-            {
-                this._port = port;
-                this._observer = observer;
-            }
-
-            public void Dispose()
-            {
-                _port._unsubscribe(_observer);
-            }
-        }
+        
     }
 }

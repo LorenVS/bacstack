@@ -7,12 +7,17 @@ using System.Threading.Tasks;
 
 namespace BACnet.Core.Datalink
 {
-    public class PortManager : IProcess, IObservable<InboundNetgram>
+    public class PortManager : IProcess
     {
         /// <summary>
         /// Retrieves the process id of the process
         /// </summary>
         public int ProcessId { get { return _options.ProcessId; } }
+
+        /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        public Session Session { get; set; }
 
         /// <summary>
         /// Lock used to synchronize access to the port manager
@@ -27,12 +32,7 @@ namespace BACnet.Core.Datalink
         /// <summary>
         /// The list of ports registered with the port manager
         /// </summary>
-        private List<PortRegistration> _ports;
-
-        /// <summary>
-        /// Observers who are handling received netgrams
-        /// </summary>
-        private readonly SubscriptionList<InboundNetgram> _netgramObservers;
+        private List<IPort> _ports;
         
         /// <summary>
         /// Constructs a new port manager instance
@@ -41,8 +41,24 @@ namespace BACnet.Core.Datalink
         {
             Contract.Requires(options != null);
             _options = options.Clone();
-            _ports = new List<PortRegistration>();
-            _netgramObservers = new SubscriptionList<InboundNetgram>();
+            _ports = new List<IPort>();
+        }
+        
+        /// <summary>
+        /// The message types which are handled by this process
+        /// </summary>
+        public IEnumerable<Type> MessageTypes
+        {
+            get { return new Type[] { }; }
+        }
+
+        /// <summary>
+        /// Handles a message queued on this session.
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        public bool HandleMessage(IMessage message)
+        {
+            return false;
         }
 
         /// <summary>
@@ -54,8 +70,8 @@ namespace BACnet.Core.Datalink
         {
             for(int i = 0; i < _ports.Count; i++)
             {
-                if (_ports[i].Port.PortId == portId)
-                    return _ports[i].Port;
+                if (_ports[i].PortId == portId)
+                    return _ports[i];
             }
             return null;
         }
@@ -78,7 +94,6 @@ namespace BACnet.Core.Datalink
         private void _disposeAll()
         {
             _disposePorts();
-            _netgramObservers.Clear();
         }
 
         /// <summary>
@@ -90,11 +105,7 @@ namespace BACnet.Core.Datalink
             lock(_lock)
             {
                 var ports = processes.OfType<IPort>();
-                foreach(var port in ports)
-                {
-                    var registration = new PortRegistration(this, port);
-                    this._ports.Add(registration);
-                }
+                this._ports.AddRange(ports);
             }
         }
 
@@ -113,24 +124,13 @@ namespace BACnet.Core.Datalink
         /// <summary>
         /// Removes a registration from the port manager
         /// </summary>
-        /// <param name="registration">The registration to remove</param>
-        private void _removeRegistration(PortRegistration registration)
+        /// <param name="port">The port to remove</param>
+        private void _removePort(IPort port)
         {
             lock(_lock)
             {
-                this._ports.Remove(registration);
+                this._ports.Remove(port);
             }
-        }
-
-        /// <summary>
-        /// Subscribes a netgram observer to the port manager
-        /// </summary>
-        /// <param name="observer">The observer to subscribe</param>
-        public IDisposable Subscribe(IObserver<InboundNetgram> observer)
-        {
-            var ret = new NetgramSubscription(this, observer);
-            this._netgramObservers.Register(observer);
-            return ret;
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace BACnet.Core.Datalink
                     // send to all ports
                     foreach (var port in _ports)
                     {
-                        port.Port.SendNetgram(netgram);
+                        port.SendNetgram(netgram);
                     }
                 }
                 else
@@ -159,92 +159,8 @@ namespace BACnet.Core.Datalink
                 }
             }
         }
-
-        /// <summary>
-        /// Unsubscribes a netgram observer from the port manager
-        /// </summary>
-        /// <param name="observer">The observer to unsubscribe</param>
-        private void _unsubscribe(IObserver<InboundNetgram> observer)
-        {
-            this._netgramObservers.Unregister(observer);
-        }
-
-        /// <summary>
-        /// Called whenever a netgram is received from a port
-        /// </summary>
-        /// <param name="netgram">The received netgram</param>
-        private void _onNetgram(InboundNetgram netgram)
-        {
-            _netgramObservers.Next(netgram);
-        }
-
-        private class PortRegistration : IDisposable, IObserver<InboundNetgram>
-        {
-            private readonly object _lock = new object();
-            public PortManager Manager { get; private set; }
-            public IPort Port { get; private set; }
-            public IDisposable Subscription { get; private set; }
-
-            public PortRegistration(PortManager manager, IPort port)
-            {
-                this.Manager = manager;
-                this.Port = port;
-                this.Subscription = this.Port.Subscribe(this);
-            }
-
-            private void _disposeAll()
-            {
-                if(this.Subscription != null)
-                {
-                    this.Subscription.Dispose();
-                    this.Subscription = null;
-                }
-            }
-
-            public void Dispose()
-            {
-                lock (_lock)
-                {
-                    _disposeAll();
-                }
-            }
-
-            public void OnCompleted()
-            {
-                lock (_lock)
-                {
-                    _disposeAll();
-                }
-                Manager._removeRegistration(this);
-            }
-
-            public void OnError(Exception error)
-            {
-            }
-
-            public void OnNext(InboundNetgram value)
-            {
-                Manager._onNetgram(value);
-            }
-        }
         
-        private class NetgramSubscription : IDisposable
-        {
-            private PortManager _manager;
-            private IObserver<InboundNetgram> _observer;
-
-            public NetgramSubscription(PortManager manager, IObserver<InboundNetgram> observer)
-            {
-                this._manager = manager;
-                this._observer = observer;
-            }
-
-            public void Dispose()
-            {
-                _manager._unsubscribe(_observer);
-            }
-        }
-
+               
 
     }
 }

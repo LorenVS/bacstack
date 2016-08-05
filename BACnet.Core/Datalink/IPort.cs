@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BACnet.Core.Datalink
 {
-    public interface IPort : IObservable<InboundNetgram>, IProcess
+    public interface IPort : IProcess
     {
         /// <summary>
         /// The port id of the port

@@ -85,6 +85,11 @@ namespace BACnet.Client
         public int ProcessId { get { return _options.ProcessId; } }
 
         /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        public Session Session { get; set; }
+
+        /// <summary>
         /// Creates a new device finder instance
         /// </summary>
         public DeviceFinder(DeviceFinderOptions options)
@@ -93,6 +98,23 @@ namespace BACnet.Client
             this._ranges = new LinkedList<DeviceRange>();
             this._ranges.AddLast(new DeviceRange(false, 1, ObjectId.MaxInstance));
             this._observers = new SubscriptionList<DeviceTableEntry>();
+        }
+
+        /// <summary>
+        /// The message types which are handled by this process
+        /// </summary>
+        public IEnumerable<Type> MessageTypes
+        {
+            get { return new Type[] { }; }
+        }
+
+        /// <summary>
+        /// Handles a message queued on this session.
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        public bool HandleMessage(IMessage message)
+        {
+            return false;
         }
 
         /// <summary>

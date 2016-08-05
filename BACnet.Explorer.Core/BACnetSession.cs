@@ -25,6 +25,8 @@ namespace BACnet.Explorer.Core
         /// </summary>
         private readonly List<IProcess> _processes = new List<IProcess>();
 
+        private readonly Session _session;
+
         /// <summary>
         /// Constructs a new bacnet session instance
         /// </summary>
@@ -38,12 +40,7 @@ namespace BACnet.Explorer.Core
                     _processes.Add(opt.Create());
                 }
 
-                foreach (var port in _processes.OfType<IPort>())
-                    port.Open();
-
-                foreach (var proc in _processes)
-                    proc.Resolve(_processes);
-
+                _session = new Session(_processes.ToArray());
             }
             catch(Exception)
             {
@@ -61,9 +58,7 @@ namespace BACnet.Explorer.Core
         {
             lock(_lock)
             {
-                foreach (var process in _processes)
-                    process.Dispose();
-                _processes.Clear();
+                _session.Dispose();
             }
         }
 

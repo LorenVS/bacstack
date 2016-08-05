@@ -9,7 +9,7 @@ using BACnet.Core.Network.Messages;
 
 namespace BACnet.Core.Network
 {
-    public class Router : IProcess, IObservable<InboundAppgram>, IObserver<InboundNetgram>
+    public class Router : IProcess, IObservable<InboundAppgram>
     {
         /// <summary>
         /// The timespan to leave between searches for a route to a network
@@ -30,6 +30,11 @@ namespace BACnet.Core.Network
         /// The process id of the router
         /// </summary>
         public int ProcessId { get { return _options.ProcessId; } }
+        
+        /// <summary>
+        /// The session which this process belongs to
+        /// </summary>
+        public Session Session { get; set; }
 
         /// <summary>
         /// The options instance for this router
@@ -45,12 +50,7 @@ namespace BACnet.Core.Network
         /// The port manager instance
         /// </summary>
         private PortManager _portManager = null;
-
-        /// <summary>
-        /// The subscription to the port manager (for netgrams)
-        /// </summary>
-        private IDisposable _portManagerSubscription = null;
-
+        
         /// <summary>
         /// List of observers that are subscribed for appgrams
         /// </summary>
@@ -80,6 +80,33 @@ namespace BACnet.Core.Network
         }
 
         /// <summary>
+        /// The message types which are handled by this process
+        /// </summary>
+        public IEnumerable<Type> MessageTypes
+        {
+            get
+            {
+                return new Type[] {
+                    typeof(NetgramReceivedMessage)
+                };
+            }
+        }
+
+        /// <summary>
+        /// Handles a message queued on this session.
+        /// </summary>
+        /// <param name="message">The message to handle</param>
+        public bool HandleMessage(IMessage message)
+        {
+            if (message is NetgramReceivedMessage)
+            {
+                _handleReceivedNetgram((NetgramReceivedMessage)message);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Disposes an observer's subscription
         /// </summary>
         /// <param name="observer">The observer to dispose</param>
@@ -87,28 +114,12 @@ namespace BACnet.Core.Network
         {
             _appgramObservers.Unregister(observer);
         }
-        
-        /// <summary>
-        /// Disposes the current port manager subscription
-        /// </summary>
-        private void _disposePortManagerSubscription()
-        {
-            if(_portManagerSubscription != null)
-            {
-                _portManagerSubscription.Dispose();
-                _portManagerSubscription = null;
-            }
-
-            _portManager = null;
-        }
 
         /// <summary>
         /// Disposes all resources held by the router
         /// </summary>
         private void _disposeAll()
         {
-            _disposePortManagerSubscription();
-
             _netgramQueue.Clear();
 
             _appgramObservers.Clear();
@@ -120,13 +131,13 @@ namespace BACnet.Core.Network
         /// <param name="netgram">The received netgram</param>
         /// <param name="header">The netgram header</param>
         /// <returns>The qualified source address</returns>
-        private Address _getSource(InboundNetgram netgram, NetgramHeader header)
+        private Address _getSource(NetgramReceivedMessage netgram, NetgramHeader header)
         {
             if (header.Source != null)
                 return header.Source;
             else
             {
-                Route route = _table.GetRouteByPortId(netgram.Port.PortId);
+                Route route = _table.GetRouteByPortId(netgram.PortId);
                 return new Address(route.Network, netgram.Source);
             }
         }
@@ -155,12 +166,12 @@ namespace BACnet.Core.Network
         /// <summary>
         /// Processes a received network message
         /// </summary>
-        /// <param name="netgram">The received netgram</param>
+        /// <param name="netgram">The netgram received message</param>
         /// <param name="header">The header of the netgram</param>
         /// <param name="buffer">The buffer containing the appgram</param>
         /// <param name="offset">The offset of the appgram within the buffer</param>
         /// <param name="end">The end of the content in the buffer</param>
-        private void _processNetworkMessage(InboundNetgram netgram, NetgramHeader header, byte[] buffer, int offset, int end)
+        private void _processNetworkMessage(NetgramReceivedMessage netgram, NetgramHeader header, byte[] buffer, int offset, int end)
         {
             try
             {
@@ -189,14 +200,14 @@ namespace BACnet.Core.Network
         /// <param name="netgram">The received netgram</param>
         /// <param name="header">The netgram header</param>
         /// <param name="message">The i am router to network message</param>
-        private void _processIAmRouterToNetworkMessage(InboundNetgram netgram, NetgramHeader header, IAmRouterToNetworkMessage message)
+        private void _processIAmRouterToNetworkMessage(NetgramReceivedMessage netgram, NetgramHeader header, IAmRouterToNetworkMessage message)
         {
             // we only use routes from directly connected devices
             if (header.Destination == null && message.Networks != null)
             {
                 foreach (var network in message.Networks)
                 {
-                    var route = _table.AddRemoteRoute(network, netgram.Port.PortId, netgram.Source);
+                    var route = _table.AddRemoteRoute(network, netgram.PortId, netgram.Source);
 
                     for(var node = _netgramQueue.First; node != null;)
                     {
@@ -230,10 +241,10 @@ namespace BACnet.Core.Network
         /// <summary>
         /// Processes a received who is router to network message
         /// </summary>
-        /// <param name="netgram">The received netgram</param>
+        /// <param name="netgram">The netgram received message</param>
         /// <param name="header">The netgram header</param>
         /// <param name="message">The who is router to network message</param>
-        private void _processWhoIsRouterToNetworkMessage(InboundNetgram netgram, NetgramHeader header, WhoIsRouterToNetworkMessage message)
+        private void _processWhoIsRouterToNetworkMessage(NetgramReceivedMessage netgram, NetgramHeader header, WhoIsRouterToNetworkMessage message)
         {
         }
 
@@ -246,7 +257,7 @@ namespace BACnet.Core.Network
         /// <param name="buffer">The buffer containing the appgram</param>
         /// <param name="offset">The offset of the appgram within the buffer</param>
         /// <param name="end">The end of the content in the buffer</param>
-        private InboundAppgram _createInboundAppgram(InboundNetgram netgram, NetgramHeader header, byte[] buffer, int offset, int end)
+        private InboundAppgram _createInboundAppgram(NetgramReceivedMessage netgram, NetgramHeader header, byte[] buffer, int offset, int end)
         {
             InboundAppgram appgram = new InboundAppgram();
             appgram.Source = _getSource(netgram, header);
@@ -264,12 +275,10 @@ namespace BACnet.Core.Network
         {
             lock(_lock)
             {
-                _disposePortManagerSubscription();
                 var pm = processes.OfType<PortManager>().FirstOrDefault();
                 if(pm != null)
                 {
                     _portManager = pm;
-                    _portManagerSubscription = pm.Subscribe(this);
                 }
             }
         }
@@ -490,59 +499,38 @@ namespace BACnet.Core.Network
         }
 
         /// <summary>
-        /// Called when the port manager receives the next
-        /// netgram instance
+        /// Handles a received netgram
         /// </summary>
-        /// <param name="value">The received netgram</param>
-        void IObserver<InboundNetgram>.OnNext(InboundNetgram value)
+        /// <param name="message">The netgram received message</param>
+        private void _handleReceivedNetgram(NetgramReceivedMessage message)
         {
-            var buffer = value.Segment.Buffer;
-            var offset = value.Segment.Offset;
-            var end = value.Segment.End;
+            var buffer = message.Segment.Buffer;
+            var offset = message.Segment.Offset;
+            var end = message.Segment.End;
 
             NetgramHeader header = new NetgramHeader();
             offset = header.Deserialize(buffer, offset, end);
             InboundAppgram appgram = null;
 
-            lock(_lock)
+            lock (_lock)
             {
                 if (header.IsNetworkMessage)
                 {
-                    _processNetworkMessage(value, header, buffer, offset, end);
+                    _processNetworkMessage(message, header, buffer, offset, end);
                 }
                 else
                 {
-                    appgram = _createInboundAppgram(value, header, buffer, offset, end);
+                    appgram = _createInboundAppgram(message, header, buffer, offset, end);
                 }
             }
 
-            if(appgram != null)
+            if (appgram != null)
             {
                 _appgramObservers.Next(appgram);
             }
         }
-
-        /// <summary>
-        /// Called whenever the port manager receives an error
-        /// from an underlying port
-        /// </summary>
-        /// <param name="error">The received error</param>
-        void IObserver<InboundNetgram>.OnError(Exception error)
-        {
-        }
-
-        /// <summary>
-        /// Called when the port manager terminates the
-        /// subscription
-        /// </summary>
-        void IObserver<InboundNetgram>.OnCompleted()
-        {
-            lock(_lock)
-            {
-                _disposePortManagerSubscription();
-            }
-        }
-
+        
+        
         private class AppgramSubscription : IDisposable
         {
             private Router _router;
