@@ -13,35 +13,35 @@ BACnetConfirmedServiceChoice ::= ENUMERATED {
          lifeSafetyOperation        (27),
 
 
-          atomicReadFile                      (6),
-          atomicWriteFile                     (7),
+          atomicReadFile                       (6),
+          atomicWriteFile                      (7),
 
 
-         addListElement                       (8),
-         removeListElement                    (9),
-         createObject                         (10),
-         deleteObject                         (11),
-         readProperty                         (12),
-         readPropertyConditional              (13),
-         readPropertyMultiple                 (14),
-         readRange                            (26),
-         writeProperty                        (15),
-         writePropertyMultiple                (16),
+         addListElement                        (8),
+         removeListElement                     (9),
+         createObject                          (10),
+         deleteObject                          (11),
+         readProperty                          (12),
+         readPropertyMultiple                  (14),
+         readRange                             (26),
+         writeProperty                         (15),
+         writePropertyMultiple                 (16),
 
 
-        deviceCommunicationControl            (17),
-        confirmedPrivateTransfer              (18),
-        confirmedTextMessage                  (19),
-        reinitializeDevice                    (20),
+        deviceCommunicationControl             (17),
+        confirmedPrivateTransfer               (18),
+        confirmedTextMessage                   (19),
+        reinitializeDevice                     (20),
 
 
-          vtOpen                              (21),
-          vtClose                             (22),
-          vtData                              (23),
+          vtOpen                               (21),
+          vtClose                              (22),
+          vtData                               (23)
 
 
-          authenticate                        (24),
-          requestKey                          (25)
+        
+        
+        
 
 
           
@@ -74,7 +74,6 @@ BACnet-Confirmed-Service-Request ::= CHOICE {
          createObject                        [10] CreateObject-Request,
          deleteObject                        [11] DeleteObject-Request,
          readProperty                        [12] ReadProperty-Request,
-         readPropertyConditional             [13] ReadPropertyConditional-Request,
          readPropertyMultiple                [14] ReadPropertyMultiple-Request,
          readRange                           [26] ReadRange-Request,
          writeProperty                       [15] WriteProperty-Request,
@@ -89,11 +88,12 @@ BACnet-Confirmed-Service-Request ::= CHOICE {
 
           vtOpen                             [21] VT-Open-Request,
           vtClose                            [22] VT-Close-Request,
-          vtData                             [23] VT-Data-Request,
+          vtData                             [23] VT-Data-Request
 
 
-          authenticate                       [24] Authenticate-Request,
-          requestKey                         [25] RequestKey-Request
+        
+        
+        
 
 
           
@@ -122,7 +122,6 @@ BACnet-Confirmed-Service-ACK ::= CHOICE {
 
          createObject                         [10]   CreateObject-ACK,
          readProperty                         [12]   ReadProperty-ACK,
-         readPropertyConditional              [13]   ReadPropertyConditional-ACK,
          readPropertyMultiple                 [14]   ReadPropertyMultiple-ACK,
          readRange                            [26]   ReadRange-ACK,
 
@@ -130,11 +129,12 @@ BACnet-Confirmed-Service-ACK ::= CHOICE {
         confirmedPrivateTransfer              [18] ConfirmedPrivateTransfer-ACK,
 
 
-         vtOpen                               [21] VT-Open-ACK,
-         vtData                               [23] VT-Data-ACK,
+          vtOpen                              [21] VT-Open-ACK,
+          vtData                              [23] VT-Data-ACK
 
 
-         authenticate                         [24] Authenticate-ACK
+        
+        
 
 
 
@@ -178,13 +178,10 @@ ConfirmedEventNotification-Request ::= SEQUENCE {
        eventValues                      [12] BACnetNotificationParameters OPTIONAL
        }
 
-GetAlarmSummary-Request ::= SEQUENCE {
-}
-
 GetAlarmSummary-ACK ::= SEQUENCE OF SEQUENCE {
-       objectIdentifier        BACnetObjectIdentifier,
-       alarmState              BACnetEventState,
-       acknowledgedTransitions BACnetEventTransitionBits
+       objectIdentifier         BACnetObjectIdentifier,
+       alarmState               BACnetEventState,
+       acknowledgedTransitions  BACnetEventTransitionBits
        }
 
 GetEnrollmentSummary-Request ::= SEQUENCE {
@@ -210,27 +207,27 @@ GetEnrollmentSummary-Request ::= SEQUENCE {
        }
 
 GetEnrollmentSummary-ACK ::= SEQUENCE OF SEQUENCE {
-       objectIdentifier     BACnetObjectIdentifier,
-       eventType            BACnetEventType,
-       eventState           BACnetEventState,
-       priority             Unsigned8,
-       notificationClass    Unsigned OPTIONAL
+       objectIdentifier           BACnetObjectIdentifier,
+       eventType                  BACnetEventType,
+       eventState                 BACnetEventState,
+       priority                   Unsigned8,
+       notificationClass          Unsigned OPTIONAL
        }
 
 GetEventInformation-Request ::= SEQUENCE {
        lastReceivedObjectIdentifier  [0] BACnetObjectIdentifier OPTIONAL
        }
 GetEventInformation-ACK ::= SEQUENCE {
-       listOfEventSummaries     [0] SEQUENCE OF SEQUENCE {
-               objectIdentifier        [0] BACnetObjectIdentifier,
-               eventState              [1] BACnetEventState,
-               acknowledgedTransitions [2] BACnetEventTransitionBits,
-               eventTimeStamps         [3] SEQUENCE SIZE (3) OF BACnetTimeStamp,
-               notifyType              [4] BACnetNotifyType,
-               eventEnable             [5] BACnetEventTransitionBits,
-               eventPriorities         [6] SEQUENCE SIZE (3) OF Unsigned
-               },
-       moreEvents               [1] BOOLEAN
+       listOfEventSummaries      [0] SEQUENCE OF SEQUENCE {
+                objectIdentifier        [0] BACnetObjectIdentifier,
+                eventState              [1] BACnetEventState,
+                acknowledgedTransitions [2] BACnetEventTransitionBits,
+                eventTimeStamps         [3] SEQUENCE SIZE (3) OF BACnetTimeStamp,
+                notifyType              [4] BACnetNotifyType,
+                eventEnable             [5] BACnetEventTransitionBits,
+                eventPriorities         [6] SEQUENCE SIZE (3) OF Unsigned
+                },
+       moreEvents                [1] BOOLEAN
        }
 
 LifeSafetyOperation-Request ::= SEQUENCE {
@@ -287,8 +284,8 @@ AtomicReadFile-ACK ::= SEQUENCE {
         }
 
 AtomicWriteFile-Request ::= SEQUENCE {
-      fileIdentifier  BACnetObjectIdentifier,
-      accessMethod    CHOICE {
+       fileIdentifier BACnetObjectIdentifier,
+       accessMethod   CHOICE {
                                streamAccess   [0] SEQUENCE {
                                                      fileStartPosition   INTEGER,
                                                      fileData            OCTET STRING
@@ -299,12 +296,12 @@ AtomicWriteFile-Request ::= SEQUENCE {
                                                      fileRecordData      SEQUENCE OF OCTET STRING
                                                      }
                                }
-      }
+       }
 
 AtomicWriteFile-ACK ::= CHOICE {
-      fileStartPosition [0] INTEGER,
-      fileStartRecord [1] INTEGER
-      }
+       fileStartPosition [0] INTEGER,
+       fileStartRecord [1] INTEGER
+       }
 
 
 
@@ -343,34 +340,6 @@ ReadProperty-ACK ::= SEQUENCE {
        propertyValue       [3] ABSTRACT-SYNTAX.&Type
        }
 
-ReadPropertyConditional-Request ::= SEQUENCE {
-       objectSelectionCriteria                  [0] SEQUENCE {
-                        selectionLogic          [0] ENUMERATED {
-                                                       and (0),
-                                                       or (1),
-                                                       all (2)
-                                                       },
-                        listOfSelectionCriteria [1] SEQUENCE OF SEQUENCE{
-                                                       propertyIdentifier [0] BACnetPropertyIdentifier,
-                                                       propertyArrayIndex         [1] Unsigned OPTIONAL,
-                                                       relationSpecifier          [2] ENUMERATED {
-                                                                equal                      (0),
-                                                                not-equal                  (1),
-                                                                less-than                  (2),
-                                                                greater-than               (3),
-                                                                less-than-or-equal         (4),
-                                                                greater-than-or-equal      (5)
-                                                                },
-                                                       comparisonValue [3] ABSTRACT-SYNTAX.&Type
-                                                       } OPTIONAL
-                        },
-       listOfPropertyReferences [1] SEQUENCE OF BACnetPropertyReference OPTIONAL
-       }
-
-ReadPropertyConditional-ACK ::= SEQUENCE {
-       listOfReadAccessResults SEQUENCE OF ReadAccessResult OPTIONAL
-       }
-
 ReadPropertyMultiple-Request ::= SEQUENCE {
        listOfReadAccessSpecs SEQUENCE OF ReadAccessSpecification
        }
@@ -378,37 +347,37 @@ ReadPropertyMultiple-Request ::= SEQUENCE {
 ReadPropertyMultiple-ACK ::= SEQUENCE {
        listOfReadAccessResults SEQUENCE OF ReadAccessResult
        }
+
 ReadRange-Request ::= SEQUENCE {
       objectIdentifier      [0] BACnetObjectIdentifier,
       propertyIdentifier    [1] BACnetPropertyIdentifier,
-      propertyArrayIndex    [2] Unsigned OPTIONAL               
+      propertyArrayIndex    [2] Unsigned OPTIONAL,              
       range                  CHOICE {
                                     byPosition              [3] SEQUENCE {
                                                                     referenceIndex Unsigned,
-                                                                    count            INTEGER
+                                                                    count            INTEGER16
                                                                     },
                                     
                                     
                                     bySequenceNumber [6] SEQUENCE {
-                                                                    referenceIndex Unsigned,
-                                                                    count            INTEGER
+                                                                    referenceSequenceNumber      Unsigned,
+                                                                    count                        INTEGER16
                                                                     },
                                     byTime                  [7] SEQUENCE {
-                                                                    referenceTime BACnetDateAndTime,
-                                                                    count            INTEGER
+                                                                    referenceTime BACnetDateTime,
+                                                                    count            INTEGER16
                                                                     }
                                     } OPTIONAL
       }
-
 ReadRange-ACK ::= SEQUENCE {
       objectIdentifier    [0] BACnetObjectIdentifier,
       propertyIdentifier  [1] BACnetPropertyIdentifier,
       propertyArrayIndex  [2] Unsigned OPTIONAL , 
       resultFlags         [3] BACnetResultFlags,
       itemCount           [4] Unsigned,
-      itemData            [5] SEQUENCE OF ABSTRACT-SYNTAX.&TYPE,
+      itemData            [5] SEQUENCE OF ABSTRACT-SYNTAX.&Type,
       firstSequenceNumber [6] Unsigned32 OPTIONAL 
-                                                     
+                                                      
       }
 
 RemoveListElement-Request ::= SEQUENCE {
@@ -425,13 +394,39 @@ WriteProperty-Request ::= SEQUENCE {
                                                                       
                                                                       
                propertyValue         [3] ABSTRACT-SYNTAX.&Type,
-               priority              [4] Unsigned8 (1..16) OPTIONAL 
+               priority              [4] Unsigned (1..16) OPTIONAL 
        }
 
 WritePropertyMultiple-Request ::= SEQUENCE {
        listOfwriteAccessSpecifications SEQUENCE OF WriteAccessSpecification
        }
 
+
+
+ConfirmedPrivateTransfer-Request ::= SEQUENCE {
+       vendorID               [0] Unsigned16,
+       serviceNumber          [1] Unsigned,
+       serviceParameters      [2] ABSTRACT-SYNTAX.&Type OPTIONAL
+       }
+
+ConfirmedPrivateTransfer-ACK ::= SEQUENCE {
+       vendorID               [0] Unsigned16,
+       serviceNumber          [1] Unsigned,
+       resultBlock            [2] ABSTRACT-SYNTAX.&Type OPTIONAL
+       }
+
+ConfirmedTextMessage-Request ::= SEQUENCE {
+       textMessageSourceDevice     [0] BACnetObjectIdentifier,
+       messageClass                [1] CHOICE {
+                                          numeric [0] Unsigned,
+                                          character [1] CharacterString
+                                          } OPTIONAL,
+       messagePriority             [2] ENUMERATED {
+                                          normal    (0),
+                                          urgent    (1)
+                                          },
+        message                    [3] CharacterString
+        }
 
 DeviceCommunicationControl-Request ::= SEQUENCE {
        timeDuration   [0] Unsigned16 OPTIONAL,
@@ -441,31 +436,6 @@ DeviceCommunicationControl-Request ::= SEQUENCE {
                                disable-initiation (2)
                                },
        password       [2] CharacterString (SIZE(1..20)) OPTIONAL
-       }
-
-ConfirmedPrivateTransfer-Request ::= SEQUENCE {
-       vendorID               [0] Unsigned,
-       serviceNumber          [1] Unsigned,
-       serviceParameters      [2] ABSTRACT-SYNTAX.&Type OPTIONAL
-       }
-
-ConfirmedPrivateTransfer-ACK ::= SEQUENCE {
-       vendorID               [0] Unsigned,
-       serviceNumber          [1] Unsigned,
-       resultBlock            [2] ABSTRACT-SYNTAX.&Type OPTIONAL
-       }
-
-ConfirmedTextMessage-Request ::= SEQUENCE {
-       textMessageSourceDevice     [0] BACnetObjectIdentifier,
-       messageClass                [1] CHOICE {
-                                           numeric [0] Unsigned,
-                                           character [1] CharacterString
-                                           } OPTIONAL,
-       messagePriority             [2] ENUMERATED {
-                                           normal      (0),
-                                           urgent      (1)
-                                           },
-       message                     [3] CharacterString
        }
 
 ReinitializeDevice-Request ::= SEQUENCE {
@@ -487,8 +457,9 @@ VT-Open-Request ::= SEQUENCE {
       vtClass                  BACnetVTClass,
       localVTSessionIdentifier Unsigned8
       }
+
 VT-Open-ACK ::= SEQUENCE {
-      remoteVTSessionIdentifier               Unsigned8
+      remoteVTSessionIdentifier        Unsigned8
       }
 
 VT-Close-Request ::= SEQUENCE {
@@ -507,40 +478,19 @@ VT-Data-ACK ::= SEQUENCE {
        }
 
 
-
-Authenticate-Request ::= SEQUENCE {
-        pseudoRandomNumber [0] Unsigned32,
-        expectedInvokeID       [1] Unsigned8 OPTIONAL,
-        operatorName           [2] CharacterString OPTIONAL,
-        operatorPassword       [3] CharacterString (SIZE (1..20)) OPTIONAL,
-        startEncipheredSession [4] BOOLEAN OPTIONAL
-        }
-
-Authenticate-ACK ::= SEQUENCE {
-        modifiedRandomNumber Unsigned32
-        }
-
-RequestKey-Request ::= SEQUENCE {
-       requestingDeviceIdentifier             BACnetObjectIdentifier,
-       requestingDeviceAddress                BACnetNetworkAddress,
-       remoteDeviceIdentifier                 BACnetObjectIdentifier,
-       remoteDeviceAddress                    BACnetNetworkAddress
-       }
-
-
-
 BACnetUnconfirmedServiceChoice ::= ENUMERATED {
-         i-Am                                 (0),
-         i-Have                               (1),
-         unconfirmedCOVNotification           (2),
-         unconfirmedEventNotification         (3),
-         unconfirmedPrivateTransfer           (4),
-         unconfirmedTextMessage               (5),
-         timeSynchronization                  (6),
-         who-Has                              (7),
-         who-Is                               (8),
-         utcTimeSynchronization               (9)
-         }
+          i-Am                                (0),
+          i-Have                              (1),
+          unconfirmedCOVNotification          (2),
+          unconfirmedEventNotification        (3),
+          unconfirmedPrivateTransfer          (4),
+          unconfirmedTextMessage              (5),
+          timeSynchronization                 (6),
+          who-Has                             (7),
+          who-Is                              (8),
+          utcTimeSynchronization              (9),
+          writeGroup                          (10)
+          }
 
 
 BACnet-Unconfirmed-Service-Request ::= CHOICE {
@@ -553,7 +503,8 @@ BACnet-Unconfirmed-Service-Request ::= CHOICE {
           timeSynchronization                 [6] TimeSynchronization-Request,
           who-Has                             [7] Who-Has-Request,
           who-Is                              [8] Who-Is-Request,
-          utcTimeSynchronization              [9] UTCTimeSynchronization-Request
+          utcTimeSynchronization              [9] UTCTimeSynchronization-Request,
+          writeGroup                          [10] WriteGroup-Request
           }
 
 
@@ -581,21 +532,31 @@ UnconfirmedEventNotification-Request ::= SEQUENCE {
         priority                        [5] Unsigned8,
         eventType                       [6] BACnetEventType,
         messageText                     [7] CharacterString OPTIONAL,
-        notifyType                      [8] BACnetNotifyType,
-        ackRequired                     [9] BOOLEAN OPTIONAL,
-        fromState                       [10] BACnetEventState OPTIONAL,
-        toState                         [11] BACnetEventState,
-        eventValues                     [12] BACnetNotificationParameters OPTIONAL
+        notifyType                        [8] BACnetNotifyType,
+        ackRequired                       [9] BOOLEAN OPTIONAL,
+        fromState                         [10] BACnetEventState OPTIONAL,
+        toState                           [11] BACnetEventState,
+        eventValues                       [12] BACnetNotificationParameters OPTIONAL
         }
 
 
 
-I-Am-Request ::= SEQUENCE {
-       iAmDeviceIdentifier                  BACnetObjectIdentifier,
-       maxAPDULengthAccepted                Unsigned,
-       segmentationSupported                BACnetSegmentation,
-       vendorID                             Unsigned
+WriteGroup-Request ::= SEQUENCE {
+       groupNumber           [0] Unsigned32,
+       writePriority         [1] Unsigned (1..16),
+       changeList            [2] SEQUENCE of BACnetGroupChannelValue,
+       inhibitDelay          [3] BOOLEAN OPTIONAL
        }
+
+
+
+I-Am-Request ::= SEQUENCE {
+       iAmDeviceIdentifier                BACnetObjectIdentifier,
+       maxAPDULengthAccepted              Unsigned,
+       segmentationSupported              BACnetSegmentation,
+       vendorID                           Unsigned16
+       }
+
 I-Have-Request ::= SEQUENCE {
         deviceIdentifier BACnetObjectIdentifier,
         objectIdentifier BACnetObjectIdentifier,
@@ -603,7 +564,7 @@ I-Have-Request ::= SEQUENCE {
         }
 
 UnconfirmedPrivateTransfer-Request ::= SEQUENCE {
-        vendorID              [0] Unsigned,
+        vendorID              [0] Unsigned16,
         serviceNumber         [1] Unsigned,
         serviceParameters     [2] ABSTRACT-SYNTAX.&Type OPTIONAL
         }
@@ -622,29 +583,30 @@ UnconfirmedTextMessage-Request ::= SEQUENCE {
         }
 
 TimeSynchronization-Request ::= SEQUENCE {
-       time    BACnetDateAndTime
+       time    BACnetDateTime
        }
 
 UTCTimeSynchronization-Request ::= SEQUENCE {
-      time   BACnetDateAndTime
-      }
+      time   BACnetDateTime
+         }
 
 Who-Has-Request ::= SEQUENCE {
       limits SEQUENCE {
-                       deviceInstanceRangeLowLimit         [0] Unsigned (0..4194303),
-                       deviceInstanceRangeHighLimit        [1] Unsigned (0..4194303)
+                       deviceInstanceRangeLowLimit              [0] Unsigned (0..4194303),
+                       deviceInstanceRangeHighLimit             [1] Unsigned (0..4194303)
                        } OPTIONAL,
       object CHOICE {
-                       objectIdentifier                    [2] BACnetObjectIdentifier,
-                       objectName                          [3] CharacterString
+                       objectIdentifier                         [2] BACnetObjectIdentifier,
+                       objectName                               [3] CharacterString
                        }
       }
 
 
 Who-Is-Request ::= SEQUENCE {
-       deviceInstanceRangeLowLimit        [0] Unsigned (0..4194303) OPTIONAL, 
-       deviceInstanceRangeHighLimit       [1] Unsigned (0..4194303) OPTIONAL 
+       deviceInstanceRangeLowLimit            [0] Unsigned (0..4194303) OPTIONAL, 
+       deviceInstanceRangeHighLimit           [1] Unsigned (0..4194303) OPTIONAL 
        }
+
 
 
 BACnetAbortReason ::= ENUMERATED {
@@ -653,6 +615,13 @@ BACnetAbortReason ::= ENUMERATED {
       invalid-apdu-in-this-state            (2),
       preempted-by-higher-priority-task (3),
       segmentation-not-supported            (4),
+      security-error                        (5),
+      insufficient-security                 (6),
+      window-size-out-of-range              (7),
+      application-exceeded-reply-time       (8),
+      out-of-resources                      (9),
+      tsm-timeout                           (10),
+      apdu-too-long                         (11),
       ...
       }
       
@@ -675,34 +644,35 @@ BACnet-Error ::= CHOICE {
          lifeSafetyOperation                  [27] Error,
 
 
-          atomicReadFile                      [6] Error,
-          atomicWriteFile                     [7] Error,
+         atomicReadFile                      [6] Error,
+         atomicWriteFile                     [7] Error,
 
 
-         addListElement                       [8] ChangeList-Error,
-         removeListElement                    [9] ChangeList-Error,
-         createObject                         [10] CreateObject-Error,
-         deleteObject                         [11] Error,
-         readProperty                         [12] Error,
-         readPropertyConditional              [13] Error,
-         readPropertyMultiple                 [14] Error,
-         readRange                            [26] Error,
-         writeProperty                        [15] Error,
-         writePropertyMultiple                [16] WritePropertyMultiple-Error,
+         addListElement                      [8] ChangeList-Error,
+         removeListElement                   [9] ChangeList-Error,
+         createObject                        [10] CreateObject-Error,
+         deleteObject                        [11] Error,
+         readProperty                        [12] Error,
+         readPropertyMultiple                [14] Error,
+         readRange                           [26] Error,
+         writeProperty                       [15] Error,
+         writePropertyMultiple               [16] WritePropertyMultiple-Error,
 
 
-        deviceCommunicationControl            [17] Error,
-        confirmedPrivateTransfer              [18] ConfirmedPrivateTransfer-Error,
-        confirmedTextMessage                  [19] Error,
-        reinitializeDevice                    [20] Error,
+        deviceCommunicationControl           [17] Error,
+        confirmedPrivateTransfer             [18] ConfirmedPrivateTransfer-Error,
+        confirmedTextMessage                 [19] Error,
+        reinitializeDevice                   [20] Error,
 
 
-          vtOpen                              [21] Error,
-          vtClose                             [22] VTClose-Error,
-          vtData                              [23] Error,
+          vtOpen                             [21] Error,
+          vtClose                            [22] VTClose-Error,
+          vtData                             [23] Error
 
-          authenticate                       [24] Error,
-          requestKey                         [25] Error
+
+        
+        
+        
 
 
           
@@ -717,37 +687,37 @@ BACnet-Error ::= CHOICE {
 
 
 BACnetRejectReason ::= ENUMERATED {
-         other                                (0),
-         buffer-overflow                      (1),
-         inconsistent-parameters              (2),
-         invalid-parameter-data-type          (3),
-         invalid-tag                          (4),
-         missing-required-parameter           (5),
-         parameter-out-of-range               (6),
-         too-many-arguments                   (7),
-         undefined-enumeration                (8),
-         unrecognized-service                 (9),
-         ...
-         }
+        other                                (0),
+        buffer-overflow                      (1),
+        inconsistent-parameters              (2),
+        invalid-parameter-data-type          (3),
+        invalid-tag                          (4),
+        missing-required-parameter           (5),
+        parameter-out-of-range               (6),
+        too-many-arguments                   (7),
+        undefined-enumeration                (8),
+        unrecognized-service                 (9),
+        ...
+        }
 
 
 
 ChangeList-Error ::= SEQUENCE {
-       errorType                             [0] Error,
-       firstFailedElementNumber              [1] Unsigned
+       errorType                              [0] Error,
+       firstFailedElementNumber               [1] Unsigned
        }
-
 CreateObject-Error ::= SEQUENCE {
-       errorType                             [0] Error,
-       firstFailedElementNumber              [1] Unsigned
+       errorType                           [0] Error,
+       firstFailedElementNumber            [1] Unsigned
        }
 
 ConfirmedPrivateTransfer-Error ::= SEQUENCE {
        errorType       [0] Error,
-       vendorID        [1] Unsigned,
+       vendorID        [1] Unsigned16,
        serviceNumber [2] Unsigned,
        errorParameters [3] ABSTRACT-SYNTAX.&Type OPTIONAL
        }
+
 Error ::= SEQUENCE {
 
          error-class      ENUMERATED {
@@ -758,78 +728,289 @@ Error ::= SEQUENCE {
                           security          (4),
                           services          (5),
                           vt                (6),
+                          communication (7),
                           ...
                           },
          
          
          
 
-        error-code        ENUMERATED {
-                          other                                   (0),
-                          authentication-failed                   (1),
-                          character-set-not-supported             (41),
-                          configuration-in-progress               (2),
-                          datatype-not-supported                  (47),
-                          device-busy                             (3),
-                          duplicate-name                          (48),
-                          dplicate-object-id                      (49),
-                          dynamic-creation-not-supported          (4),
-                          file-access-denied                      (5),
-                          incompatible-security-levels            (6),
-                          inconsistent-parameters                 (7),
-                          inconsistent-selection-criterion        (8),
-                          invalid-array-index                     (42),
-                          invalid-configuration-data              (46),
-                          invalid-data-type                       (9),
-                          invalid-file-access-method              (10),
-                          invalid-file-start-position             (11),
-                          invalid-operator-name                   (12),
-                          invalid-parameter-data-type             (13),
-                          invalid-time-stamp                      (14),
-                          key-generation-error                    (15),
-                          missing-required-parameter              (16),
-                          no-objects-of-specified-type            (17),
-                          no-space-for-object                     (18),
-                          no-space-to-add-list-element            (19),
-                          no-space-to-write-property              (20),
-                          no-vt-sessions-available                (21),
-                          object-deletion-not-permitted           (23),
-                          object-identifier-already-exists        (24),
-                          operational-problem                     (25),
-                          optional-functionality-not-supported    (45),
-                          password-failure                        (26),
-                          property-is-not-a-list                  (22),
-                          property-is-not-an-array                (50),
-                          read-access-denied                      (27),
-                          security-not-supported                  (28),
-                          service-request-denied                  (29),
-                          timeout                                 (30),
-                             unknown-object                         (31),
-                             unknown-property                       (32),
-                     
-                             unknown-vt-class                       (34),
-                             unknown-vt-session                     (35),
-                             unsupported-object-type                (36),
-                             value-out-of-range                     (37),
-                             vt-session-already-closed              (38),
-                             vt-session-termination-failure         (39),
-                             write-access-denied                    (40),
-                     
-                     
-                             cov-subscription-failed                (43),
-                             not-cov-property                       (44),
-                     
-                     
-                     
-                     
-                     
-                     
-                             ...
-                  }
-                  
-                  
-                  
-   }
+        error-code        ENUMERATED { 
+                          abort-apdu-too-long                                  (123),
+                          abort-application-exceeded-reply-time                (124),
+                          abort-buffer-overflow                                (51),
+                          abort-insufficient-security                          (135),
+                          abort-invalid-apdu-in-this-state                     (52),
+                          abort-other                                          (56),
+                          abort-out-of-resources                               (125),
+                          abort-preempted-by-higher-priority-task              (53),
+                          abort-proprietary                                    (55),
+                          abort-security-error                                 (136),
+                          abort-segmentation-not-supported                     (54),
+                          abort-tsm-timeout                                    (126),
+                          abort-window-size-out-of-range                       (127),
+                          access-denied                                        (85),
+                          addressing-error                                     (115),
+                          bad-destination-address                              (86),
+                          bad-destination-device-id                            (87),
+                          bad-signature                                        (88),
+                          bad-source-address                                   (89),
+                          bad-timestamp                                        (90),
+                          busy                                                 (82),
+                          cannot-use-key                                       (91),
+                          cannot-verify-message-id                             (92),
+                          character-set-not-supported                          (41),
+                          communication-disabled                               (83),
+                          configuration-in-progress                            (2),
+correct-key-revision                   (93),
+cov-subscription-failed                (43),
+datatype-not-supported                 (47),
+delete-fdt-entry-failed                (120),
+device-busy                            (3),
+destination-device-id-required         (94),
+distribute-broadcast-failed            (121),
+duplicate-message                      (95),
+duplicate-name                         (48),
+duplicate-object-id                    (49),
+dynamic-creation-not-supported         (4),
+encryption-not-configured              (96),
+encryption-required                    (97),
+file-access-denied                     (5),
+file-full                              (128),
+inconsistent-configuration             (129),
+inconsistent-object-type               (130),
+inconsistent-parameters                (7),
+inconsistent-selection-criterion       (8),
+incorrect-key                          (98),
+internal-error                         (131),
+invalid-array-index                    (42),
+invalid-configuration-data             (46),
+invalid-data-type                      (9),
+invalid-event-state                    (73),
+invalid-file-access-method             (10),
+invalid-file-start-position            (11),
+invalid-key-data                       (99),
+invalid-parameter-data-type            (13),
+invalid-tag                            (57),
+invalid-time-stamp                     (14),
+key-update-in-progress                 (100),
+list-element-not-found                 (81),
+log-buffer-full                        (75),
+logged-value-purged                    (76),
+malformed-message                      (101),
+message-too-long                       (113),
+missing-required-parameter             (16),
+network-down                           (58),
+no-alarm-configured                    (74),
+no-objects-of-specified-type           (17),
+no-property-specified                  (77),
+no-space-for-object                    (18),
+no-space-to-add-list-element           (19),
+no-space-to-write-property             (20),
+no-vt-sessions-available               (21),
+not-configured                         (132),
+not-configured-for-triggered-logging   (78),
+not-cov-property                       (44),
+not-key-server                         (102),
+not-router-to-dnet                     (110),
+object-deletion-not-permitted          (23),
+object-identifier-already-exists       (24),
+other                                  (0),
+operational-problem                    (25),
+optional-functionality-not-supported   (45),
+                            out-of-memory                           (133),
+                            parameter-out-of-range                  (80),
+                            password-failure                        (26),
+                            property-is-not-a-list                  (22),
+                            property-is-not-an-array                (50),
+                            read-access-denied                      (27),
+                            read-bdt-failed                         (117),
+                            read-fdt-failed                         (119),
+                            register-foreign-device-failed          (118),
+                            reject-buffer-overflow                  (59),
+                            reject-inconsistent-parameters          (60),
+                            reject-invalid-parameter-data-type      (61),
+                            reject-invalid-tag                      (62),
+                            reject-missing-required-parameter       (63),
+                            reject-parameter-out-of-range           (64),
+                            reject-too-many-arguments               (65),
+                            reject-undefined-enumeration            (66),
+                            reject-unrecognized-service             (67),
+                            reject-proprietary                      (68),
+                            reject-other                            (69),
+                            router-busy                             (111),
+                            security-error                          (114),
+                            security-not-configured                 (103),
+                            service-request-denied                  (29),
+                            source-security-required                (104),
+                            success                                 (84),
+                            timeout                                 (30),
+                            too-many-keys                           (105),
+                            unknown-authentication-type             (106),
+                            unknown-device                          (70),
+                            unknown-file-size                       (122),
+                            unknown-key                             (107),
+                            unknown-key-revision                    (108),
+                            unknown-network-message                 (112),
+                            unknown-object                          (31),
+                            unknown-property                        (32),
+                            unknown-subscription                    (79),
+                            unknown-route                           (71),
+                            unknown-source-message                  (109),
+                            unknown-vt-class                        (34),
+                            unknown-vt-session                      (35),
+                            unsupported-object-type                 (36),
+                            value-not-initialized                   (72),
+                            value-out-of-range                      (37),
+                            value-too-long                          (134),
+                            vt-session-already-closed               (38),
+                            vt-session-termination-failure          (39),
+                            write-access-denied                     (40),
+                            write-bdt-failed                        (116),
+
+                            
+                            
+                            
+                            
+                            
+                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            ...
+                            }
+                            
+                            
+                            
+         }
 
 WritePropertyMultiple-Error ::= SEQUENCE {
        errorType                      [0] Error,
@@ -839,24 +1020,225 @@ WritePropertyMultiple-Error ::= SEQUENCE {
 VTClose-Error ::= SEQUENCE {
        errorType                                [0] Error,
        listOfVTSessionIdentifiers               [1] SEQUENCE OF Unsigned8 OPTIONAL
+       }
+
+
+
+
+
+
+
+
+
+
+Unsigned ::=                [APPLICATION 2] INTEGER (0..MAX)
+
+Unsigned8 ::=               Unsigned (0..255)
+
+Unsigned16 ::=              Unsigned (0..65535)
+
+Unsigned32 ::=              Unsigned (0..4294967295)
+
+
+
+INTEGER16 ::=               INTEGER (-32768..32767)
+
+
+Double ::=                [APPLICATION 5] OCTET STRING (SIZE(8)) 
+
+
+
+CharacterString ::=       [APPLICATION 7] OCTET STRING 
+
+
+
+
+
+Date ::= [APPLICATION 10] OCTET STRING (SIZE(4)) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Time ::= [APPLICATION 11] OCTET STRING (SIZE(4)) 
+
+
+
+
+
+BACnetObjectIdentifier ::= [APPLICATION 12] OCTET STRING (SIZE(4)) 
+
+
+
+
+BACnetAccessAuthenticationFactorDisable ::= ENUMERATED {
+      none                      (0),
+      disabled                  (1),
+      disabled-lost             (2),
+      disabled-stolen           (3),
+      disabled-damaged          (4),
+      disabled-destroyed        (5),
+      ...
+      }
+      
+      
+      
+
+BACnetAccessCredentialDisable ::= ENUMERATED {
+      none                      (0),
+      disable                   (1),
+      disable-manual            (2),
+      disable-lockout           (3),
+      ...
+        }
+        
+        
+        
+
+BACnetAccessCredentialDisableReason ::= ENUMERATED {
+      disabled                                      (0),
+      disabled-needs-provisioning                   (1),
+      disabled-unassigned                           (2),
+      disabled-not-yet-active                       (3),
+      disabled-expired                              (4),
+      disabled-lockout                              (5),
+      disabled-max-days                             (6),
+      disabled-max-uses                             (7),
+      disabled-inactivity                           (8),
+      disabled-manual                               (9),
+      ...
+      }
+      
+      
+      
+
+BACnetAccessEvent ::= ENUMERATED {
+      none                                        (0),
+      granted                                     (1),
+      muster                                      (2),
+      passback-detected                           (3),
+      duress                                      (4),
+      trace                                       (5),
+      lockout-max-attempts                        (6),
+      lockout-other                               (7),
+      lockout-relinquished                        (8),
+      locked-by-higher-priority                   (9),
+      out-of-service                              (10),
+      out-of-service-relinquished                 (11),
+      accompaniment-by                            (12),
+      authentication-factor-read                  (13),
+      authorization-delayed                       (14),
+      verification-required                       (15),
+      no-entry-after-grant                        (16),
+      
+      denied-deny-all                             (128),
+      denied-unknown-credential                   (129),
+      denied-authentication-unavailable           (130),
+      denied-authentication-factor-timeout        (131),
+      denied-incorrect-authentication-factor      (132),
+      denied-zone-no-access-rights                (133),
+      denied-point-no-access-rights               (134),
+      denied-no-access-rights                     (135),
+      denied-out-of-time-range                    (136),
+      denied-threat-level                         (137),
+      denied-passback                             (138),
+      denied-unexpected-location-usage            (139),
+      denied-max-attempts                         (140),
+      denied-lower-occupancy-limit                (141),
+      denied-upper-occupancy-limit                (142),
+        denied-authentication-factor-lost            (143),
+        denied-authentication-factor-stolen          (144),
+        denied-authentication-factor-damaged         (145),
+        denied-authentication-factor-destroyed       (146),
+        denied-authentication-factor-disabled        (147),
+        denied-authentication-factor-error           (148),
+        denied-credential-unassigned                 (149),
+        denied-credential-not-provisioned            (150),
+        denied-credential-not-yet-active             (151),
+        denied-credential-expired                    (152),
+        denied-credential-manual-disable             (153),
+        denied-credential-lockout                    (154),
+        denied-credential-max-days                   (155),
+        denied-credential-max-uses                   (156),
+        denied-credential-inactivity                 (157),
+        denied-credential-disabled                   (158),
+        denied-no-accompaniment                      (159),
+        denied-incorrect-accompaniment               (160),
+        denied-lockout                               (161),
+        denied-verification-failed                   (162),
+        denied-verification-timeout                  (163),
+        denied-other                                 (164),
+        ...
+        }
+        
+        
+        
+
+BACnetAccessPassbackMode ::= ENUMERATED {
+      passback-off   (0),
+      hard-passback  (1),
+      soft-passback  (2)
+      }
+
+BACnetAccessRule ::= SEQUENCE {
+      timeRangeSpecifier    [0]            ENUMERATED {
+                                                     specified          (0),
+                                                     always             (1)
+                                                     },
+        timeRange                 [1]      BACnetDeviceObjectPropertyReference OPTIONAL,
+                                           
+        locationSpecifier         [2]      ENUMERATED {
+                                                     specified          (0),
+                                                     all                (1)
+                                                     },
+        location                  [3]      BACnetDeviceObjectReference OPTIONAL,
+                                           
+        enable                    [4]      BOOLEAN
 }
 
+BACnetAccessThreatLevel ::= Unsigned(0..100)
+BACnetAccessUserType ::= ENUMERATED {
+      asset            (0),
+      group            (1),
+      person           (2),
+      ...
+      }
+      
+      
+      
 
-
-
-
-
+BACnetAccessZoneOccupancyState ::= ENUMERATED {
+      normal                    (0),
+      below-lower-limit         (1),
+      at-lower-limit            (2),
+      at-upper-limit            (3),
+      above-upper-limit         (4),
+      disabled                  (5),
+      not-supported             (6),
+      ...
+      }
+      
+      
+      
 
 BACnetAccumulatorRecord ::= SEQUENCE {
-      timestamp              [0] BACnetDateAndTime,
+      timestamp              [0] BACnetDateTime,
       presentValue           [1] Unsigned,
       accumulatedValue       [2] Unsigned,
       accumulatorStatus      [3] ENUMERATED {
-                                      normal                      (0),
-                                      starting                    (1),
-                                      recovered                   (2),
-                                      abnormal                    (3),
-                                      failed                      (4)
+                                      normal                         (0),
+                                      starting                       (1),
+                                      recovered                      (2),
+                                      abnormal                       (3),
+                                      failed                         (4)
                                       }
       }
 
@@ -868,29 +1250,128 @@ BACnetAction ::= ENUMERATED {
 BACnetActionCommand ::= SEQUENCE {
       deviceIdentifier      [0] BACnetObjectIdentifier OPTIONAL,
       objectIdentifier      [1] BACnetObjectIdentifier,
-        propertyIdentifier       [2] BACnetPropertyIdentifier,
-        propertyArrayIndex       [3] Unsigned OPTIONAL, 
-        propertyValue            [4] ABSTRACT-SYNTAX.&Type,
-        priority                 [5] Unsigned (1..16) OPTIONAL, 
-        postDelay                [6] Unsigned OPTIONAL,
-        quitOnFailure            [7] BOOLEAN,
-        writeSuccessful          [8] BOOLEAN
-        }
+      propertyIdentifier    [2] BACnetPropertyIdentifier,
+      propertyArrayIndex    [3] Unsigned OPTIONAL, 
+      propertyValue         [4] ABSTRACT-SYNTAX.&Type,
+      priority              [5] Unsigned (1..16) OPTIONAL, 
+      postDelay             [6] Unsigned OPTIONAL,
+      quitOnFailure         [7] BOOLEAN,
+      writeSuccessful       [8] BOOLEAN
+      }
 
 BACnetActionList ::= SEQUENCE{
       action [0] SEQUENCE OF BACnetActionCommand
-      }
+        }
 
-BACnetNetworkAddress ::= SEQUENCE {
-      network-number Unsigned16, 
-      mac-address     OCTET STRING 
+BACnetAddress ::= SEQUENCE {
+      network-number Unsigned16,                 
+      mac-address     OCTET STRING               
       }
 
 BACnetAddressBinding ::= SEQUENCE {
       deviceObjectIdentifier BACnetObjectIdentifier,
-      deviceAddress          BACnetNetworkAddress
+      deviceAddress          BACnetAddress
       }
 
+BACnetAssignedAccessRights ::= SEQUENCE {
+      assigned-access-rights   [0] BACnetDeviceObjectReference,
+      enable                   [1] BOOLEAN
+      }
+
+BACnetAuthenticationFactor ::= SEQUENCE {
+      format-type     [0] BACnetAuthenticationFactorType,
+      format-class    [1] Unsigned,
+      value           [2] OCTET STRING 
+      }
+
+BACnetAuthenticationFactorFormat ::= SEQUENCE {
+      format-type     [0] BACnetAuthenticationFactorType,
+      vendor-id       [1] Unsigned16 OPTIONAL,
+      vendor-format   [2] Unsigned16 OPTIONAL
+      }
+
+BACnetAuthenticationFactorType ::= ENUMERATED {
+      undefined               (0),
+      error                   (1),
+      custom                  (2),
+      simple-number16         (3),
+      simple-number32         (4),
+      simple-number56         (5),
+      simple-alpha-numeric    (6),
+      aba-track2              (7),
+      wiegand26               (8),
+      wiegand37               (9),
+      wiegand37-facility      (10),
+      facility16-card32       (11),
+      facility32-card32       (12),
+      fasc-n                  (13),
+      fasc-n-bcd              (14),
+      fasc-n-large            (15),
+      fasc-n-large-bcd        (16),
+      gsa75                   (17),
+      chuid                   (18),
+      chuid-full              (19),
+      guid                    (20),
+      cbeff-A                 (21),
+      cbeff-B                 (22),
+      cbeff-C                 (23),
+      user-password           (24)
+      }
+BACnetAuthenticationPolicy ::= SEQUENCE {
+      policy          [0] SEQUENCE OF SEQUENCE {
+                                credential-data-input [0] BACnetDeviceObjectReference,
+                                index                 [1] Unsigned
+                                },
+      order-enforced [1] BOOLEAN,
+      timeout         [2] Unsigned
+      }
+
+BACnetAuthenticationStatus ::= ENUMERATED {
+      not-ready                         (0),
+      ready                             (1),
+      disabled                          (2),
+      waiting-for-authentication-factor (3),
+      waiting-for-accompaniment         (4),
+      waiting-for-verification          (5),
+      in-progress                       (6)
+      }
+
+BACnetAuthorizationExemption ::= ENUMERATED {
+      passback                  (0),
+      occupancy-check           (1),
+      access-rights             (2),
+      lockout                   (3),
+      deny                      (4),
+      verification              (5),
+      authorization-delay       (6),
+      …
+      }
+      
+      
+      
+
+BACnetAuthorizationMode ::= ENUMERATED {
+      authorize                           (0),
+      grant-active                        (1),
+      deny-all                            (2),
+      verification-required               (3),
+      authorization-delayed               (4),
+      none                                (5),
+      ...
+      }
+      
+      
+      
+
+BACnetBackupState ::= ENUMERATED {
+      idle                  (0),
+      preparing-for-backup  (1),
+      preparing-for-restore (2),
+      performing-a-backup   (3),
+      performing-a-restore  (4),
+      backup-failure        (5),
+      restore-failure       (6)
+}
 BACnetBinaryPV ::= ENUMERATED {
       inactive       (0),
       active         (1)
@@ -902,31 +1383,53 @@ BACnetCalendarEntry ::= CHOICE {
       weekNDay        [2] BACnetWeekNDay
       }
 
+BACnetChannelValue ::= CHOICE {
+      null                  NULL,
+      real                  REAL,
+      enumerated            ENUMERATED,
+      unsigned              Unsigned,
+      boolean               BOOLEAN,
+      signed                INTEGER,
+      double                Double,
+      time                  Time,
+      characterString       CharacterString,
+      octetString           OCTET STRING,
+      bitString             BIT STRING,
+      date                  Date,
+      objectid              BACnetObjectIdentifier,
+      lightingCommand       [0] BACnetLightingCommand
+      }
+
 BACnetClientCOV ::= CHOICE {
       real-increment REAL,
       default-increment NULL
       }
 
 BACnetCOVSubscription ::= SEQUENCE {
-      Recipient                   [0] BACnetRecipientProcess,
-      MonitoredPropertyReference  [1] BACnetObjectPropertyReference,
-      IssueConfirmedNotifications [2] BOOLEAN,
-      TimeRemaining               [3] Unsigned,
-      COVIncrement                [4] REAL OPTIONAL         
-                                                            
+      recipient                   [0] BACnetRecipientProcess,
+      monitoredPropertyReference  [1] BACnetObjectPropertyReference,
+      issueConfirmedNotifications [2] BOOLEAN,
+      timeRemaining               [3] Unsigned,
+      covIncrement                [4] REAL OPTIONAL          
+                                                             
+      }
+
+BACnetCredentialAuthenticationFactor ::= SEQUENCE {
+      disable                  [0] BACnetAccessAuthenticationFactorDisable,
+      authentication-factor    [1] BACnetAuthenticationFactor
       }
 
 BACnetDailySchedule ::= SEQUENCE {
       day-schedule     [0] SEQUENCE OF BACnetTimeValue
       }
 
-BACnetDateRange ::= SEQUENCE {
-      StartDate       Date,
+BACnetDateRange ::= SEQUENCE { 
+      startDate       Date,
       endDate         Date
       }
-BACnetDateAndTime ::= SEQUENCE {
-      date            Date,
-      time            Time
+BACnetDateTime ::= SEQUENCE {
+      date            Date, 
+      time            Time  
       }
 
 BACnetDaysOfWeek ::= BIT STRING {
@@ -962,7 +1465,7 @@ BACnetDeviceObjectPropertyValue ::= SEQUENCE {
       deviceIdentifier       [0]      BACnetObjectIdentifier,
       objectIdentifier       [1]      BACnetObjectIdentifier,
       propertyIdentifier     [2]      BACnetPropertyIdentifier,
-      arrayIndex             [3]      Unsigned – OPTIONAL,
+      arrayIndex             [3]      Unsigned OPTIONAL,
       value                  [4]      ABSTRACT-SYNTAX.&Type
       }
 
@@ -970,81 +1473,127 @@ BACnetDeviceObjectReference ::= SEQUENCE {
       deviceIdentifier        [0]    BACnetObjectIdentifier OPTIONAL,
       objectIdentifier        [1]    BACnetObjectIdentifier
       }
+
 BACnetDeviceStatus ::= ENUMERATED {
-          operational              (0),
-          operational-read-only    (1),
-          download-required        (2),
-          download-in-progress     (3),
-          non-operational          (4),
-          backup-in-progress       (5),
+      operational           (0),
+      operational-read-only (1),
+      download-required     (2),
+      download-in-progress  (3),
+      non-operational       (4),
+      backup-in-progress    (5),
+      ...
+          }
+
+
+
+
+BACnetDoorAlarmState ::= ENUMERATED {
+          normal                    (0),
+          alarm                     (1),
+          door-open-too-long        (2),
+          forced-open               (3),
+          tamper                    (4),
+          door-fault                (5),
+          lock-down                 (6),
+          free-access               (7),
+          egress-open               (8),
           ...
           }
 
 
 
 
-BACnetEngineeringUnits ::= ENUMERATED {
+BACnetDoorSecuredStatus ::= ENUMERATED {
+      secured        (0),
+      unsecured      (1),
+      unknown        (2)
+      }
 
-         meters-per-second-per-second               (166),
+BACnetDoorStatus ::= ENUMERATED {
+      closed          (0),
+      opened          (1),
+      unknown         (2),
+      door-fault      (3),
+      unused          (4)
+      }
 
-         square-meters                              (0),
-         square-centimeters                         (116),
-         square-feet                                (1),
-         square-inches                              (115),
+BACnetDoorValue ::= ENUMERATED {
+      lock                  (0),
+      unlock                (1),
+      pulse-unlock          (2),
+      extended-pulse-unlock (3)
+      }
 
+BACnetEngineeringUnits ::= ENUMERATED { 
 
-         currency1                                  (105),
-         currency2                                  (106),
-         currency3                                  (107),
-         currency4                                  (108),
-         currency5                                  (109),
-         currency6                                  (110),
-         currency7                                  (111),
-         currency8                                  (112),
-         currency9                                  (113),
-         currency10                                 (114),
+         meters-per-second-per-second      (166),
 
-
-          milliamperes                              (2),
-          amperes                                   (3),
-          amperes-per-meter                         (167),
-          amperes-per-square-meter                  (168),
-          ampere-square-meters                      (169),
-          farads                                    (170),
-          henrys                                    (171),
-          ohms                                      (4),
-          ohm-meters                                (172),
-          milliohms                                 (145),
-          kilohms                                   (122),
-          megohms                                   (123),
-          siemens                                   (173),   
-          siemens-per-meter                         (174),
-          teslas                                    (175),
-          volts                                     (5),
-          millivolts                                (124),
-          kilovolts                                 (6),
-          megavolts                                 (7),
-          volt-amperes                              (8),
-          kilovolt-amperes                          (9),
-           megavolt-amperes                   (10),
-           volt-amperes-reactive              (11),
-           kilovolt-amperes-reactive          (12),
-           megavolt-amperes-reactive          (13),
-           volts-per-degree-Kelvin            (176),
-           volts-per-meter                    (177),
-           degrees-phase                      (14),
-           power-factor                       (15),
-           webers                             (178),
+         square-meters                     (0),
+         square-centimeters                (116),
+         square-feet                       (1),
+         square-inches                     (115),
 
 
-           joules                             (16),
-           kilojoules                         (17),
-           kilojoules-per-kilogram            (125),
-           megajoules                         (126),
-           watt-hours                         (18),
-           kilowatt-hours                     (19),
-           megawatt-hours                     (146),
-           btus                               (20),
+         currency1                                   (105),
+         currency2                                   (106),
+         currency3                                   (107),
+         currency4                                   (108),
+           currency5                  (109),
+           currency6                  (110),
+           currency7                  (111),
+           currency8                  (112),
+           currency9                  (113),
+           currency10                 (114),
+
+
+          milliamperes                (2),
+          amperes                     (3),
+          amperes-per-meter           (167),
+          amperes-per-square-meter    (168),
+          ampere-square-meters        (169),
+          decibels                    (199),
+          decibels-millivolt          (200),
+          decibels-volt               (201),
+          farads                      (170),
+          henrys                      (171),
+          ohms                        (4),
+          ohm-meters                  (172),
+          milliohms                   (145),
+          kilohms                     (122),
+          megohms                     (123),
+          microsiemens                (190),
+          millisiemens                (202),
+          siemens                     (173),
+          siemens-per-meter           (174),
+          teslas                      (175),
+          volts                       (5),
+          millivolts                  (124),
+          kilovolts                   (6),
+          megavolts                   (7),
+          volt-amperes                (8),
+          kilovolt-amperes            (9),
+          megavolt-amperes            (10),
+          volt-amperes-reactive       (11),
+          kilovolt-amperes-reactive   (12),
+          megavolt-amperes-reactive   (13),
+          volts-per-degree-Kelvin     (176),
+          volts-per-meter             (177),
+          degrees-phase               (14),
+          power-factor                (15),
+          webers                      (178),
+
+
+           joules                     (16),
+           kilojoules                 (17),
+           kilojoules-per-kilogram    (125),
+           megajoules                 (126),
+           watt-hours                 (18),
+           kilowatt-hours             (19),
+           megawatt-hours             (146),
+           watt-hours-reactive        (203),
+           kilowatt-hours-reactive    (204),
+           megawatt-hours-reactive    (205),
+           btus                       (20),
            kilo-btus                          (147),
            mega-btus                          (148),
            therms                             (21),
@@ -1067,36 +1616,40 @@ BACnetEngineeringUnits ::= ENUMERATED {
            newton                             (153),
 
 
-        cycles-per-hour                       (25),
-        cycles-per-minute                     (26),
-        hertz                                 (27),
-        kilohertz                             (129),
-        megahertz                             (130),
-        per-hour                              (131),
+         cycles-per-hour                      (25),
+         cycles-per-minute                    (26),
+         hertz                                (27),
+         kilohertz                            (129),
+         megahertz                            (130),
+         per-hour                             (131),
 
 
         grams-of-water-per-kilogram-dry-air   (28),
         percent-relative-humidity             (29),
 
 
+           micrometers                        (194),
            millimeters                        (30),
            centimeters                        (118),
+           kilometers                         (193),
            meters                             (31),
-          inches                        (32),
-          feet                          (33),
+           inches                             (32),
+           feet                               (33),
 
 
-          candelas                      (179),
-          candelas-per-square-meter     (180),
-          watts-per-square-foot         (34),
-          watts-per-square-meter        (35),
-          lumens                        (36),
-          luxes                         (37),
-          foot-candles                  (38),
+           candelas                           (179),
+           candelas-per-square-meter          (180),
+           watts-per-square-foot              (34),
+           watts-per-square-meter             (35),
+           lumens                             (36),
+           luxes                              (37),
+           foot-candles                       (38),
 
 
-          kilograms                     (39),
-          pounds-mass                   (40),
+           milligrams                         (196),
+           grams                              (195),
+           kilograms                          (39),
+           pounds-mass                        (40),
           tons                          (41),
 
 
@@ -1127,6 +1680,7 @@ BACnetEngineeringUnits ::= ENUMERATED {
          millibars                      (134),
          bars                           (55),
          pounds-force-per-square-inch   (56),
+         millimeters-of-water           (206),
          centimeters-of-water           (57),
          inches-of-water                (58),
          millimeters-of-mercury         (59),
@@ -1134,109 +1688,383 @@ BACnetEngineeringUnits ::= ENUMERATED {
          inches-of-mercury              (61),
 
 
-       degrees-Celsius                  (62),
-       degrees-Kelvin                   (63),
-       degrees-Kelvin-per-hour          (181),
-       degrees-Kelvin-per-minute        (182),
-           degrees-Fahrenheit              (64),
-           degree-days-Celsius             (65),
-           degree-days-Fahrenheit          (66),
-           delta-degrees-Fahrenheit        (120),
-           delta-degrees-Kelvin            (121),
+        degrees-Celsius                 (62),
+        degrees-Kelvin                  (63),
+        degrees-Kelvin-per-hour         (181),
+        degrees-Kelvin-per-minute       (182),
+        degrees-Fahrenheit              (64),
+        degree-days-Celsius             (65),
+        degree-days-Fahrenheit          (66),
+        delta-degrees-Fahrenheit        (120),
+        delta-degrees-Kelvin            (121),
 
 
-           years                           (67),
-           months                          (68),
-           weeks                           (69),
-           days                            (70),
-           hours                           (71),
-           minutes                         (72),
-           seconds                         (73),
-           hundredths-seconds              (158),
-           milliseconds                    (159),
+          years                         (67),
+          months                        (68),
+          weeks                         (69),
+          days                          (70),
+          hours                         (71),
+          minutes                       (72),
+          seconds                       (73),
+           hundredths-seconds                (158),
+           milliseconds                      (159),
 
 
-           newton-meters                   (160),
+           newton-meters                     (160),
 
 
-         millimeters-per-second            (161),
-         millimeters-per-minute            (162),
-         meters-per-second                 (74),
-         meters-per-minute                 (163),
-         meters-per-hour                   (164),
-         kilometers-per-hour               (75),
-         feet-per-second                   (76),
-         feet-per-minute                   (77),
-         miles-per-hour                    (78),
+         millimeters-per-second              (161),
+         millimeters-per-minute              (162),
+         meters-per-second                   (74),
+         meters-per-minute                   (163),
+         meters-per-hour                     (164),
+         kilometers-per-hour                 (75),
+         feet-per-second                     (76),
+         feet-per-minute                     (77),
+         miles-per-hour                      (78),
 
-         cubic-feet                        (79),
-         cubic-meters                      (80),
-         imperial-gallons                  (81),
-         liters                            (82),
-         us-gallons                        (83),
-
-
-        cubic-feet-per-second              (142),
-        cubic-feet-per-minute              (84),
-        cubic-meters-per-second            (85),
-        cubic-meters-per-minute            (165),
-        cubic-meters-per-hour              (135),
-        imperial-gallons-per-minute        (86),
-        liters-per-second                  (87),
-        liters-per-minute                  (88),
-        liters-per-hour                    (136),
-        us-gallons-per-minute              (89),
+         cubic-feet                          (79),
+         cubic-meters                        (80),
+         imperial-gallons                    (81),
+         milliliters                         (197),
+         liters                              (82),
+         us-gallons                          (83),
 
 
-           degrees-angular                 (90),
-           degrees-Celsius-per-hour        (91),
-           degrees-Celsius-per-minute      (92),
-           degrees-Fahrenheit-per-hour     (93),
-           degrees-Fahrenheit-per-minute   (94),
-           joule-seconds                   (183),
-          kilograms-per-cubic-meter                    (186),
-          kilowatt-hours-per-square-meter              (137),
-          kilowatt-hours-per-square-foot               (138),
-          megajoules-per-square-meter                  (139),
-          megajoules-per-square-foot                   (140),
-          no-units                                     (95),
-          newton-seconds                               (187),
-          newtons-per-meter                            (188),
-          parts-per-million                            (96),
-          parts-per-billion                            (97),
-          percent                                      (98),
-          percent-obscuration-per-foot                 (143),
-          percent-obscuration-per-meter                (144),
-          percent-per-second                           (99),
-          per-minute                                   (100),
-          per-second                                   (101),
-          psi-per-degree-Fahrenheit                    (102),
-          radians                                      (103),
-          radians-per-second                           (184),
-          revolutions-per-minute                       (104),
-          square-meters-per-Newton                     (185),
-          watts-per-meter-per-degree-Kelvin            (189),
-          watts-per-square-meter-degree-kelvin         (141),
+        cubic-feet-per-second                (142),
+        cubic-feet-per-minute                (84),
+        cubic-feet-per-hour                  (191),
+        cubic-meters-per-second              (85),
+        cubic-meters-per-minute              (165),
+        cubic-meters-per-hour                (135),
+        imperial-gallons-per-minute          (86),
+        milliliters-per-second               (198),
+        liters-per-second                    (87),
+        liters-per-minute                    (88),
+        liters-per-hour                      (136),
+        us-gallons-per-minute                (89),
+        us-gallons-per-hour                  (192),
+
+
+           degrees-angular                   (90),
+           degrees-Celsius-per-hour          (91),
+           degrees-Celsius-per-minute        (92),
+           degrees-Fahrenheit-per-hour       (93),
+           degrees-Fahrenheit-per-minute     (94),
+           joule-seconds                     (183),
+           kilograms-per-cubic-meter         (186),
+           kilowatt-hours-per-square-meter   (137),
+           kilowatt-hours-per-square-foot    (138),
+           megajoules-per-square-meter       (139),
+           megajoules-per-square-foot        (140),
+           no-units                          (95),
+           newton-seconds                    (187),
+           newtons-per-meter                 (188),
+           parts-per-million                 (96),
+           parts-per-billion                 (97),
+        percent                                (98),
+        percent-obscuration-per-foot           (143),
+        percent-obscuration-per-meter          (144),
+        percent-per-second                     (99),
+        per-minute                             (100),
+        per-second                             (101),
+        psi-per-degree-Fahrenheit              (102),
+        radians                                (103),
+        radians-per-second                     (184),
+        revolutions-per-minute                 (104),
+        square-meters-per-Newton               (185),
+        watts-per-meter-per-degree-Kelvin      (189),
+        watts-per-square-meter-degree-kelvin   (141),
+        per-mille                              (207),
+        grams-per-gram                         (208),
+        kilograms-per-kilogram                 (209),
+        grams-per-kilogram                     (210),
+        milligrams-per-gram                    (211),
+        milligrams-per-kilogram                (212),
+        grams-per-milliliter                   (213),
+        grams-per-liter                        (214),
+        milligrams-per-liter                   (215),
+        micrograms-per-liter                   (216),
+        grams-per-cubic-meter                  (217),
+        milligrams-per-cubic-meter             (218),
+        micrograms-per-cubic-meter             (219),
+        nanograms-per-cubic-meter              (220),
+        grams-per-cubic-centimeter             (221),
+        becquerels                             (222),
+        kilobecquerels                         (223),
+        megabecquerels                         (224),
+        gray                                   (225),
+        milligray                              (226),
+        microgray                              (227),
+        sieverts                               (228),
+        millisieverts                          (229),
+        microsieverts                          (230),
+        microsieverts-per-hour                 (231),
+        decibels-a                             (232),
+        nephelometric-turbidity-unit           (233),
+        pH                                     (234),
+        grams-per-square-meter                 (235),
+        minutes-per-degree-kelvin              (236),
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
           ...
           }
 
-BACnetExtendedParameter ::= CHOICE {
-   null         NULL,
-   real         REAL,
-   integer      Unsigned,
-   boolean      BOOLEAN,
-   double       DOUBLE,
-   octet        OCTET STRING,
-   bitstring    BIT STRING,
-   enum         ENUMERATED,
-   reference [0] BACnetDeviceObjectPropertyReference
- }
 
- BACnetCOVCriteria ::= CHOICE {
-    bitmask                         [0] BIT STRING,
-    referenced-property-increment   [1] REAL
-  }
 
+
+BACnetEventLogRecord ::= SEQUENCE {
+      timestamp     [0] BACnetDateTime,
+      logDatum      [1] CHOICE {
+                            log-status              [0] BACnetLogStatus,
+                            notification            [1] ConfirmedEventNotification-Request,
+                            time-change             [2] REAL
+                            }
+      }
+
+BACnetEventNotificationSubscription ::= SEQUENCE {
+      recipient                         [0] BACnetRecipient,
+      processIdentifier                 [1] Unsigned32,
+      issueConfirmedNotifications       [2] BOOLEAN,
+      timeRemaining                     [3] Unsigned
+      }
 
 BACnetEventParameter ::= CHOICE {
 
@@ -1252,49 +2080,106 @@ BACnetEventParameter ::= CHOICE {
                                          time-delay          [0] Unsigned,
                                          list-of-values      [1] SEQUENCE OF BACnetPropertyStates
                                          },
+
         change-of-value           [2] SEQUENCE {
                                          time-delay          [0] Unsigned,
-                                         cov-criteria        [1] BACnetCOVCriteria
+                                         cov-criteria        [1] CHOICE {
+                                                                      bitmask                          [0] BIT STRING,
+                                                                      referenced-property-increment    [1] REAL
+                                                                      }
                                          },
         command-failure           [3] SEQUENCE {
-                                         time-delay                            [0] Unsigned,
-                                         feedback-property-reference           [1] BACnetDeviceObjectPropertyReference
+                                         time-delay                           [0] Unsigned,
+                                         feedback-property-reference          [1] BACnetDeviceObjectPropertyReference
                                          },
-        floating-limit              [4] SEQUENCE {
-                                            time-delay                   [0] Unsigned,
-                                            setpoint-reference           [1] BACnetDeviceObjectPropertyReference,
-                                            low-diff-limit               [2] REAL,
-                                            high-diff-limit              [3] REAL,
-                                            deadband                     [4] REAL
-                                            },
-        out-of-range                [5] SEQUENCE {
-                                            time-delay          [0] Unsigned,
-                                            low-limit           [1] REAL,
-                                            high-limit          [2] REAL,
-                                            deadband            [3] REAL
-                                            },
-        
-        change-of-life-safety       [8] SEQUENCE {
-                                            time-delay                          [0] Unsigned,
-                                            list-of-life-safety-alarm-values [1] SEQUENCE OF BACnetLifeSafetyState,
-                                            list-of-alarm-values                [2] SEQUENCE OF BACnetLifeSafetyState,
-                                            mode-property-reference             [3] BACnetDeviceObjectPropertyReference
-                                            },
-        extended                    [9] SEQUENCE {
-                                            vendorId                [0] Unsigned,
-                                            extendedEventType [1] Unsigned,
-                                            parameters              [2] SEQUENCE OF BACnetExtendedParameter
-                                            },
-        buffer-ready                [10] SEQUENCE {
-                                            notification-threshold              [0] Unsigned,
-                                            previous-notification-count         [1] Unsigned32
-                                            },
-        unsigned-range              [11] SEQUENCE {
-                                            time-delay          [0] Unsigned,
-                                            low-limit           [1] Unsigned,
-                                            high-limit          [2] Unsigned
-                                            }
-        }
+
+        floating-limit            [4] SEQUENCE {
+                                         time-delay                  [0] Unsigned,
+                                         setpoint-reference          [1] BACnetDeviceObjectPropertyReference,
+                                         low-diff-limit              [2] REAL,
+                                         high-diff-limit             [3] REAL,
+                                   deadband                      [4] REAL
+                                   },
+out-of-range                [5] SEQUENCE {
+                                   time-delay           [0] Unsigned,
+                                   low-limit            [1] REAL,
+                                   high-limit           [2] REAL,
+                                   deadband             [3] REAL
+                                   },
+
+change-of-life-safety       [8] SEQUENCE {
+                                   time-delay                         [0] Unsigned,
+                                   list-of-life-safety-alarm-values [1] SEQUENCE OF BACnetLifeSafetyState,
+                                   list-of-alarm-values               [2] SEQUENCE OF BACnetLifeSafetyState,
+                                   mode-property-reference            [3] BACnetDeviceObjectPropertyReference
+                                   },
+extended                    [9] SEQUENCE {
+                                   vendor-id                [0] Unsigned16,
+                                   extended-event-type [1] Unsigned,
+                                   parameters               [2] SEQUENCE OF CHOICE {
+                                               null                NULL,
+                                               real                REAL,
+                                               unsigned            Unsigned,
+                                               boolean             BOOLEAN,
+                                               integer             INTEGER,
+                                               double              Double,
+                                               octet               OCTET STRING,
+                                               characterString     CharacterString,
+                                               bitstring           BIT STRING,
+                                               enum                ENUMERATED,
+                                            date               Date,
+                                            time               Time,
+                                            objectIdentifier   BACnetObjectIdentifier,
+                                            reference          [0] BACnetDeviceObjectPropertyReference
+                                              }
+                                  },
+buffer-ready             [10] SEQUENCE {
+                                  notification-threshold             [0] Unsigned,
+                                  previous-notification-count        [1] Unsigned32
+                                  },
+unsigned-range           [11] SEQUENCE {
+                                  time-delay         [0] Unsigned,
+                                  low-limit          [1] Unsigned,
+                                  high-limit         [2] Unsigned
+                                  },
+                         
+access-event             [13] SEQUENCE {
+                                  list-of-access-events           [0] SEQUENCE OF BACnetAccessEvent,
+                                  access-event-time-reference [1] BACnetDeviceObjectPropertyReference
+                                  },
+double-out-of-range      [14] SEQUENCE {
+                                  time-delay         [0] Unsigned,
+                                  low-limit          [1] Double,
+                                  high-limit         [2] Double,
+                                  deadband           [3] Double
+                                  },
+signed-out-of-range      [15] SEQUENCE {
+                                  time-delay         [0] Unsigned,
+                                             low-limit           [1] INTEGER,
+                                             high-limit          [2] INTEGER,
+                                             deadband            [3] Unsigned
+                                             },
+         unsigned-out-of-range      [16] SEQUENCE {
+                                             time-delay          [0] Unsigned,
+                                             low-limit           [1] Unsigned,
+                                             high-limit          [2] Unsigned,
+                                             deadband            [3] Unsigned
+                                             },
+         change-of-characterstring [17] SEQUENCE {
+                                             time-delay                   [0] Unsigned,
+                                             list-of-alarm-values         [1] SEQUENCE OF CharacterString
+                                             },
+         change-of-status-flags     [18] SEQUENCE {
+                                             time-delay                   [0] Unsigned,
+                                             selected-flags               [1] BACnetStatusFlags
+                                             },
+                                    
+         none                       [20] NULL
+         }
+
+
+
+
 
 
 
@@ -1317,44 +2202,108 @@ BACnetEventTransitionBits ::= BIT STRING {
       to-fault        (1),
       to-normal       (2)
       }
-
 BACnetEventType ::= ENUMERATED {
-          change-of-bitstring           (0),
-          change-of-state               (1),
-          change-of-value               (2),
-          command-failure               (3),
-          floating-limit                (4),
-          out-of-range                  (5),
-          
-          
-          change-of-life-safety         (8),
-          extended                      (9),
-          buffer-ready                  (10),
-          unsigned-range                (11),
-          ...
-          }
+      change-of-bitstring           (0),
+      change-of-state               (1),
+      change-of-value               (2),
+      command-failure               (3),
+      floating-limit                (4),
+      out-of-range                  (5),
+      
+      
+      change-of-life-safety         (8),
+      extended                      (9),
+      buffer-ready                  (10),
+      unsigned-range                (11),
+      
+      access-event                  (13),
+      double-out-of-range           (14),
+      signed-out-of-range           (15),
+      unsigned-out-of-range         (16),
+      change-of-characterstring (17),
+      change-of-status-flags        (18),
+      change-of-reliability         (19),
+      none                          (20),
+      ...
+      }
+      
+      
+      
+      
 
+BACnetFaultParameter ::= CHOICE {
+      none                    [0] NULL,
+      fault-characterstring   [1] SEQUENCE {
+                                      list-of-fault-values               [0] SEQUENCE OF CharacterString
+                                      },
+      fault-extended          [2] SEQUENCE {
+                                      vendor-id                          [0] Unsigned16,
+                                      extended-fault-type                [1] Unsigned,
+                                      parameters                         [2] SEQUENCE OF CHOICE {
+                                                null                     NULL,
+                                                real                     REAL,
+                                                unsigned                 Unsigned,
+                                                boolean                  BOOLEAN,
+                                                integer                  INTEGER,
+                                                double                   Double,
+                                                octet                    OCTET STRING,
+                                                characterString          CharacterString,
+                                                bitstring                BIT STRING,
+                                                enum                     ENUMERATED,
+                                                date                     Date,
+                                                time                     Time,
+                                                objectIdentifier         BACnetObjectIdentifier,
+                                                reference                [0] BACnetDeviceObjectPropertyReference
+                                                }
+                                      },
+      fault-life-safety       [3] SEQUENCE {
+                                      list-of-fault-values               [0] SEQUENCE OF BACnetLifeSafetyState,
+                                           mode-property-reference    [1] BACnetDeviceObjectPropertyReference
+                                           },
+        fault-state                [4] SEQUENCE {
+                                           list-of-fault-values       [0] SEQUENCE OF BACnetPropertyStates
+                                   },
+        fault-status-flags         [5] SEQUENCE {
+                                           status-flags-reference     [0] BACnetDeviceObjectPropertyReference
+                                   }
+        }
 
-
-
-
+BACnetFaultType ::= ENUMERATED {
+      none                  (0),
+      fault-characterstring (1),
+      fault-extended        (2),
+      fault-life-safety     (3),
+      fault-state           (4),
+      fault-status-flags    (5)
+      }
 
 BACnetFileAccessMethod ::= ENUMERATED {
-      record-access                (0),
-      stream-access                (1)
+      record-access           (0),
+      stream-access           (1)
+      }
+
+BACnetGroupChannelValue ::= SEQUENCE {
+      channel                [0] Unsigned16,
+      overridingPriority     [1] Unsigned (1..16) OPTIONAL,
+      value                  BACnetChannelValue
+      }
+
+BACnetKeyIdentifier ::= SEQUENCE {
+      algorithm               [0] Unsigned8,
+      key-id                  [1] Unsigned8
       }
 
 BACnetLifeSafetyMode ::= ENUMERATED {
-      off                      (0),
-      on                       (1),
-      test                     (2),
-      manned                   (3),
-      unmanned                 (4),
-      armed                    (5),
-      disarmed                 (6),
-      prearmed                 (7),
-      slow                     (8),
-      fast                     (9),
+         off                           (0),
+         on                            (1),
+         test                          (2),
+         manned                        (3),
+         unmanned                      (4),
+         armed                         (5),
+         disarmed                      (6),
+         prearmed                      (7),
+         slow                          (8),
+         fast                          (9),
          disconnected                  (10),
          enabled                       (11),
          disabled                      (12),
@@ -1362,7 +2311,6 @@ BACnetLifeSafetyMode ::= ENUMERATED {
          default                       (14),
          ...
          }
-
 
 
 BACnetLifeSafetyOperation ::= ENUMERATED {
@@ -1411,13 +2359,96 @@ BACnetLifeSafetyState ::= ENUMERATED {
          }
 
 
+
+BACnetLightingCommand ::= SEQUENCE {
+      operation             [0] BACnetLightingOperation,
+      target-level          [1] REAL (0.0..100.0) OPTIONAL,
+      ramp-rate             [2] REAL (0.1..100.0) OPTIONAL,
+      step-increment        [3] REAL (0.1..100.0) OPTIONAL,
+      fade-time             [4] Unsigned (100.. 86400000) OPTIONAL,
+      priority              [5] Unsigned (1..16) OPTIONAL
+      }
+      
+    
+
+BACnetLightingInProgress ::= ENUMERATED {
+      idle                 (0),
+      fade-active          (1),
+      ramp-active          (2),
+      not-controlled       (3),
+      other                (4)
+      }
+
+BACnetLightingOperation ::= ENUMERATED {
+      none                    (0),
+      fade-to                 (1),
+      ramp-to                 (2),
+      step-up                 (3),
+      step-down               (4),
+      step-on                 (5),
+      step-off                (6),
+      warn                    (7),
+      warn-off                (8),
+      warn-relinquish         (9),
+      stop                    (10)
+      }
+      
+      
+
+BACnetLightingTransition ::= ENUMERATED {
+      none                    (0),
+      fade                    (1),
+      ramp                    (2)
+      }
+      
+      
+
 BACnetLimitEnable ::= BIT STRING {
       lowLimitEnable (0),
       highLimitEnable (1)
       }
 
+BACnetLockStatus ::= ENUMERATED {
+      locked          (0),
+      unlocked        (1),
+      lock-fault      (2),
+      unused          (3),
+      unknown         (4)
+      }
+
+BACnetLogData ::= CHOICE {
+      log-status     [0] BACnetLogStatus,
+      log-data       [1] SEQUENCE OF CHOICE {
+                            boolean-value   [0] BOOLEAN,
+                            real-value      [1] REAL,
+                            enum-value      [2] ENUMERATED,               
+                            unsigned-value [3] Unsigned,                  
+                            signed-value    [4] INTEGER,                  
+                            bitstring-value [5] BIT STRING,               
+                                null-value         [6] NULL,
+                                failure            [7] Error,
+                                any-value          [8] ABSTRACT-SYNTAX.&Type 
+                                },
+        time-change      [2] REAL
+        }
+
+BACnetLoggingType ::= ENUMERATED {
+      polled           (0),
+      cov              (1),
+      triggered        (2),
+      ...
+      }
+      
+      
+      
+
+BACnetLogMultipleRecord ::= SEQUENCE {
+      timestamp      [0] BACnetDateTime,
+      logData        [1] BACnetLogData
+      }
+
 BACnetLogRecord ::= SEQUENCE {
-      timestamp      [0] BACnetDateAndTime,
+      timestamp      [0] BACnetDateTime,
       logDatum       [1] CHOICE {
                             log-status       [0] BACnetLogStatus,
                             boolean-value    [1] BOOLEAN,
@@ -1430,13 +2461,14 @@ BACnetLogRecord ::= SEQUENCE {
                             failure          [8] Error,
                             time-change      [9] REAL,
                             any-value        [10] ABSTRACT-SYNTAX.&Type 
-                            }
+                            },
       statusFlags    [2] BACnetStatusFlags OPTIONAL
       }
 
 BACnetLogStatus ::= BIT STRING {
       log-disabled     (0),
-      buffer-purged    (1)
+      buffer-purged    (1),
+      log-interrupted (2)
       }
 
 BACnetMaintenance ::= ENUMERATED {
@@ -1448,68 +2480,151 @@ BACnetMaintenance ::= ENUMERATED {
          }
 
 
-BACnetNewValue ::= CHOICE {
-   changed-bits          [0] BIT STRING,
-   changed-value         [1] REAL
-}
+
+BACnetNetworkSecurityPolicy ::= SEQUENCE {
+      port-id                 [0] Unsigned8,
+      security-level          [1] BACnetSecurityPolicy
+      }
+
+BACnetNodeType ::= ENUMERATED {
+      unknown        (0),
+      system         (1),
+      network        (2),
+      device         (3),
+      organizational (4),
+      area           (5),
+      equipment      (6),
+      point          (7),
+      collection     (8),
+      property       (9),
+      functional     (10),
+      other          (11)
+      }
 
 BACnetNotificationParameters ::= CHOICE {
 
 
 
         change-of-bitstring   [0] SEQUENCE {
-                                    referenced-bitstring     [0] BIT STRING,
-                                    status-flags             [1] BACnetStatusFlags
+                                    referenced-bitstring      [0] BIT STRING,
+                                    status-flags              [1] BACnetStatusFlags
                                     },
         change-of-state       [1] SEQUENCE {
-                                    new-state                [0] BACnetPropertyStates,
-                                    status-flags             [1] BACnetStatusFlags
+                                    new-state                 [0] BACnetPropertyStates,
+                                    status-flags              [1] BACnetStatusFlags
                                     },
         change-of-value       [2] SEQUENCE {
-                                    new-value                [0] BACnetNewValue,
-                            status-flags             [1] BACnetStatusFlags
-                            },
-command-failure       [3] SEQUENCE {
-                            command-value            [0] ABSTRACT-SYNTAX.&Type, 
-                            status-flags             [1] BACnetStatusFlags,
-                            feedback-value           [2] ABSTRACT-SYNTAX.&Type 
-                            },
-floating-limit        [4] SEQUENCE {
-                            reference-value          [0] REAL,
-                            status-flags             [1] BACnetStatusFlags,
-                            setpoint-value           [2] REAL,
-                            error-limit              [3] REAL
-                            },
-out-of-range          [5] SEQUENCE {
-                            exceeding-value          [0] REAL,
-                            status-flags             [1] BACnetStatusFlags,
-                            deadband                 [2] REAL,
-                            exceeded-limit           [3] REAL
-                            },
+                                    new-value                 [0] CHOICE {
+                                                                    changed-bits          [0] BIT STRING,
+                                                                    changed-value         [1] REAL
+                                                                    },
+                                    status-flags              [1] BACnetStatusFlags
+                                    },
+        command-failure       [3] SEQUENCE {
+                                    command-value             [0] ABSTRACT-SYNTAX.&Type,
+                                                              
+                                     status-flags             [1] BACnetStatusFlags,
+                                     feedback-value           [2] ABSTRACT-SYNTAX.&Type
+                                                              
+                                    },
+        floating-limit        [4] SEQUENCE {
+                                    reference-value           [0] REAL,
+                                    status-flags              [1] BACnetStatusFlags,
+                                    setpoint-value            [2] REAL,
+                                    error-limit               [3] REAL
+                                    },
+        out-of-range          [5] SEQUENCE {
+                                    exceeding-value           [0] REAL,
+                                    status-flags              [1] BACnetStatusFlags,
+                             deadband                     [2] REAL,
+                             exceeded-limit               [3] REAL
+                             },
 complex-event-type [6] SEQUENCE OF BACnetPropertyValue,
-                      
+                       
 change-of-life-safety [8] SEQUENCE {
-                            new-state                [0] BACnetLifeSafetyState,
-                            new-mode                 [1] BACnetLifeSafetyMode,
-                            status-flags             [2] BACnetStatusFlags,
-                            operation-expected       [3] BACnetLifeSafetyOperation
-                            },
+                             new-state                    [0] BACnetLifeSafetyState,
+                             new-mode                     [1] BACnetLifeSafetyMode,
+                             status-flags                 [2] BACnetStatusFlags,
+                             operation-expected           [3] BACnetLifeSafetyOperation
+                             },
 extended            [9] SEQUENCE {
-                            vendorId                 [0] Unsigned,
-                            extendedEventType        [1] Unsigned,
-                            parameters               [2] SEQUENCE OF BACnetExtendedParameter
-                            },
+                             vendor-id                    [0] Unsigned16,
+                             extended-event-type          [1] Unsigned,
+                             parameters                   [2] SEQUENCE OF CHOICE {
+                                                   null                 NULL,
+                                                   real                 REAL,
+                                                   unsigned             Unsigned,
+                                                   boolean              BOOLEAN,
+                                                   integer              INTEGER,
+                                                   double               Double,
+                                                   octet                OCTET STRING,
+                                                   characterString      CharacterString,
+                                                   bitstring            BIT STRING,
+                                                   enum                 ENUMERATED,
+                                                   date                 Date,
+                                                   time                 Time,
+                                                   objectIdentifier     BACnetObjectIdentifier,
+                                                   propertyValue        [0] BACnetDeviceObjectPropertyValue
+                                                   }
+                             },
 buffer-ready        [10] SEQUENCE {
-                            buffer-property          [0] BACnetDeviceObjectPropertyReference,
-                            previous-notification    [1] Unsigned32,
-                            current-notification     [2] Unsigned32
-                            },
+                             buffer-property [0] BACnetDeviceObjectPropertyReference,
+                             previous-notification        [1] Unsigned32,
+                             current-notification         [2] Unsigned32
+                             },
 unsigned-range      [11] SEQUENCE {
-                            exceeding-value          [0] Unsigned,
-                            status-flags             [1] BACnetStatusFlags,
-                            exceeded-limit           [2] Unsigned
-                            }
-}
+                             exceeding-value              [0] Unsigned,
+                             status-flags                 [1] BACnetStatusFlags,
+                             exceeded-limit               [2] Unsigned
+                             },
+                    
+access-event        [13] SEQUENCE {
+                             access-event                 [0] BACnetAccessEvent,
+                             status-flags                 [1] BACnetStatusFlags,
+                             access-event-tag             [2] Unsigned,
+                             access-event-time            [3] BACnetTimeStamp,
+                             access-credential            [4] BACnetDeviceObjectReference,
+                             authentication-factor        [5] BACnetAuthenticationFactor OPTIONAL
+                             },
+double-out-of-range [14] SEQUENCE {
+                             exceeding-value              [0] Double,
+                             status-flags                 [1] BACnetStatusFlags,
+                             deadband                     [2] Double,
+                             exceeded-limit               [3] Double
+                             },
+        signed-out-of-range [15] SEQUENCE {
+                                      exceeding-value        [0] INTEGER,
+                                      status-flags           [1] BACnetStatusFlags,
+                                      deadband               [2] Unsigned,
+                                      exceeded-limit         [3] INTEGER
+                                      },
+        unsigned-out-of-range [16] SEQUENCE {
+                                      exceeding-value        [0] Unsigned,
+                                      status-flags           [1] BACnetStatusFlags,
+                                      deadband               [2] Unsigned,
+                                      exceeded-limit         [3] Unsigned
+                                      },
+        change-of-characterstring [17] SEQUENCE {
+                                      changed-value          [0] CharacterString,
+                                      status-flags           [1] BACnetStatusFlags,
+                                      alarm-value            [2] CharacterString
+                                      },
+        change-of-status-flags [18] SEQUENCE {
+                                      present-value          [0] ABSTRACT-SYNTAX.&Type OPTIONAL,
+                                                             
+                                      referenced-flags       [1] BACnetStatusFlags
+                                      },
+        change-of-reliability [19] SEQUENCE {
+                                      reliability                 [0] BACnetReliability,
+                                      status-flags                [1] BACnetStatusFlags,
+                                      property-values             [2] SEQUENCE OF BACnetPropertyValue
+                                      }
+                             
+        }
+        
+        
+        
+
 BACnetNotifyType ::= ENUMERATED {
       alarm            (0),
       event            (1),
@@ -1526,90 +2641,199 @@ BACnetObjectPropertyReference ::= SEQUENCE {
 BACnetObjectPropertyValue ::= SEQUENCE {
       objectIdentifier         [0] BACnetObjectIdentifier,
       propertyIdentifier       [1] BACnetPropertyIdentifier,
-      propertyArrayIndex       [2] Unsigned OPTIONAL,            
-                                                                 
-        value                      [3] ABSTRACT-SYNTAX.&Type, 
-        priority                   [4] Unsigned (1..16) OPTIONAL
-        }
-
-BACnetObjectType ::= ENUMERATED {
-      accumulator              (23),
-      analog-input             (0),
-      analog-output            (1),
-      analog-value             (2),
-      averaging                (18),
-      binary-input             (3),
-      binary-output            (4),
-      binary-value             (5),
-      calendar                 (6),
-      command                  (7),
-      device                   (8),
-      event-enrollment         (9),
-      file                     (10),
-      group                    (11),
-      life-safety-point        (21),
-      life-safety-zone         (22),
-      loop                     (12),
-      multi-state-input        (13),
-      multi-state-output       (14),
-      multi-state-value        (19),
-      notification-class       (15),
-      program                  (16),
-      pulse-converter          (24),
-      schedule                 (17),
-      
-      
-      trend-log                (20),
-      
-      
-      
-      
-      ...
+      propertyArrayIndex       [2] Unsigned OPTIONAL, 
+                                                         
+      value                    [3] ABSTRACT-SYNTAX.&Type, 
+      priority                 [4] Unsigned (1..16) OPTIONAL
       }
+BACnetObjectType ::= ENUMERATED { 
+         alert-enrollment          (52),
+         access-credential         (32),
+         access-door               (30),
+         access-point              (33),
+         access-rights             (34),
+         access-user               (35),
+         access-zone               (36),
+         accumulator               (23),
+         analog-input              (0),
+         analog-output             (1),
+         analog-value              (2),
+         averaging                 (18),
+         binary-input              (3),
+         binary-output             (4),
+         binary-value              (5),
+         bitstring-value           (39),
+         calendar                  (6),
+         channel                   (53),
+         characterstring-value     (40),
+         command                   (7),
+         credential-data-input     (37),
+         date-pattern-value        (41),
+         date-value                (42),
+         datetime-pattern-value    (43),
+         datetime-value            (44),
+         device                    (8),
+         event-enrollment          (9),
+         event-log                 (25),
+         file                      (10),
+         global-group              (26),
+         group                     (11),
+         integer-value             (45),
+         large-analog-value        (46),
+         life-safety-point         (21),
+         life-safety-zone          (22),
+         lighting-output           (54),
+         load-control              (28),
+         loop                      (12),
+         multi-state-input         (13),
+         multi-state-output        (14),
+         multi-state-value         (19),
+         network-security          (38),
+         notification-class        (15),
+         notification-forwarder    (51),
+         octetstring-value         (47),
+         positive-integer-value    (48),
+         program                   (16),
+         pulse-converter           (24),
+         schedule                  (17),
+         structured-view           (29),
+         time-pattern-value        (49),
+         time-value                (50),
+         trend-log                 (20),
+         trend-log-multiple        (27),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+...
+          }
 
 
 
 
 BACnetObjectTypesSupported ::= BIT STRING {
-         
-         analog-input         (0),
-         analog-output        (1),
-         analog-value         (2),
-         
-         binary-input         (3),
-         binary-output        (4),
-         binary-value         (5),
-         calendar             (6),
-         command              (7),
-         device               (8),
-         event-enrollment     (9),
-         file                 (10),
-         group                (11),
-         loop                 (12),
-         
-         
-         multi-state-input    (13),
-         multi-state-output   (14),
-         
-         notification-class   (15),
-         program              (16),
-         
-         schedule             (17),
-         
+      analog-input              (0),
+      analog-output             (1),
+      analog-value              (2),
+      binary-input              (3),
+      binary-output             (4),
+      binary-value              (5),
+      calendar                  (6),
+      command                   (7),
+      device                    (8),
+      event-enrollment          (9),
+      file                      (10),
+      group                     (11),
+      loop                      (12),
+      multi-state-input         (13),
+      multi-state-output        (14),
+      notification-class        (15),
+      program                   (16),
+      schedule                  (17),
+      averaging                 (18),
+      multi-state-value         (19),
+      trend-log                 (20),
+      life-safety-point         (21),
+      life-safety-zone          (22),
+      accumulator               (23),
+      pulse-converter           (24),
+      event-log                 (25),
+      global-group              (26),
+      trend-log-multiple        (27),
+      load-control              (28),
+      structured-view           (29),
+      access-door               (30),
+      
+      access-credential         (32),
+      access-point              (33),
+      access-rights             (34),
+      access-user               (35),
+      access-zone               (36),
+      credential-data-input     (37),
+      network-security          (38),
+      bitstring-value           (39),
+      characterstring-value     (40),
+      date-pattern-value        (41),
+      date-value                (42),
+      datetime-pattern-value    (43),
+      datetime-value            (44),
+      integer-value             (45),
+      large-analog-value        (46),
+      octetstring-value         (47),
+      positive-integer-value    (48),
+      time-pattern-value        (49),
+       time-value               (50),
+       notification-forwarder   (51),
+       alert-enrollment         (52),
+       channel                  (53),
+       lighting-output          (54)
+       }
 
-         averaging            (18),
-         multi-state-value    (19),
-         trend-log            (20),
-         life-safety-point    (21),
-         life-safety-zone     (22),
-
-         accumulator          (23),
-         pulse-converter      (24)
-         }
+BACnetOptionalCharacterString ::= CHOICE {
+      null            NULL,
+      characterString CharacterString
+      }
 
 BACnetPolarity ::= ENUMERATED {
       normal           (0),
       reverse          (1)
+      }
+
+BACnetPortPermission ::= SEQUENCE {
+      port-id          [0] Unsigned8,
+      enabled          [1] BOOLEAN
       }
 
 BACnetPrescale ::= SEQUENCE {
@@ -1621,16 +2845,31 @@ BACnetPriorityArray ::= SEQUENCE SIZE (16) OF BACnetPriorityValue
       
 
 BACnetPriorityValue ::= CHOICE {
-      null                   NULL,
-        real                      REAL,
-        binary                    BACnetBinaryPV,
-        integer                   Unsigned,
-        constructedValue       [0] ABSTRACT-SYNTAX.&Type
-        }
+      null                 NULL,
+      real                 REAL,
+      enumerated           ENUMERATED,
+      unsigned             Unsigned,
+      boolean              BOOLEAN,
+      signed               INTEGER,
+      double               Double,
+      time                 Time,
+      characterString      CharacterString,
+      octetString          OCTET STRING,
+      bitString            BIT STRING,
+      date                 Date,
+      objectid             BACnetObjectIdentifier,
+      constructedValue     [0] ABSTRACT-SYNTAX.&Type,
+      datetime             [1] BACnetDateTime
+      }
+
+BACnetProcessIdSelection ::= CHOICE {
+      processIdentifier        Unsigned32,
+      nullValu                 NULL
+      }
 
 BACnetProgramError ::= ENUMERATED {
-          normal          (0),
-          load-failed     (1),
+      normal          (0),
+      load-failed     (1),
           internal        (2),
           program         (3),
           other           (4),
@@ -1658,224 +2897,427 @@ BACnetProgramState ::= ENUMERATED {
       unloading        (5)
       }
 
-BACnetPropertyIdentifier ::= ENUMERATED {
-      accepted-modes                                 (175),
-      acked-transitions                              (0),
-      ack-required                                   (1),
-      action                                         (2),
-      action-text                                    (3),
-      active-text                                    (4),
-      active-vt-sessions                             (5),
-      active-cov-subscriptions                       (152),
-      adjust-value                                   (176),
-      alarm-value                                    (6),
-      alarm-values                                   (7),
-      all                                            (8),
-      all-writes-successful                          (9),
-      apdu-segment-timeout                           (10),
-      apdu-timeout                                   (11),
-      application-software-version                   (12),
-      archive                                        (13),
-      attempted-samples                              (124),
-      auto-slave-discovery                           (169),
-average-value                               (125),
-backup-failure-timeout                      (153),
-bias                                        (14),
-buffer-size                                 (126),
-change-of-state-count                       (15),
-change-of-state-time                        (16),
+BACnetPropertyAccessResult ::= SEQUENCE {
+      objectIdentifier         [0] BACnetObjectIdentifier,
+      propertyIdentifier       [1] BACnetPropertyIdentifier,
+      propertyArrayIndex       [2] Unsigned OPTIONAL, 
+                                                         
+                                                         
+      deviceIdentifier         [3] BACnetObjectIdentifier OPTIONAL,
+      accessResult             CHOICE {
+                                        propertyValue              [4] ABSTRACT-SYNTAX.&Type,
+                                        propertyAccessError        [5] Error
+                                        }
+      }
 
-
-client-cov-increment                        (127),
-configuration-files                         (154),
-controlled-variable-reference               (19),
-controlled-variable-units                   (20),
-controlled-variable-value                   (21),
-count                                       (177),
-count-before-change                         (178),
-count-change-time                           (179),
-cov-increment                               (22),
-cov-period                                  (180),
-cov-resubscription-interval                 (128),
-
-database-revision                           (155),
-date-list                                   (23),
-daylight-savings-status                     (24),
-deadband                                    (25),
-derivative-constant                         (26),
-derivative-constant-units                   (27),
-description                                 (28),
-description-of-halt                         (29),
-device-address-binding                      (30),
-device-type                                 (31),
-direct-reading                              (156),
-effective-period                            (32),
-elapsed-active-time                         (33),
-error-limit                                 (34),
-event-enable                                (35),
-event-state                                 (36),
-event-time-stamps                           (130),
-event-type                                  (37),
-event-parameters                            (83), 
-exception-schedule                          (38),
-fault-values                                (39),
-feedback-value                              (40),
-file-access-method                          (41),
-file-size                                   (42),
-file-type                                   (43),
-firmware-revision                           (44),
-high-limit                                  (45),
-inactive-text                               (46),
-in-process                                  (47),
-input-reference                             (181),
-instance-of                                 (48),
-integral-constant                           (49),
-integral-constant-units                     (50),
-
-last-notify-record                          (173),
-last-restore-time                           (157),
+BACnetPropertyIdentifier ::= ENUMERATED { 
+      absentee-limit                         (244),
+      accepted-modes                         (175),
+      access-alarm-events                    (245),
+      access-doors                           (246),
+      access-event                           (247),
+      access-event-authentication-factor     (248),
+      access-event-credential                (249),
+      access-event-tag                       (322),
+      access-event-time                      (250),
+      access-transaction-events              (251),
+      accompaniment                          (252),
+      accompaniment-time                     (253),
+      ack-required                           (1),
+      acked-transitions                      (0),
+      action                                 (2),
+action-text                     (3),
+activation-time                 (254),
+active-authentication-policy    (255),
+active-cov-subscriptions        (152),
+active-text                     (4),
+active-vt-sessions              (5),
+actual-shed-level               (212),
+adjust-value                    (176),
+alarm-value                     (6),
+alarm-values                    (7),
+align-intervals                 (193),
+all                             (8),
+all-writes-successful           (9),
+allow-group-delay-inhibit       (365),
+apdu-segment-timeout            (10),
+apdu-timeout                    (11),
+application-software-version    (12),
+archive                         (13),
+assigned-access-rights          (256),
+attempted-samples               (124),
+authentication-factors          (257),
+authentication-policy-list      (258),
+authentication-policy-names     (259),
+authentication-status           (260),
+authorization-exemptions        (364),
+authorization-mode              (261),
+auto-slave-discovery            (169),
+average-value                   (125),
+backup-and-restore-state        (338),
+backup-failure-timeout          (153),
+backup-preparation-time         (339),
+base-device-security-policy     (327),
+belongs-to                      (262),
+bias                            (14),
+bit-mask                        (342),
+bit-text                        (343),
+blink-warn-enable               (373),
+buffer-size                     (126),
+change-of-state-count           (15),
+change-of-state-time            (16),
+channel-number                  (366),
+client-cov-increment            (127),
+configuration-files             (154),
+control-groups                  (367),
+controlled-variable-reference   (19),
+controlled-variable-units       (20),
+controlled-variable-value       (21),
+count                           (177),
+count-before-change             (178),
+count-change-time               (179),
+cov-increment                   (22),
+cov-period                      (180),
+cov-resubscription-interval     (128),
+covu-period                     (349),
+covu-recipients                 (350),
+credential-disable              (263),
+credential-status             (264),
+credentials                   (265),
+credentials-in-zone           (266),
+database-revision             (155),
+date-list                     (23),
+daylight-savings-status       (24),
+days-remaining                (267),
+deadband                      (25),
+default-fade-time             (374),
+default-ramp-rate             (375),
+default-step-increment        (376),
+derivative-constant           (26),
+derivative-constant-units     (27),
+description                   (28),
+description-of-halt           (29),
+device-address-binding        (30),
+device-type                   (31),
+direct-reading                (156),
+distribution-key-revision     (328),
+do-not-hide                   (329),
+door-alarm-state              (226),
+door-extended-pulse-time      (227),
+door-members                  (228),
+door-open-too-long-time       (229),
+door-pulse-time               (230),
+door-status                   (231),
+door-unlock-delay-time        (232),
+duty-window                   (213),
+effective-period              (32),
+egress-time                   (377),
+egress-active                 (386),
+elapsed-active-time           (33),
+entry-points                  (268),
+enable                        (133),   
+error-limit                   (34),
+event-algorithm-inhibit       (354),
+event-algorithm-inhibit-ref   (355),
+event-detection-enable        (353),
+event-enable                  (35),
+event-message-texts           (351),
+event-message-texts-config    (352),
+event-state                   (36),
+event-time-stamps             (130),
+event-type                    (37),
+event-parameters              (83),    
+exception-schedule            (38),
+execution-delay               (368),
+exit-points                   (269),
+expected-shed-level           (214),
+expiry-time                   (270),
+extended-time-enable          (271),
+failed-attempt-events         (272),
+failed-attempts               (273),
+failed-attempts-time          (274),
+fault-parameters              (358),
+fault-type                    (359),
+fault-values                         (39),
+feedback-value                       (40),
+file-access-method                   (41),
+file-size                            (42),
+file-type                            (43),
+firmware-revision                    (44),
+full-duty-baseline                   (215),
+global-identifier                    (323),
+group-members                        (345),
+group-member-names                   (346),
+high-limit                           (45),
+inactive-text                        (46),
+in-process                           (47),
+in-progress                          (378),
+input-reference                      (181),
+instance-of                          (48),
+instantaneous-power                  (379),
+integral-constant                    (49),
+integral-constant-units              (50),
+interval-offset                      (195),
+is-utc                               (344),
+key-sets                             (330),
+last-access-event                    (275),
+last-access-point                    (276),
+last-credential-added                (277),
+last-credential-added-time           (278),
+last-credential-removed              (279),
+last-credential-removed-time         (280),
+last-key-server                      (331),
+last-notify-record                   (173),
+last-priority                        (369),
+last-restart-reason                  (196),
+last-restore-time                    (157),
+last-use-time                        (281),
 life-safety-alarm-values             (166),
+lighting-command                     (380),
+lighting-command-default-priority    (381),
 limit-enable                         (52),
 limit-monitoring-interval            (182),
 list-of-group-members                (53),
 list-of-object-property-references   (54),
-list-of-session-keys                 (55),
 local-date                           (56),
+local-forwarding-only                (360),
 local-time                           (57),
 location                             (58),
+lock-status                          (233),
+lockout                              (282),
+lockout-relinquish-time              (283),
 log-buffer                           (131),
 log-device-object-property           (132),
-log-enable                           (133),
 log-interval                         (134),
 logging-object                       (183),
 logging-record                       (184),
+logging-type                         (197),
 low-limit                            (59),
 maintenance-required                 (158),
-manipulated-variable-reference       (60),
-manual-slave-address-binding         (170),
-maximum-output                       (61),
-maximum-value                        (135),
-maximum-value-timestamp              (149),
-max-apdu-length-accepted             (62),
-max-info-frames                      (63),
-max-master                           (64),
-max-pres-value                       (65),
-max-segments-accepted                (167),
-member-of                            (159),
-minimum-off-time                     (66),
-minimum-on-time                      (67),
-minimum-output                       (68),
-minimum-value                        (136),
-minimum-value-timestamp              (150),
-min-pres-value                       (69),
-mode                                 (160),
-model-name                           (70),
-modification-date                    (71),
-notification-class                   (17), 
-notification-threshold               (137),
-notify-type                          (72),
-number-of-APDU-retries               (73),
-number-of-states                     (74),
-object-identifier                    (75),
-object-list                          (76),
-object-name                          (77),
-object-property-reference            (78),
-object-type                          (79),
-operation-expected                   (161),
-optional                             (80),
-out-of-service                       (81),
-output-units                         (82),
-
-polarity                             (84),
-prescale                             (185),
-present-value                        (85),
-
+manipulated-variable-reference      (60),
+manual-slave-address-binding        (170),
+masked-alarm-values                 (234),
+maximum-output                      (61),
+maximum-value                       (135),
+maximum-value-timestamp             (149),
+max-actual-value                    (382),
+max-apdu-length-accepted            (62),
+max-failed-attempts                 (285),
+max-info-frames                     (63),
+max-master                          (64),
+max-pres-value                      (65),
+max-segments-accepted               (167),
+member-of                           (159),
+member-status-flags                 (347),
+members                             (286),
+minimum-off-time                    (66),
+minimum-on-time                     (67),
+minimum-output                      (68),
+minimum-value                       (136),
+minimum-value-timestamp             (150),
+min-actual-value                    (383),
+min-pres-value                      (69),
+mode                                (160),
+model-name                          (70),
+modification-date                   (71),
+muster-point                        (287),
+negative-access-rules               (288),
+network-access-security-policies    (332),
+node-subtype                        (207),
+node-type                           (208),
+notification-class                  (17),    
+notification-threshold              (137),
+notify-type                         (72),
+number-of-apdu-retries              (73),
+number-of-authentication-policies   (289),
+number-of-states                    (74),
+object-identifier                   (75),
+object-list                         (76),
+object-name                         (77),
+object-property-reference           (78),
+object-type                         (79),
+occupancy-count                     (290),
+occupancy-count-adjust              (291),
+occupancy-count-enable              (292),
+occupancy-lower-limit               (294),
+occupancy-lower-limit-enforced      (295),
+occupancy-state                     (296),
+occupancy-upper-limit               (297),
+occupancy-upper-limit-enforced      (298),
+operation-expected                  (161),
+optional                            (80),
+out-of-service                      (81),
+output-units                        (82),
+packet-reorder-time                 (333),
+passback-mode                       (300),
+passback-timeout                  (301),
+polarity                          (84),
+port-filter                       (363),
+positive-access-rules             (302),
+power                             (384),
+prescale                          (185),
+present-value                     (85),
 priority                          (86),
-pulse-rate                        (186),
 priority-array                    (87),
 priority-for-writing              (88),
 process-identifier                (89),
+process-identifier-filter         (361),
 profile-name                      (168),
 program-change                    (90),
 program-location                  (91),
 program-state                     (92),
+property-list                     (371),
 proportional-constant             (93),
 proportional-constant-units       (94),
-
 protocol-object-types-supported   (96),
 protocol-revision                 (139),
 protocol-services-supported       (97),
 protocol-version                  (98),
+pulse-rate                        (186),
 read-only                         (99),
+reason-for-disable                (303),
 reason-for-halt                   (100),
-
 recipient-list                    (102),
 records-since-notification        (140),
 record-count                      (141),
 reliability                       (103),
+reliability-evaluation-inhibit    (357),
 relinquish-default                (104),
+requested-shed-level              (218),
+requested-update-interval         (348),
 required                          (105),
 resolution                        (106),
+restart-notification-recipients   (202),
+restore-completion-time           (340),
+restore-preparation-time          (341),
 scale                             (187),
 scale-factor                      (188),
 schedule-default                  (174),
+secured-status                    (235),
+security-pdu-timeout              (334),
+security-time-window              (335),
 segmentation-supported            (107),
+serial-number                     (372),
 setpoint                          (108),
 setpoint-reference                (109),
-slave-address-binding             (171),
 setting                           (162),
+shed-duration                     (219),
+shed-level-descriptions           (220),
+shed-levels                       (221),
 silenced                          (163),
-start-time                        (142),
-state-text                        (110),
-status-flags                      (111),
-stop-time                         (143),
-stop-when-full                    (144),
-system-status                     (112),
-time-delay                        (113),
-time-of-active-time-reset         (114),
-time-of-state-count-reset         (115),
-time-synchronization-recipients   (116),
-total-record-count                (145),
-tracking-value                    (164),
-units                             (117),
-update-interval                   (118),
-update-time                       (189),
-utc-offset                        (119),
-valid-samples                     (146),
-value-before-change               (190),
-value-set                         (191),
-value-change-time                 (192),
-variance-value                    (151),
+slave-address-binding             (171),
+slave-proxy-enable                    (172),
+start-time                            (142),
+state-description                     (222),
+state-text                            (110),
+status-flags                          (111),
+stop-time                             (143),
+stop-when-full                        (144),
+structured-object-list                (209),
+subordinate-annotations               (210),
+subordinate-list                      (211),
+subscribed-recipients                 (362),
+supported-formats                     (304),
+supported-format-classes              (305),
+supported-security-algorithms         (336),
+system-status                         (112),
+threat-authority                      (306),
+threat-level                          (307),
+time-delay                            (113),
+time-delay-normal                     (356),
+time-of-active-time-reset             (114),
+time-of-device-restart                (203),
+time-of-state-count-reset             (115),
+time-synchronization-interval         (204),
+time-synchronization-recipients       (116),
+total-record-count                    (145),
+trace-flag                            (308),
+tracking-value                        (164),
+transaction-notification-class        (309),
+transition                            (385),
+trigger                               (205),
+units                                 (117),
+update-interval                       (118),
+update-key-set-timeout                (337),
+update-time                           (189),
+user-external-identifier              (310),
+user-information-reference            (311),
+user-name                             (317),
+user-type                             (318),
+uses-remaining                        (319),
+utc-offset                            (119),
+utc-time-synchronization-recipients   (206),
+valid-samples                         (146),
+value-before-change                   (190),
+value-set                             (191),
+value-change-time                     (192),
+variance-value                        (151),
 vendor-identifier                     (120),
 vendor-name                           (121),
+verification-time                     (326),
 vt-classes-supported                  (122),
 weekly-schedule                       (123),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 window-interval                       (147),
 window-samples                        (148),
+write-status                          (370),
+zone-from                             (320),
 zone-members                          (165),
+        zone-to                                      (321),
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
 
@@ -1902,27 +3344,297 @@ zone-members                          (165),
 
 
 
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         ...
-         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          ...
+          }
 
 
 
@@ -1940,29 +3652,54 @@ BACnetPropertyStates ::= CHOICE {
 
 
 
-         boolean-value               [0] BOOLEAN,
-         binary-value                [1] BACnetBinaryPV,
-         event-type                  [2] BACnetEventType,
-         polarity                    [3] BACnetPolarity,
-         program-change              [4] BACnetProgramRequest,
-         program-state               [5] BACnetProgramState,
-         reason-for-halt             [6] BACnetProgramError,
-         reliability                 [7] BACnetReliability,
-         state                       [8] BACnetEventState,
-         system-status               [9] BACnetDeviceStatus,
-         units                       [10] BACnetEngineeringUnits,
-         unsigned-value              [11] Unsigned,
-         life-safety-mode            [12] BACnetLifeSafetyMode,
-         life-safety-state           [13] BACnetLifeSafetyState,
-         ...
-         }
-
+         boolean-value                       [0] BOOLEAN,
+         binary-value                        [1] BACnetBinaryPV,
+         event-type                           [2] BACnetEventType,
+         polarity                             [3] BACnetPolarity,
+         program-change                       [4] BACnetProgramRequest,
+         program-state                        [5] BACnetProgramState,
+         reason-for-halt                      [6] BACnetProgramError,
+         reliability                          [7] BACnetReliability,
+         state                                [8] BACnetEventState,
+         system-status                        [9] BACnetDeviceStatus,
+         units                                [10] BACnetEngineeringUnits,
+         unsigned-value                       [11] Unsigned,
+         life-safety-mode                     [12] BACnetLifeSafetyMode,
+         life-safety-state                    [13] BACnetLifeSafetyState,
+         restart-reason                       [14] BACnetRestartReason,
+         door-alarm-state                     [15] BACnetDoorAlarmState,
+         action                               [16] BACnetAction,
+         door-secured-status                  [17] BACnetDoorSecuredStatus,
+         door-status                          [18] BACnetDoorStatus,
+         door-value                           [19] BACnetDoorValue,
+         file-access-method                   [20] BACnetFileAccessMethod,
+         lock-status                          [21] BACnetLockStatus,
+         life-safety-operation                [22] BACnetLifeSafetyOperation,
+         maintenance                          [23] BACnetMaintenance,
+         node-type                            [24] BACnetNodeType,
+         notify-type                          [25] BACnetNotifyType,
+         security-level                       [26] BACnetSecurityLevel,
+         shed-state                           [27] BACnetShedState,
+         silenced-state                       [28] BACnetSilencedState,
+                                              
+          access-event                        [30] BACnetAccessEvent,
+          zone-occupancy-state                [31] BACnetAccessZoneOccupancyState,
+          access-credential-disable-reason    [32] BACnetAccessCredentialDisableReason,
+          access-credential-disable           [33] BACnetAccessCredentialDisable,
+          authentication-status               [34] BACnetAuthenticationStatus,
+          backup-state                        [36] BACnetBackupState,
+          write-status                        [37] BACnetWriteStatus,
+          lighting-in-progress                [38] BACnetLightingInProgress,
+          lighting-operation                  [39] BACnetLightingOperation,
+          lighting-transition                 [40] BACnetLightingTransition
+          ...
+          }
 
 
 
 
 BACnetPropertyValue ::= SEQUENCE {
-      PropertyIdentifier     [0] BACnetPropertyIdentifier,
+      propertyIdentifier     [0] BACnetPropertyIdentifier,
       propertyArrayIndex     [1] Unsigned OPTIONAL, 
                                                         
       value                  [2] ABSTRACT-SYNTAX.&Type, 
@@ -1971,31 +3708,49 @@ BACnetPropertyValue ::= SEQUENCE {
 
 BACnetRecipient ::= CHOICE {
       device [0] BACnetObjectIdentifier,
-      address [1] BACnetNetworkAddress
+      address [1] BACnetAddress
       }
-
 BACnetRecipientProcess ::= SEQUENCE {
-      recipient [0] BACnetRecipient,
+      recipient         [0] BACnetRecipient,
       processIdentifier [1] Unsigned32
       }
 
 BACnetReliability ::= ENUMERATED {
-          no-fault-detected   (0),
-          no-sensor           (1),
-          over-range          (2),
-          under-range         (3),
-          open-loop           (4),
-          shorted-loop        (5),
-          no-output           (6),
-          unreliable-other    (7),
-          process-error       (8),
-          multi-state-fault   (9),
-          configuration-error (10),
+          no-fault-detected          (0),
+          no-sensor                  (1),
+          over-range                 (2),
+          under-range                (3),
+          open-loop                  (4),
+          shorted-loop               (5),
+          no-output                  (6),
+          unreliable-other           (7),
+          process-error              (8),
+          multi-state-fault          (9),
+          configuration-error        (10),
+          
+          communication-failure      (12),
+          member-fault               (13),
+          monitored-object-fault     (14),
+          tripped                    (15),
           ...
           }
 
 
 
+
+BACnetRestartReason ::= ENUMERATED {
+        unknown                   (0),
+        coldstart                 (1),
+        warmstart                 (2),
+        detected-power-lost       (3),
+        detected-powered-off      (4),
+        hardware-watchdog         (5),
+        software-watchdog         (6),
+        suspended                 (7),
+        ...
+        }
+   
+   
 
 BACnetResultFlags ::= BIT STRING {
       first-item           (0),
@@ -2007,6 +3762,30 @@ BACnetScale ::= CHOICE {
       floatScale      [0] REAL,
       integerScale    [1] INTEGER
       }
+
+BACnetSecurityKeySet ::= SEQUENCE {
+      key-revision           [0] Unsigned8,               
+        activation-time          [1] BACnetDateTime, 
+        expiration-time          [2] BACnetDateTime, 
+        key-ids                  [3] SEQUENCE OF BACnetKeyIdentifier
+        }
+
+BACnetSecurityLevel ::= ENUMERATED {
+      incapable              (0),  
+      plain                  (1),
+      signed                 (2),
+      encrypted              (3),
+      signed-end-to-end      (4),
+      encrypted-end-to-end   (5)
+      }
+
+BACnetSecurityPolicy ::= ENUMERATED {
+      plain-non-trusted      (0),
+      plain-trusted          (1),
+      signed-trusted         (2),
+      encrypted-trusted      (3)
+      }
+
 BACnetSegmentation ::= ENUMERATED {
       segmented-both        (0),
       segmented-transmit    (1),
@@ -2027,67 +3806,76 @@ BACnetServicesSupported ::= BIT STRING {
          
 
 
-          atomicReadFile               (6),
-          atomicWriteFile              (7),
+          atomicReadFile                 (6),
+          atomicWriteFile                (7),
 
 
-         addListElement                (8),
-         removeListElement             (9),
-         createObject                  (10),
-         deleteObject                  (11),
-         readProperty                  (12),
-         readPropertyConditional       (13),
-         readPropertyMultiple          (14),
+         addListElement                  (8),
+         removeListElement               (9),
+         createObject                    (10),
+         deleteObject                    (11),
+         readProperty                    (12),
+         readPropertyMultiple            (14),
          
-         writeProperty                 (15),
-         writePropertyMultiple         (16),
+         
+         writeProperty                   (15),
+         writePropertyMultiple           (16),
+
+        deviceCommunicationControl          (17),
+        confirmedPrivateTransfer            (18),
+        confirmedTextMessage                (19),
+        reinitializeDevice                  (20),
 
 
-        deviceCommunicationControl     (17),
-        confirmedPrivateTransfer       (18),
-        confirmedTextMessage           (19),
-        reinitializeDevice             (20),
+          vtOpen                            (21),
+          vtClose                           (22),
+          vtData                            (23),
 
 
-          vtOpen                       (21),
-          vtClose                      (22),
-          vtData                       (23),
-
-
-          authenticate                 (24),
-          requestKey                   (25),
-
-
-        i-Am                           (26),
-        i-Have                         (27),
-        unconfirmedCOVNotification     (28),
-        unconfirmedEventNotification   (29),
-        unconfirmedPrivateTransfer     (30),
-        unconfirmedTextMessage             (31),
-        timeSynchronization                (32),
         
-        who-Has                            (33),
-        who-Is                             (34),
+        
+        
 
 
-         readRange                         (35), 
-         utcTimeSynchronization            (36), 
-         lifeSafetyOperation               (37), 
-         subscribeCOVProperty              (38), 
-         getEventInformation               (39) 
+        i-Am                                (26),
+        i-Have                              (27),
+        unconfirmedCOVNotification          (28),
+        unconfirmedEventNotification        (29),
+        unconfirmedPrivateTransfer          (30),
+        unconfirmedTextMessage              (31),
+        timeSynchronization                 (32),
+        
+        who-Has                             (33),
+        who-Is                              (34),
+
+
+         readRange                          (35), 
+         utcTimeSynchronization             (36), 
+         lifeSafetyOperation                (37), 
+         subscribeCOVProperty               (38), 
+         getEventInformation                (39), 
+         writeGroup                         (40) 
          }
 
-BACnetSessionKey ::= SEQUENCE {
-      key       OCTET STRING (SIZE(8)), 
-      peerAddress      BACnetNetworkAddress
-}
-
 BACnetSetpointReference ::= SEQUENCE {
-      reference [0] BACnetObjectPropertyReference OPTIONAL
-}
+      setpointReference [0] BACnetObjectPropertyReference OPTIONAL
+      }
+
+BACnetShedLevel ::= CHOICE {
+      percent         [0]    Unsigned,
+      level           [1]    Unsigned,
+      amount          [2]    REAL
+      }
+
+BACnetShedState ::= ENUMERATED {
+      shed-inactive        (0),
+      shed-request-pending (1),
+      shed-compliant       (2),
+      shed-non-compliant   (3)
+      }
 
 BACnetSilencedState ::= ENUMERATED {
-         unsilenced       (0),
+      unsilenced        (0),
          audible-silenced (1),
          visible-silenced (2),
          all-silenced     (3),
@@ -2114,10 +3902,11 @@ BACnetStatusFlags ::= BIT STRING {
       }
 
 BACnetTimeStamp ::= CHOICE {
-      time                   [0]           Time,
-      sequenceNumber         [1]           Unsigned (0..65535),
-      dateTime               [2]           BACnetDateAndTime
+      time                   [0]            Time,
+      sequenceNumber         [1]            Unsigned (0..65535),
+      dateTime               [2]            BACnetDateTime
       }
+
 BACnetTimeValue ::= SEQUENCE {
       time            Time,
       value           ABSTRACT-SYNTAX.&Type 
@@ -2140,9 +3929,8 @@ BACnetVTClass ::= ENUMERATED {
 BACnetVTSession ::= SEQUENCE {
       local-vtSessionID     Unsigned8,
       remote-vtSessionID    Unsigned8,
-      remote-vtAddress      BACnetNetworkAddress
+      remote-vtAddress      BACnetAddress
       }
-
 BACnetWeekNDay ::= OCTET STRING (SIZE (3))
 
 
@@ -2159,6 +3947,13 @@ BACnetWeekNDay ::= OCTET STRING (SIZE (3))
 
 
 
+BACnetWriteStatus ::= ENUMERATED {
+      idle             0,
+      in-progress      1,
+      successful       2,
+      failed           3
+      }
+
 ReadAccessResult ::= SEQUENCE {
        objectIdentifier            [0] BACnetObjectIdentifier,
        listOfResults               [1] SEQUENCE OF SEQUENCE {
@@ -2172,6 +3967,7 @@ ReadAccessResult ::= SEQUENCE {
                                            }
                 } OPTIONAL
        }
+
 ReadAccessSpecification ::= SEQUENCE {
        objectIdentifier         [0] BACnetObjectIdentifier,
        listOfPropertyReferences [1] SEQUENCE OF BACnetPropertyReference
